@@ -4479,6 +4479,7 @@
       enemy.confused = 0; enemy.flinched = false;
       state.battle = {
         enemy, player, isGym, gymId,
+        playerTeamIndex: state.team.indexOf(player),
         locationId: locationId || (isGym ? 'gym' : 'plains'),
         turn: 'player', over: false,
         recharging: false, // for Hiperrayo etc
@@ -4678,7 +4679,11 @@
 
     function useMove(moveIndex) {
       const b = state.battle;
-      if (_battleLock || b.over || b.turn !== 'player') return;
+      if (!b) return;
+      if (_battleLock || b.over || b.turn !== 'player') {
+        console.warn("useMove blocked:", { _battleLock, over: b.over, turn: b.turn });
+        return;
+      }
 
       const move = b.player.moves[moveIndex];
       if (!move || move.pp <= 0) { setLog('¡Sin PP!'); return; }
@@ -4832,13 +4837,13 @@
       // Status move
       if (md.cat === 'status') {
         applyMoveEffect(md.effect, b.enemy, b.player, b.enemyStages, b.playerStages, addLog);
-        const tm = state.team.find(p => p.name === b.player.name);
-        if (tm) { tm.status = b.player.status; tm.sleepTurns = b.player.sleepTurns; }
+        const teamIdx = (b.playerTeamIndex !== undefined) ? b.playerTeamIndex : state.team.findIndex(p => p.name === b.player.name);
+        if (teamIdx !== -1) { state.team[teamIdx].status = b.player.status; state.team[teamIdx].sleepTurns = b.player.sleepTurns; }
         updateBattleUI();
         // Status tick on player
         if (tickStatus(b.player, addLog)) {
-          const tm2 = state.team.find(p => p.name === b.player.name);
-          if (tm2) tm2.hp = b.player.hp;
+          const teamIdx = (b.playerTeamIndex !== undefined) ? b.playerTeamIndex : state.team.findIndex(p => p.name === b.player.name);
+          if (teamIdx !== -1) state.team[teamIdx].hp = b.player.hp;
           updateBattleUI();
           if (b.player.hp <= 0) { setTimeout(() => { endBattle(false); _battleLock = false; }, 900); return; }
         }
@@ -4856,8 +4861,9 @@
         }
 
         b.player.hp = Math.max(0, b.player.hp - dmg);
-        const tm = state.team.find(p => p.name === b.player.name);
-        if (tm) tm.hp = b.player.hp;
+        // Sincronizar usando el índice guardado si existe, sino por nombre
+        const teamIdx = (b.playerTeamIndex !== undefined) ? b.playerTeamIndex : state.team.findIndex(p => p.name === b.player.name);
+        if (teamIdx !== -1) state.team[teamIdx].hp = b.player.hp;
 
         addLog(`¡Causó ${dmg} de daño a ${b.player.name}!${drainHeal ? ` (recuperó ${drainHeal} HP)` : ''}`);
         const effMsg = getTypeEffectivenessMsg(eff);
@@ -4875,7 +4881,8 @@
 
         // End-of-turn status tick on player
         if (tickStatus(b.player, addLog)) {
-          if (tm) tm.hp = b.player.hp;
+          const teamIdx = (b.playerTeamIndex !== undefined) ? b.playerTeamIndex : state.team.findIndex(p => p.name === b.player.name);
+          if (teamIdx !== -1) state.team[teamIdx].hp = b.player.hp;
           updateBattleUI();
           if (b.player.hp <= 0) { setTimeout(() => { endBattle(false); _battleLock = false; }, 900); return; }
         }
@@ -6577,7 +6584,8 @@
       <button onclick="closeBattleOverlay()" style="margin-top:14px;width:100%;padding:10px;border:none;border-radius:10px;
         background:rgba(255,255,255,0.1);color:#fff;cursor:pointer;font-size:13px;">Cerrar</button>`;
       } else {
-        html += eligible.map(p => {
+        html += state.team.map((p, idx) => {
+          if (idx === b.playerTeamIndex || p.hp <= 0) return ''; // No mostrar el actual o debilitados
           const hpPct = Math.round(p.hp / p.maxHp * 100);
           const hpCol = hpPct > 50 ? 'var(--green)' : hpPct > 20 ? 'var(--yellow)' : 'var(--red)';
           return `<div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.05);
@@ -6593,7 +6601,7 @@
           </div>
           <div style="font-size:10px;color:${hpCol};margin-top:2px;">${p.hp}/${p.maxHp} HP</div>
         </div>
-        <button onclick="switchBattlePokemon('${p.name}',${forced})" style="font-family:'Press Start 2P',monospace;font-size:8px;
+        <button onclick="switchBattlePokemonByIndex(${idx},${forced})" style="font-family:'Press Start 2P',monospace;font-size:8px;
           padding:8px 10px;border:none;border-radius:8px;cursor:pointer;
           background:rgba(199,125,255,0.2);color:var(--purple);border:1px solid rgba(199,125,255,0.3);">
           ¡IR!
@@ -6619,10 +6627,12 @@
     }
 
 
-    function switchBattlePokemon(pokeName, forced) {
+    function switchBattlePokemonByIndex(teamIndex, forced) {
       const b = state.battle;
-      const teamRef = state.team.find(p => p.name === pokeName && p.hp > 0);
-      if (!teamRef) return;
+      const teamRef = state.team[teamIndex];
+      if (!teamRef || teamRef.hp <= 0) return;
+
+      console.log("Switching to:", teamRef.name, "Forced:", forced);
 
       // PRIMERO: resetear estado de batalla para que useMove no bloquee
       if (forced) {
@@ -6631,11 +6641,20 @@
         _battleLock = false;
       }
 
+      // Guardar el índice del Pokémon activo en la batalla para sincronizar HP después
+      b.playerTeamIndex = teamIndex;
+
       // Copia profunda del Pokémon elegido
       b.player = JSON.parse(JSON.stringify(teamRef));
       b.playerStages = { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, acc: 0, eva: 0 };
       b.player.confused = 0;
       b.player.flinched = false;
+
+      // Limpiar animaciones previas (IMPORTANTE: si faineó, tiene anim-faint que lo oculta)
+      const imgEl = document.getElementById('player-sprite-img');
+      const emoEl = document.getElementById('player-sprite-emoji');
+      if (imgEl) imgEl.classList.remove('anim-faint', 'anim-damage', 'anim-shake');
+      if (emoEl) emoEl.classList.remove('anim-faint', 'anim-damage', 'anim-shake');
 
       // Eliminar AMBOS overlays posibles
       document.getElementById('forced-switch-overlay')?.remove();
@@ -6649,13 +6668,11 @@
 
       if (forced) {
         setBtns(true);
-        document.getElementById('move-buttons').style.display = 'grid';
+        showMoves(); // Esto es más robusto que solo poner display:grid
 
-        // Cargar sprite después de updateBattleUI para no ser sobreescrito
+        // Cargar sprite con fallback
         const pData = POKEMON_DB[b.player.id];
         const emoji = pData ? pData.emoji : (b.player.emoji || '❓');
-        const imgEl = document.getElementById('player-sprite-img');
-        const emoEl = document.getElementById('player-sprite-emoji');
         if (imgEl && emoEl) {
           imgEl.src = '';
           imgEl.style.display = 'none';
