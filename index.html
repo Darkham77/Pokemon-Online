@@ -6609,50 +6609,72 @@
 
     function switchBattlePokemon(pokeName, forced) {
       const b = state.battle;
-      // Buscar por nombre Y por que tenga HP — usar referencia directa del team
       const teamRef = state.team.find(p => p.name === pokeName && p.hp > 0);
       if (!teamRef) return;
 
-      // Crear copia deep del objeto para b.player evitando referencias compartidas
-      b.player = JSON.parse(JSON.stringify(teamRef));
-      closeBattleOverlay();
+      // PRIMERO: resetear estado de batalla para que useMove no bloquee
+      if (forced) {
+        b.over = false;
+        b.turn = 'player';
+        _battleLock = false;
+      }
 
-      // Reset stat stages
+      // Copia profunda del Pokémon elegido como jugador activo
+      b.player = JSON.parse(JSON.stringify(teamRef));
       b.playerStages = { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, acc: 0, eva: 0 };
       b.player.confused = 0;
       b.player.flinched = false;
 
+      closeBattleOverlay();
       setLog(`¡${b.player.name} salió a combatir!`, 'log-player');
 
-      // Cargar sprite manualmente para asegurar que siempre aparezca
-      const img = document.getElementById('player-sprite-img');
-      const emojiEl = document.getElementById('player-sprite-emoji');
-      const pData = POKEMON_DB[b.player.id];
-      const emoji = pData ? pData.emoji : b.player.emoji || '❓';
-      if (img && emojiEl) {
-        img.style.display = 'none';
-        emojiEl.style.display = 'none';
-        loadSprite(img, emojiEl, getBackSpriteUrl(b.player.id), emoji);
-      }
-
+      // Actualizar UI (HP bars, nombre, nivel)
       updateBattleUI();
       renderMoveButtons();
 
       if (forced) {
-        // Forced switch tras faint — retomar turno del jugador
-        b.over = false;
-        b.turn = 'player';
-        _battleLock = false;
+        // Forzar visibilidad de botones
         setBtns(true);
-        renderMoveButtons();
         document.getElementById('move-buttons').style.display = 'grid';
+
+        // Cargar sprite DESPUÉS de updateBattleUI (que llama setBattleSprite internamente)
+        // para evitar que la imagen quede en estado loading
+        const pData = POKEMON_DB[b.player.id];
+        const emoji = pData ? pData.emoji : (b.player.emoji || '❓');
+        const imgEl = document.getElementById('player-sprite-img');
+        const emoEl = document.getElementById('player-sprite-emoji');
+        if (imgEl && emoEl) {
+          // Reset visual
+          imgEl.src = '';
+          imgEl.style.display = 'none';
+          emoEl.style.display = 'block';
+          emoEl.textContent = emoji;
+          // Cargar sprite real con pequeño delay para no competir con setBattleSprite
+          setTimeout(() => {
+            const url = getBackSpriteUrl(b.player.id);
+            if (url) {
+              const testImg = new Image();
+              testImg.onload = () => {
+                imgEl.src = url;
+                imgEl.style.display = 'block';
+                emoEl.style.display = 'none';
+              };
+              testImg.onerror = () => {
+                emoEl.style.display = 'block';
+                emoEl.textContent = emoji;
+              };
+              testImg.src = url;
+            }
+          }, 80);
+        }
       } else {
-        // Cambio voluntario cuesta un turno
+        // Cambio voluntario: cuesta un turno
         _battleLock = true;
         setBtns(false);
         setTimeout(() => enemyTurn(), 800);
       }
     }
+
 
     // ===== BATTLE OVERLAY (shared) =====
     function showBattleOverlay(html, noDismiss = false) {
