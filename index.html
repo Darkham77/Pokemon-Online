@@ -6611,7 +6611,8 @@
         sb.from('trade_offers').select('id', { count: 'exact', head: false })
           .eq('sender_id', currentUser.id).eq('status', 'accepted'),
         sb.from('battle_invites').select('id', { count: 'exact', head: false })
-          .eq('opponent_id', currentUser.id).eq('status', 'pending'),
+          .eq('opponent_id', currentUser.id).eq('status', 'pending')
+          .gte('created_at', new Date(Date.now() - 60000).toISOString()),
       ]);
 
       const total = (pendingFriends?.length || 0)
