@@ -4876,16 +4876,29 @@
           if (ex.length) exclusives[slot] = ex;
         });
 
+        // Helper: render a small Pokémon sprite with emoji fallback
+        const spriteImg = (id) => {
+          const num  = POKEMON_SPRITE_IDS[id];
+          const pData = POKEMON_DB[id];
+          const name  = pData?.name || id;
+          const emoji = pData?.emoji || '❓';
+          if (!num) return `<span title="${name}" style="font-size:18px;line-height:1;">${emoji}</span>`;
+          return `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${num}.png"
+            title="${name}" width="32" height="32"
+            style="image-rendering:pixelated;"
+            onerror="this.outerHTML='<span style=\\'font-size:18px;line-height:1;\\'>${emoji}</span>'">`;
+        };
+
         const timeSlotsHtml = Object.entries(exclusives).map(([slot, ids]) => {
-          const meta = slotMeta[slot];
+          const meta   = slotMeta[slot];
           const active = slot === cycle;
-          return `<div style="display:flex;align-items:center;gap:4px;padding:3px 6px;border-radius:8px;
-            background:${active ? 'rgba(255,255,255,0.1)' : 'transparent'};
+          return `<div style="display:flex;align-items:center;gap:2px;padding:3px 6px;border-radius:8px;
+            background:${active ? 'rgba(255,255,255,0.08)' : 'transparent'};
             border:1px solid ${active ? meta.color + '55' : 'transparent'};">
-            <span style="font-size:10px;">${meta.icon}</span>
-            <span style="font-size:9px;color:${meta.color};font-weight:${active?'700':'400'};">${meta.label}:</span>
-            ${ids.slice(0,3).map(id => `<span title="${POKEMON_DB[id]?.name||id}" style="font-size:12px;">${POKEMON_DB[id]?.emoji||'❓'}</span>`).join('')}
-            ${ids.length > 3 ? `<span style="font-size:9px;color:#666;">+${ids.length-3}</span>` : ''}
+            <span style="font-size:10px;margin-right:2px;">${meta.icon}</span>
+            <span style="font-size:8px;color:${meta.color};font-weight:${active?'700':'400'};margin-right:4px;white-space:nowrap;">${meta.label}:</span>
+            ${ids.slice(0,4).map(id => spriteImg(id)).join('')}
+            ${ids.length > 4 ? `<span style="font-size:9px;color:#666;margin-left:2px;">+${ids.length-4}</span>` : ''}
           </div>`;
         }).join('');
 
@@ -4895,10 +4908,12 @@
           <div class="location-name">${loc.name}</div>
           <div class="location-desc">${loc.desc}</div>
           ${!isLocked ? `
-          <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:3px;align-items:center;">
-            <span style="font-size:9px;color:#666;margin-right:2px;">Ahora:</span>
-            ${availableWild.slice(0,5).map(id => `<span title="${POKEMON_DB[id]?.name||id}" style="font-size:14px;">${POKEMON_DB[id]?.emoji||'❓'}</span>`).join('')}
-            ${availableWild.length > 5 ? `<span style="font-size:9px;color:#666;">+${availableWild.length-5}</span>` : ''}
+          <div style="margin-top:8px;">
+            <div style="font-size:8px;color:#666;margin-bottom:4px;">Ahora disponibles:</div>
+            <div style="display:flex;flex-wrap:wrap;gap:0px;align-items:center;">
+              ${availableWild.slice(0,6).map(id => spriteImg(id)).join('')}
+              ${availableWild.length > 6 ? `<span style="font-size:9px;color:#666;margin-left:4px;">+${availableWild.length-6}</span>` : ''}
+            </div>
           </div>
           ${timeSlotsHtml ? `<div style="margin-top:6px;display:flex;flex-direction:column;gap:2px;">${timeSlotsHtml}</div>` : ''}
           ` : ''}
