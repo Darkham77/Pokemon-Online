@@ -2620,17 +2620,18 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <div class="section-title" style="margin:0;">🎒 Mochila</div>
       </div>
-      <div id="bag-tabs" style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;">
-        <button onclick="renderBag('all')" class="market-tab active" id="bag-tab-all">Todo</button>
-        <button onclick="renderBag('potion')" class="market-tab" id="bag-tab-potion">Pociones</button>
-        <button onclick="renderBag('ball')" class="market-tab" id="bag-tab-ball">Pokéballs</button>
-        <button onclick="renderBag('etc')" class="market-tab" id="bag-tab-etc">Otros</button>
+      <div id="bag-tabs" class="market-tab-bar" style="margin-bottom:16px;">
+        <button onclick="renderBag('all')" class="market-tab-btn active" id="bag-tab-all">Todo</button>
+        <button onclick="renderBag('potion')" class="market-tab-btn" id="bag-tab-potion">Pociones</button>
+        <button onclick="renderBag('ball')" class="market-tab-btn" id="bag-tab-ball">Pokéballs</button>
+        <button onclick="renderBag('etc')" class="market-tab-btn" id="bag-tab-etc">Otros</button>
       </div>
       <div id="bag-empty-warning"
-        style="display:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center;font-size:12px;color:var(--gray);">
+        style="display:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:32px;text-align:center;font-size:12px;color:var(--gray);">
+        <span class="empty-icon" style="font-size:48px;margin-bottom:12px;display:block;">🎒</span>
         No tenés ningún objeto en esta categoría.
       </div>
-      <div id="bag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;"></div>
+      <div id="bag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;"></div>
     </div>
   </div>
   </div>
@@ -7060,13 +7061,29 @@
     }
 
     // ===== BAG SYSTEM =====
-    function renderBag() {
+    function renderBag(category = 'all') {
       const grid = document.getElementById('bag-grid');
       const empty = document.getElementById('bag-empty-warning');
+      
+      // Update tab active state
+      document.querySelectorAll('#bag-tabs .market-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeTab = document.getElementById(`bag-tab-${category}`);
+      if (activeTab) activeTab.classList.add('active');
 
-      const items = Object.entries(state.inventory || {}).filter(([name, qty]) => qty > 0);
+      const allItems = Object.entries(state.inventory || {}).filter(([name, qty]) => qty > 0);
+      
+      const filteredItems = allItems.filter(([name, qty]) => {
+        if (category === 'all') return true;
+        const itemInfo = SHOP_ITEMS.find(i => i.name === name);
+        if (!itemInfo) return category === 'etc'; 
+        
+        if (category === 'potion') return itemInfo.cat === 'pociones';
+        if (category === 'ball') return itemInfo.cat === 'pokeballs';
+        if (category === 'etc') return !['pociones', 'pokeballs'].includes(itemInfo.cat);
+        return true;
+      });
 
-      if (items.length === 0) {
+      if (filteredItems.length === 0) {
         grid.style.display = 'none';
         empty.style.display = 'block';
         return;
@@ -7075,21 +7092,37 @@
       grid.style.display = 'grid';
       empty.style.display = 'none';
 
-      grid.innerHTML = items.map(([name, qty]) => {
-        // Only healing items are usable right now
-        const isUsable = !!HEALING_ITEMS[name];
+      const tierColors = { common: 'tier-common', rare: 'tier-rare', epic: 'tier-epic', legend: 'tier-legend' };
+      const tierLabels = { common: 'Común', rare: 'Raro', epic: 'Épico', legend: 'Legendario' };
+      const typeTagColors = { stone: '#f5a623', held: '#7ed321', usable: '#4a90e2' };
+      const typeTagLabels = { stone: 'Piedra', held: 'Equipable', usable: 'Usable' };
 
-        return `<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">${name}</div>
-        <div style="font-size:11px;color:var(--gray);">Cantidad: ${qty}</div>
-      </div>
-      <button ${isUsable ? `onclick="openBagUseMenu('${name}')"` : 'disabled'} 
-        style="font-family:'Press Start 2P',monospace;font-size:7px;padding:8px 12px;border:none;border-radius:8px;
-        ${isUsable ? 'background:rgba(107,203,119,0.15);color:var(--green);border:1px solid rgba(107,203,119,0.3);cursor:pointer;' : 'background:rgba(255,255,255,0.05);color:#666;cursor:not-allowed;'}">
-        USAR
-      </button>
-    </div>`;
+      grid.innerHTML = filteredItems.map(([name, qty]) => {
+        const itemInfo = SHOP_ITEMS.find(i => i.name === name);
+        const icon = itemInfo?.icon || '📦';
+        const desc = itemInfo?.desc || 'Objeto de entrenador.';
+        const sprite = itemInfo?.sprite || '';
+        const tier = itemInfo?.tier || 'common';
+        const type = itemInfo?.type || 'usable';
+        const isUsable = !!HEALING_ITEMS[name] || name === 'Caramelo Raro';
+
+        const tierCls = tierColors[tier];
+        const typeTag = `<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:${typeTagColors[type] || '#666'}22;color:${typeTagColors[type] || '#aaa'};border:1px solid ${typeTagColors[type] || '#666'}44;">${typeTagLabels[type] || type}</span>`;
+
+        return `<div class="market-card">
+          <span class="market-tier-badge ${tierCls}">${tierLabels[tier]}</span>
+          <div class="market-item-icon">
+            ${sprite ? `<img src="${sprite}" width="40" height="40" style="image-rendering:pixelated;">` : `<span style="font-size:32px">${icon}</span>`}
+          </div>
+          <div class="market-item-name">${name}</div>
+          ${typeTag}
+          <div class="market-item-desc" style="margin-top:4px;">${desc}</div>
+          <div class="market-item-price" style="margin-top:auto;">Cantidad: ${qty}</div>
+          <button class="market-buy-btn" onclick="openBagUseMenu('${name}')" 
+            ${!isUsable ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+            ${isUsable ? 'USAR' : 'NO USABLE'}
+          </button>
+        </div>`;
       }).join('');
     }
 
