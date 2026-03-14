@@ -656,8 +656,27 @@
 
     #battle-screen .battle-arena {
       flex-shrink: 1;
-      min-height: 520px; 
+      height: 520px; 
       max-height: 60vh;
+      background: linear-gradient(180deg, #1a2a4a 0%, #0f1a2e 100%);
+      border-radius: 20px;
+      padding: 0;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.8s ease;
+    }
+
+    .battle-combatants {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      width: 100%;
+      padding: 20px;
     }
 
     .battle-log {
@@ -689,16 +708,7 @@
       gap: 10px;
     }
 
-    .battle-arena {
-      background: linear-gradient(180deg, #1a2a4a 0%, #0f1a2e 100%);
-      border-radius: 20px;
-      padding: 30px 20px;
-      margin-bottom: 16px;
-      position: relative;
-      overflow: hidden;
-      min-height: 380px;
-      transition: background 0.8s ease;
-    }
+
 
     /* battle bg drawn on canvas */
 
@@ -824,17 +834,7 @@
 
 
 
-    .battle-combatants {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 20px;
-    }
 
-    .battle-pokemon {
-      text-align: center;
-      flex: 1;
-    }
 
     .battle-pokemon-info {
       background: rgba(0, 0, 0, 0.4);
@@ -1425,15 +1425,15 @@
       }
 
       .battle-arena {
-        min-height: 200px;
-        padding: 12px 8px;
+        height: 380px;
+        padding: 0;
         margin-bottom: 10px;
         border-radius: 14px;
       }
 
       .battle-combatants {
         gap: 6px;
-        align-items: center;
+        padding: 10px;
       }
 
       .battle-pokemon-info {
@@ -2897,14 +2897,13 @@
       <div class="battle-arena" id="battle-arena" style="position:relative;overflow:hidden;">
         <canvas id="battle-bg-canvas"
           style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;border-radius:18px;"></canvas>
-        <div class="battle-combatants"
-          style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:6px 12px;position:relative;z-index:1;min-height:0;height:100%;">
+        <div class="battle-combatants">
           <!-- TOP-LEFT: Enemy HP info -->
-          <div style="display:flex;align-items:flex-start;justify-content:flex-start;align-self:start;">
-            <div class="battle-pokemon-info" style="width:100%;max-width:220px;">
+          <div style="display:flex;align-items:flex-start;justify-content:flex-start;">
+            <div class="battle-pokemon-info">
               <div class="battle-name" id="enemy-name">???</div>
               <div class="battle-level" id="enemy-level">Nv. 1</div>
-              <div class="hp-bar-wrap" style="width:100%">
+              <div class="hp-bar-wrap">
                 <div class="hp-bar hp-high" id="enemy-hp-bar" style="width:100%"></div>
               </div>
               <div class="battle-hp-text" id="enemy-hp-text">HP: ?/?</div>
@@ -2912,33 +2911,29 @@
           </div>
 
           <!-- TOP-RIGHT: Enemy sprite -->
-          <div style="display:flex;align-items:flex-start;justify-content:flex-end;align-self:start;height:100%;">
-            <div id="enemy-sprite-wrap"
-              style="height:100%;width:100%;display:flex;align-items:flex-start;justify-content:flex-end;">
+          <div style="display:flex;align-items:flex-start;justify-content:flex-end;">
+            <div id="enemy-sprite-wrap" style="height:100%;width:100%;display:flex;align-items:flex-start;justify-content:flex-end;">
               <img id="enemy-sprite-img" src="" alt=""
-                style="height:90%;width:auto;max-height:450px;max-width:450px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 30px rgba(0,0,0,0.9));display:none;">
-              <span id="enemy-sprite-emoji" class="battle-sprite enemy-sprite"
-                style="font-size:min(35vh, 320px);line-height:1;">❓</span>
+                style="height:100%;width:auto;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 30px rgba(0,0,0,0.9));display:none;">
+              <span id="enemy-sprite-emoji" class="battle-sprite enemy-sprite" style="font-size:min(35vh, 260px);line-height:1;">❓</span>
             </div>
           </div>
 
           <!-- BOTTOM-LEFT: Player sprite -->
-          <div style="display:flex;align-items:flex-end;justify-content:flex-start;align-self:end;height:100%;">
-            <div id="player-sprite-wrap"
-              style="height:100%;width:100%;display:flex;align-items:flex-end;justify-content:flex-start;">
+          <div style="display:flex;align-items:flex-end;justify-content:flex-start;">
+            <div id="player-sprite-wrap" style="height:100%;width:100%;display:flex;align-items:flex-end;justify-content:flex-start;">
               <img id="player-sprite-img" src="" alt=""
-                style="height:95%;width:auto;max-height:480px;max-width:480px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 30px rgba(0,0,0,0.9));display:none;">
-              <span id="player-sprite-emoji" class="battle-sprite player-sprite"
-                style="font-size:min(35vh, 320px);line-height:1;">❓</span>
+                style="height:100%;width:auto;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 30px rgba(0,0,0,0.9));display:none;">
+              <span id="player-sprite-emoji" class="battle-sprite player-sprite" style="font-size:min(35vh, 260px);line-height:1;">❓</span>
             </div>
           </div>
 
           <!-- BOTTOM-RIGHT: Player HP info -->
-          <div style="display:flex;align-items:flex-end;justify-content:flex-end;align-self:end;padding-bottom:20px;">
-            <div class="battle-pokemon-info" style="width:100%;max-width:240px;text-align:right;">
+          <div style="display:flex;align-items:flex-end;justify-content:flex-end;padding-bottom:10px;">
+            <div class="battle-pokemon-info" style="text-align:right;">
               <div class="battle-name" id="player-battle-name">???</div>
               <div class="battle-level" id="player-battle-level">Nv. 1</div>
-              <div class="hp-bar-wrap" style="width:100%">
+              <div class="hp-bar-wrap">
                 <div class="hp-bar hp-high" id="player-hp-bar" style="width:100%"></div>
               </div>
               <div class="battle-hp-text" id="player-hp-text">HP: ?/?</div>
@@ -8557,12 +8552,11 @@
       </button>
     </div>
 
-    <div class="battle-arena" id="pvp-arena" style="margin-bottom:12px;min-height:280px;">
-      <div class="battle-combatants"
-        style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px 12px;position:relative;z-index:1;min-height:260px;">
+    <div class="battle-arena" id="pvp-arena" style="margin-bottom:12px;">
+      <div class="battle-combatants">
         <!-- TOP-LEFT: Enemy HP info -->
-        <div style="display:flex;align-items:flex-start;justify-content:flex-start;align-self:start;">
-          <div class="battle-pokemon-info" style="width:100%;max-width:200px;">
+        <div style="display:flex;align-items:flex-start;justify-content:flex-start;">
+          <div class="battle-pokemon-info">
             <div style="font-size:9px;color:var(--yellow);font-weight:700;margin-bottom:2px;" id="pvp-enemy-trainer">${_pvpState.enemyUsername ? '🎮 ' + _pvpState.enemyUsername : ''}</div>
             <div class="battle-name" id="pvp-enemy-name">${enemy?.name || '???'}</div>
             <div class="battle-level" id="pvp-enemy-level">Nv. ${enemy?.level || '?'}</div>
@@ -8571,22 +8565,22 @@
           </div>
         </div>
         <!-- TOP-RIGHT: Enemy sprite -->
-        <div style="display:flex;align-items:flex-start;justify-content:flex-end;align-self:start;">
-          <div style="height:140px;display:flex;align-items:flex-start;justify-content:flex-end;">
-            <img id="pvp-enemy-img" src="" alt="" style="height:140px;width:140px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
-            <span id="pvp-enemy-emoji" style="font-size:90px;line-height:1;">${enemy?.emoji || '❓'}</span>
+        <div style="display:flex;align-items:flex-start;justify-content:flex-end;">
+          <div id="pvp-enemy-sprite-wrap" style="height:100%;width:100%;display:flex;align-items:flex-start;justify-content:flex-end;">
+            <img id="pvp-enemy-img" src="" alt="" style="height:100%;width:auto;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
+            <span id="pvp-enemy-emoji" class="battle-sprite enemy-sprite" style="font-size:min(35vh, 260px);line-height:1;">${enemy?.emoji || '❓'}</span>
           </div>
         </div>
         <!-- BOTTOM-LEFT: My sprite -->
-        <div style="display:flex;align-items:flex-end;justify-content:flex-start;align-self:end;">
-          <div style="height:140px;display:flex;align-items:flex-end;justify-content:flex-start;">
-            <img id="pvp-player-img" src="" alt="" style="height:140px;width:140px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
-            <span id="pvp-player-emoji" style="font-size:90px;line-height:1;">${me?.emoji || '❓'}</span>
+        <div style="display:flex;align-items:flex-end;justify-content:flex-start;">
+          <div id="pvp-player-sprite-wrap" style="height:100%;width:100%;display:flex;align-items:flex-end;justify-content:flex-start;">
+            <img id="pvp-player-img" src="" alt="" style="height:100%;width:auto;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
+            <span id="pvp-player-emoji" class="battle-sprite player-sprite" style="font-size:min(35vh, 260px);line-height:1;">${me?.emoji || '❓'}</span>
           </div>
         </div>
         <!-- BOTTOM-RIGHT: My HP info -->
-        <div style="display:flex;align-items:flex-end;justify-content:flex-end;align-self:end;">
-          <div class="battle-pokemon-info" style="width:100%;max-width:200px;text-align:right;">
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;padding-bottom:10px;">
+          <div class="battle-pokemon-info" style="text-align:right;">
             <div class="battle-name" id="pvp-player-name">${me?.name || '???'}</div>
             <div class="battle-level" id="pvp-player-level">Nv. ${me?.level || '?'}</div>
             <div class="hp-bar-wrap"><div class="hp-bar hp-high" id="pvp-player-hp-bar" style="width:100%"></div></div>
