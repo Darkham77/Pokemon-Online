@@ -658,7 +658,7 @@
       flex-shrink: 1;
       height: 520px; 
       max-height: 60vh;
-      background: linear-gradient(180deg, #1a2a4a 0%, #0f1a2e 100%);
+      background: #0d1117; /* Solid dark background as fallback */
       border-radius: 20px;
       padding: 0;
       margin-bottom: 16px;
@@ -1426,11 +1426,12 @@
 
       .battle-arena {
         height: auto;
-        aspect-ratio: 16 / 12;
+        aspect-ratio: 16 / 11;
         min-height: 300px;
         padding: 0;
         margin-bottom: 10px;
         border-radius: 14px;
+        background: #0d1117;
       }
 
       .battle-combatants {
@@ -6476,29 +6477,41 @@
     _preloadBgs();
 
     function drawBattleBackground(locationId, cycleOverride) {
-      const canvas = document.getElementById('battle-bg-canvas');
+      // Handle both main battle canvas and PvP canvas
+      const canvasId = locationId === 'pvp' ? 'pvp-battle-bg-canvas' : 'battle-bg-canvas';
+      const canvas = document.getElementById(canvasId);
       if (!canvas) return;
-      const arena = document.getElementById('battle-arena');
+
+      const arenaId = locationId === 'pvp' ? 'pvp-arena' : 'battle-arena';
+      const arena = document.getElementById(arenaId);
+      if (!arena) return;
+
       const W = arena.offsetWidth || 600;
       const H = arena.offsetHeight || 340;
       canvas.width = W; canvas.height = H;
       const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = false; // keep pixel art sharp
+      ctx.imageSmoothingEnabled = true;
 
       const cycle = cycleOverride || getDayCycle();
-      let key = _getBgKey(locationId, cycle);
-      let src = BATTLE_BG_DATA[key] || BATTLE_BG_DATA.ruta_day;
+      let src = '';
 
       if (locationId === 'gym') {
         src = 'assets/GIMNASIO.jpg';
       } else if (locationId === 'pvp') {
-        // Match cycle to provided PVP assets
-        const pvpBgs = { morning: 'assets/PVP_MORNING.jpg', day: 'assets/PVP_DAY.jpg', afternoon: 'assets/PVP_DAY.jpg', night: 'assets/PVP_NIGHT.jpg' };
-        src = pvpBgs[cycle] || 'assets/PVP_DAY.jpg';
+        const pvpBgs = {
+          morning: 'assets/pvp_dawn.jpg',
+          day: 'assets/pvp_day.jpg',
+          afternoon: 'assets/pvp_day.jpg',
+          night: 'assets/pvp_night.jpg',
+          dusk: 'assets/pvp_dawn.jpg'
+        };
+        src = pvpBgs[cycle] || 'assets/pvp_day.jpg';
+      } else {
+        let key = _getBgKey(locationId, cycle);
+        src = BATTLE_BG_DATA[key] || BATTLE_BG_DATA.ruta_day;
       }
 
       function draw(img) {
-        // Cover-fit: fill entire canvas, crop from center
         const iw = img.naturalWidth || img.width;
         const ih = img.naturalHeight || img.height;
         if (!iw || !ih) return;
@@ -6506,22 +6519,21 @@
         const dw = iw * scale, dh = ih * scale;
         const dx = (W - dw) / 2, dy = (H - dh) / 2;
         ctx.drawImage(img, dx, dy, dw, dh);
-        // Subtle vignette for better sprite readability
+        
+        // Vignette
         const vgr = ctx.createRadialGradient(W / 2, H / 2, H * 0.15, W / 2, H / 2, H * 0.9);
         vgr.addColorStop(0, 'rgba(0,0,0,0)');
-        vgr.addColorStop(1, 'rgba(0,0,0,0.32)');
+        vgr.addColorStop(1, 'rgba(0,0,0,0.3)');
         ctx.fillStyle = vgr; ctx.fillRect(0, 0, W, H);
       }
 
-      const cached = _bgCache[key];
-      if (cached && cached.complete && (cached.naturalWidth || cached.width)) {
-        draw(cached);
-      } else {
-        const img = new Image();
-        img.onload = () => { _bgCache[key] = img; draw(img); };
-        img.onerror = () => { ctx.fillStyle = '#1a2a18'; ctx.fillRect(0, 0, W, H); };
-        img.src = src;
-      }
+      const img = new Image();
+      img.onload = () => draw(img);
+      img.onerror = () => {
+        ctx.fillStyle = '#0d1117';
+        ctx.fillRect(0, 0, W, H);
+      };
+      img.src = src;
     }
 
     // ===== FRIENDS SYSTEM =====
@@ -8554,7 +8566,8 @@
       </button>
     </div>
 
-    <div class="battle-arena" id="pvp-arena" style="margin-bottom:12px;">
+    <div class="battle-arena" id="pvp-arena" style="position:relative;overflow:hidden;margin-bottom:12px;">
+      <canvas id="pvp-battle-bg-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;border-radius:18px;"></canvas>
       <div class="battle-combatants">
         <!-- TOP-LEFT: Enemy HP info -->
         <div style="display:flex;align-items:flex-start;justify-content:flex-start;">
@@ -8615,6 +8628,7 @@
 
       _pvpLoadSprites();
       _pvpRenderMoves();
+      setTimeout(() => drawBattleBackground('pvp'), 50);
     }
 
     function _pvpLoadSprites() {
