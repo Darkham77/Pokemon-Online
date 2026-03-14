@@ -6356,8 +6356,7 @@
     }
 
     function getSpriteId(id) {
-      const SPRITE_IDS = { bulbasaur: 1, charmander: 4, squirtle: 7, pidgey: 16, rattata: 19, caterpie: 10, weedle: 13, pikachu: 25, geodude: 74, zubat: 41, psyduck: 54, magikarp: 129, eevee: 133, jigglypuff: 39 };
-      return SPRITE_IDS[id] || 0;
+      return POKEMON_SPRITE_IDS[id] || 0;
     }
 
     // ── Item rows ─────────────────────────────────────
@@ -6851,10 +6850,8 @@
         return;
       }
 
-      const SPRITE_IDS = { bulbasaur: 1, charmander: 4, squirtle: 7, pidgey: 16, rattata: 19, caterpie: 10, weedle: 13, pikachu: 25, geodude: 74, zubat: 41, psyduck: 54, magikarp: 129, eevee: 133, jigglypuff: 39 };
-
       grid.innerHTML = state.box.map((p, i) => {
-        const sid = SPRITE_IDS[p.id] || 0;
+        const sid = getSpriteId(p.id);
         const hpPct = Math.round(p.hp / p.maxHp * 100);
         const hpCol = hpPct > 50 ? 'var(--green)' : hpPct > 20 ? 'var(--yellow)' : 'var(--red)';
         return `<div onclick="openBoxPokemonMenu(${i})" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
@@ -6876,18 +6873,19 @@
     function openBoxPokemonMenu(boxIndex) {
       const p = state.box[boxIndex];
       if (!p) return;
-      const SPRITE_IDS = { bulbasaur: 1, charmander: 4, squirtle: 7, pidgey: 16, rattata: 19, caterpie: 10, weedle: 13, pikachu: 25, geodude: 74, zubat: 41, psyduck: 54, magikarp: 129, eevee: 133, jigglypuff: 39 };
-      const sid = SPRITE_IDS[p.id] || 0;
+      const sid = getSpriteId(p.id);
 
       // Build team selection for swap
       const teamOptions = state.team.map((t, ti) => {
-        const tsid = SPRITE_IDS[t.id] || 0;
+        const tsid = getSpriteId(t.id);
         return `<div onclick="swapBoxWithTeam(${boxIndex},${ti})" style="display:flex;align-items:center;gap:10px;
       background:rgba(255,255,255,0.05);border-radius:10px;padding:10px;margin-bottom:6px;cursor:pointer;
       border:1px solid rgba(255,255,255,0.08);"
       onmouseover="this.style.borderColor='rgba(199,125,255,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${tsid}.png"
-        width="36" height="36" style="image-rendering:pixelated;" onerror="this.style.display='none'">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getSpriteId(t.id)}.png"
+        width="36" height="36" style="image-rendering:pixelated;" 
+        onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:24px;line-height:1;">${t.emoji}</span>
       <div style="flex:1;">
         <div style="font-size:12px;font-weight:700;">${t.name}</div>
         <div style="font-size:10px;color:var(--gray);">Nv.${t.level} · ${t.hp}/${t.maxHp} HP</div>
@@ -6901,8 +6899,10 @@
       ov.style.cssText = 'position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:16px;';
       ov.innerHTML = `<div style="background:var(--card);border-radius:20px;padding:24px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:16px;">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${POKEMON_SPRITE_IDS[p.id] || sid}.png"
-        width="72" height="72" style="image-rendering:pixelated;" onerror="this.style.display='none'">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getSpriteId(p.id)}.png"
+        width="72" height="72" style="image-rendering:pixelated;"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:52px;line-height:1;">${p.emoji}</span>
       <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--yellow);margin-top:8px;">${p.name}</div>
       <div style="font-size:11px;color:var(--gray);">Nv.${p.level} · ${p.nature} · ${p.ability}</div>
       <div style="font-size:11px;color:var(--gray);margin-top:2px;">${p.hp}/${p.maxHp} HP${p.status ? ' · <span style="color:var(--red);">' + p.status.toUpperCase() + '</span>' : ''}</div>
