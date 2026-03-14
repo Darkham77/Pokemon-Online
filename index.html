@@ -5943,6 +5943,8 @@
     function healAllPokemon() {
       state.team.forEach(p => {
         p.hp = p.maxHp;
+        p.status = null;
+        p.sleepTurns = 0;
         p.moves.forEach(m => { m.pp = m.maxPP; });
       });
 
