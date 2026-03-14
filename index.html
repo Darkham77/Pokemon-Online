@@ -2859,6 +2859,10 @@
         if (save?.save_data) {
           const s = save.save_data;
           Object.assign(state, s);
+          // Normalizar badges (si era array, convertir a contador)
+          if (Array.isArray(state.badges)) state.badges = state.badges.length;
+          else state.badges = parseInt(state.badges) || 0;
+          
           state.trainer = username;
           updateHud();
           document.getElementById('hud-name').textContent = username.toUpperCase();
@@ -4477,23 +4481,58 @@
       }).join('');
     }
 
+    function getDayCycle() {
+      const now = new Date();
+      const hour = now.getHours();
+      if (hour >= 6 && hour < 9) return 'morning';
+      if (hour >= 9 && hour < 18) return 'day';
+      if (hour >= 18 && hour < 21) return 'dusk';
+      return 'night';
+    }
+
     function updateHud() {
-      document.getElementById('badge-count').textContent = state.badges;
+      // Robust badge count check (handles legacy array format)
+      const badgeCount = (Array.isArray(state.badges) ? state.badges.length : (parseInt(state.badges) || 0));
+      
+      const cycle = getDayCycle();
+      const cycleInfo = {
+        morning: { icon: '\uD83C\uDF05', label: 'Amanecer', color: '#FFD93D' },
+        day: { icon: '\u2600\uFE0F', label: 'Día', color: '#FFEEAD' },
+        dusk: { icon: '\uD83C\uDF07', label: 'Atardecer', color: '#FF6B35' },
+        night: { icon: '\uD83C\uDF19', label: 'Noche', color: '#9b4dca' }
+      }[cycle] || { icon: '\u231A', label: 'Cargando', color: '#fff' };
+
+      const timeIcon = document.getElementById('time-icon');
+      const timeLabel = document.getElementById('time-label');
+      if (timeIcon) timeIcon.textContent = cycleInfo.icon;
+      if (timeLabel) {
+        timeLabel.textContent = cycleInfo.label;
+        timeLabel.style.color = cycleInfo.color;
+      }
+
+      const badgeEl = document.getElementById('badge-count');
+      if (badgeEl) badgeEl.textContent = badgeCount;
+      
       document.getElementById('ball-count').textContent = state.balls;
       document.getElementById('trainer-level').textContent = state.trainerLevel;
-      document.getElementById('hud-money').textContent = '₽' + state.money.toLocaleString();
+      document.getElementById('hud-money').textContent = '₽' + (state.money || 0).toLocaleString();
       const rank = getTrainerRank();
-      const expPct = Math.min(100, (state.trainerExp / rank.expNeeded) * 100);
-      const bar = document.getElementById('trainer-exp-bar');
-      if (bar) bar.style.width = expPct + '%';
+      if (rank) {
+        const expPct = Math.min(100, (state.trainerExp / rank.expNeeded) * 100);
+        const bar = document.getElementById('trainer-exp-bar');
+        if (bar) bar.style.width = expPct + '%';
+      }
     }
+
+    // Auto-update time every minute
+    setInterval(updateHud, 60000);
 
     // ===== LOCATION / WILD BATTLE =====
     function renderMaps() {
       const container = document.getElementById('map-list');
       if (!container) return;
       const cycle = getDayCycle();
-      const badgeCount = state.badges;
+      const badgeCount = (Array.isArray(state.badges) ? state.badges.length : (parseInt(state.badges) || 0));
 
       let html = '';
       
