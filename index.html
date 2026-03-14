@@ -620,24 +620,41 @@
 
     /* ===== BATTLE SCREEN ===== */
     #battle-screen {
-      min-height: 90vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none !important;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
     }
 
     #battle-screen.active {
+      display: flex !important;
+    }
+
+    #battle-screen .battle-container {
+      width: 95%;
+      max-width: 800px;
+      max-height: 98vh;
+      background: var(--darker);
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
     }
 
     #battle-screen .battle-arena {
       flex-shrink: 0;
-    }
-
-    #battle-screen .battle-log {
-      flex-shrink: 0;
-    }
-
-    #battle-screen #move-panel {
-      flex-shrink: 0;
+      min-height: 480px; /* Increased for larger sprites */
     }
 
     .battle-arena {
@@ -1618,9 +1635,9 @@
       gap: 6px;
       margin-bottom: 16px;
       padding: 4px;
-      background: rgba(255,255,255,0.04);
+      background: rgba(255, 255, 255, 0.04);
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.07);
+      border: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     .market-tab-btn {
@@ -1641,14 +1658,14 @@
     }
 
     .market-tab-btn:hover {
-      background: rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text);
     }
 
     .market-tab-btn.active {
       background: var(--purple);
       color: #fff;
-      box-shadow: 0 2px 10px rgba(199,125,255,0.4);
+      box-shadow: 0 2px 10px rgba(199, 125, 255, 0.4);
     }
 
     /* Desktop: todos en una fila */
@@ -1666,6 +1683,7 @@
         gap: 4px;
         padding: 3px;
       }
+
       .market-tab-btn {
         font-size: 6px;
         padding: 7px 6px;
@@ -2471,7 +2489,9 @@
           </div>
         </div>
         <div class="hud-items">
-          <div id="time-cycle-display" style="display:flex;align-items:center;background:rgba(255,255,255,0.05);padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);font-size:12px;gap:8px;cursor:help;" title="Ciclo Día/Noche (Argentina)">
+          <div id="time-cycle-display"
+            style="display:flex;align-items:center;background:rgba(255,255,255,0.05);padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);font-size:12px;gap:8px;cursor:help;"
+            title="Ciclo Día/Noche (Argentina)">
             <span id="time-icon">🕒</span>
             <span id="time-label">Cargando...</span>
           </div>
@@ -2498,8 +2518,8 @@
           onclick="showTab('gyms',this)"><span>🏆</span><span>Gimnasios</span></button>
         <button class="nav-btn" data-tab="market"
           onclick="showTab('market',this)"><span>🛒</span><span>Market</span></button>
-        <button class="nav-btn" data-tab="friends"
-          onclick="showTab('friends',this);renderFriends()" style="position:relative;">
+        <button class="nav-btn" data-tab="friends" onclick="showTab('friends',this);renderFriends()"
+          style="position:relative;">
           <span>👥</span>
           <span id="friends-nav-label">Amigos</span>
           <span id="friends-nav-badge" style="display:none;position:absolute;top:4px;right:4px;
@@ -2635,9 +2655,11 @@
       </div>
 
       <!-- FILTER PANEL -->
-      <div id="box-filter-panel" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;margin-bottom:14px;">
+      <div id="box-filter-panel"
+        style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;margin-bottom:14px;">
         <!-- Toggle header -->
-        <div onclick="toggleBoxFilters()" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+        <div onclick="toggleBoxFilters()"
+          style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
           <span style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);">🔍 FILTROS</span>
           <div style="display:flex;align-items:center;gap:8px;">
             <span id="box-filter-summary" style="font-size:10px;color:var(--gray);"></span>
@@ -2678,39 +2700,56 @@
               <button onclick="setBoxFilter('type','all')" data-type="all" class="box-filter-btn box-filter-active"
                 style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;cursor:pointer;background:rgba(255,255,255,0.1);color:#eee;">Todos</button>
               <button onclick="setBoxFilter('type','fire')" data-type="fire" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,59,59,0.35);border-radius:20px;cursor:pointer;background:rgba(255,59,59,0.1);color:var(--red);">🔥 Fuego</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,59,59,0.35);border-radius:20px;cursor:pointer;background:rgba(255,59,59,0.1);color:var(--red);">🔥
+                Fuego</button>
               <button onclick="setBoxFilter('type','water')" data-type="water" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(59,139,255,0.35);border-radius:20px;cursor:pointer;background:rgba(59,139,255,0.1);color:var(--blue);">💧 Agua</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(59,139,255,0.35);border-radius:20px;cursor:pointer;background:rgba(59,139,255,0.1);color:var(--blue);">💧
+                Agua</button>
               <button onclick="setBoxFilter('type','grass')" data-type="grass" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(107,203,119,0.35);border-radius:20px;cursor:pointer;background:rgba(107,203,119,0.1);color:var(--green);">🌿 Planta</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(107,203,119,0.35);border-radius:20px;cursor:pointer;background:rgba(107,203,119,0.1);color:var(--green);">🌿
+                Planta</button>
               <button onclick="setBoxFilter('type','electric')" data-type="electric" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,217,61,0.35);border-radius:20px;cursor:pointer;background:rgba(255,217,61,0.1);color:var(--yellow);">⚡ Eléctrico</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,217,61,0.35);border-radius:20px;cursor:pointer;background:rgba(255,217,61,0.1);color:var(--yellow);">⚡
+                Eléctrico</button>
               <button onclick="setBoxFilter('type','psychic')" data-type="psychic" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(199,125,255,0.35);border-radius:20px;cursor:pointer;background:rgba(199,125,255,0.1);color:var(--purple);">🔮 Psíquico</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(199,125,255,0.35);border-radius:20px;cursor:pointer;background:rgba(199,125,255,0.1);color:var(--purple);">🔮
+                Psíquico</button>
               <button onclick="setBoxFilter('type','normal')" data-type="normal" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,200,200,0.25);border-radius:20px;cursor:pointer;background:rgba(200,200,200,0.07);color:#bbb;">⬜ Normal</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,200,200,0.25);border-radius:20px;cursor:pointer;background:rgba(200,200,200,0.07);color:#bbb;">⬜
+                Normal</button>
               <button onclick="setBoxFilter('type','rock')" data-type="rock" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,160,96,0.35);border-radius:20px;cursor:pointer;background:rgba(200,160,96,0.1);color:#c8a060;">🪨 Roca</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,160,96,0.35);border-radius:20px;cursor:pointer;background:rgba(200,160,96,0.1);color:#c8a060;">🪨
+                Roca</button>
               <button onclick="setBoxFilter('type','ground')" data-type="ground" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,160,96,0.35);border-radius:20px;cursor:pointer;background:rgba(200,160,96,0.1);color:#c8a060;">🏜️ Tierra</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,160,96,0.35);border-radius:20px;cursor:pointer;background:rgba(200,160,96,0.1);color:#c8a060;">🏜️
+                Tierra</button>
               <button onclick="setBoxFilter('type','poison')" data-type="poison" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(199,125,255,0.35);border-radius:20px;cursor:pointer;background:rgba(199,125,255,0.1);color:var(--purple);">☠️ Veneno</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(199,125,255,0.35);border-radius:20px;cursor:pointer;background:rgba(199,125,255,0.1);color:var(--purple);">☠️
+                Veneno</button>
               <button onclick="setBoxFilter('type','bug')" data-type="bug" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(139,195,74,0.35);border-radius:20px;cursor:pointer;background:rgba(139,195,74,0.1);color:#8BC34A;">🐛 Bicho</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(139,195,74,0.35);border-radius:20px;cursor:pointer;background:rgba(139,195,74,0.1);color:#8BC34A;">🐛
+                Bicho</button>
               <button onclick="setBoxFilter('type','flying')" data-type="flying" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(137,207,240,0.35);border-radius:20px;cursor:pointer;background:rgba(137,207,240,0.1);color:#89CFF0;">🪶 Volador</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(137,207,240,0.35);border-radius:20px;cursor:pointer;background:rgba(137,207,240,0.1);color:#89CFF0;">🪶
+                Volador</button>
               <button onclick="setBoxFilter('type','ghost')" data-type="ghost" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(123,47,190,0.35);border-radius:20px;cursor:pointer;background:rgba(123,47,190,0.1);color:#9B59B6;">👻 Fantasma</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(123,47,190,0.35);border-radius:20px;cursor:pointer;background:rgba(123,47,190,0.1);color:#9B59B6;">👻
+                Fantasma</button>
               <button onclick="setBoxFilter('type','ice')" data-type="ice" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(125,249,255,0.35);border-radius:20px;cursor:pointer;background:rgba(125,249,255,0.1);color:#7DF9FF;">❄️ Hielo</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(125,249,255,0.35);border-radius:20px;cursor:pointer;background:rgba(125,249,255,0.1);color:#7DF9FF;">❄️
+                Hielo</button>
               <button onclick="setBoxFilter('type','dragon')" data-type="dragon" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(92,22,197,0.35);border-radius:20px;cursor:pointer;background:rgba(92,22,197,0.1);color:#8060FF;">🐉 Dragón</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(92,22,197,0.35);border-radius:20px;cursor:pointer;background:rgba(92,22,197,0.1);color:#8060FF;">🐉
+                Dragón</button>
               <button onclick="setBoxFilter('type','fighting')" data-type="fighting" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,59,59,0.35);border-radius:20px;cursor:pointer;background:rgba(255,59,59,0.1);color:var(--red);">🥊 Lucha</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,59,59,0.35);border-radius:20px;cursor:pointer;background:rgba(255,59,59,0.1);color:var(--red);">🥊
+                Lucha</button>
               <button onclick="setBoxFilter('type','dark')" data-type="dark" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(100,100,100,0.35);border-radius:20px;cursor:pointer;background:rgba(100,100,100,0.1);color:#888;">🌑 Siniestro</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(100,100,100,0.35);border-radius:20px;cursor:pointer;background:rgba(100,100,100,0.1);color:#888;">🌑
+                Siniestro</button>
               <button onclick="setBoxFilter('type','steel')" data-type="steel" class="box-filter-btn"
-                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(158,158,158,0.35);border-radius:20px;cursor:pointer;background:rgba(158,158,158,0.1);color:#9E9E9E;">⚙️ Acero</button>
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(158,158,158,0.35);border-radius:20px;cursor:pointer;background:rgba(158,158,158,0.1);color:#9E9E9E;">⚙️
+                Acero</button>
             </div>
           </div>
 
@@ -2720,31 +2759,31 @@
               <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">Nivel mínimo</div>
               <div style="display:flex;align-items:center;gap:8px;">
                 <input type="range" id="box-level-min" min="1" max="100" value="1"
-                  oninput="setBoxFilter('levelMin',+this.value)"
-                  style="flex:1;accent-color:var(--purple);">
-                <span id="box-level-min-val" style="font-size:11px;color:var(--yellow);width:26px;text-align:right;font-weight:700;">1</span>
+                  oninput="setBoxFilter('levelMin',+this.value)" style="flex:1;accent-color:var(--purple);">
+                <span id="box-level-min-val"
+                  style="font-size:11px;color:var(--yellow);width:26px;text-align:right;font-weight:700;">1</span>
               </div>
             </div>
             <div>
               <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">Nivel máximo</div>
               <div style="display:flex;align-items:center;gap:8px;">
                 <input type="range" id="box-level-max" min="1" max="100" value="100"
-                  oninput="setBoxFilter('levelMax',+this.value)"
-                  style="flex:1;accent-color:var(--purple);">
-                <span id="box-level-max-val" style="font-size:11px;color:var(--yellow);width:26px;text-align:right;font-weight:700;">100</span>
+                  oninput="setBoxFilter('levelMax',+this.value)" style="flex:1;accent-color:var(--purple);">
+                <span id="box-level-max-val"
+                  style="font-size:11px;color:var(--yellow);width:26px;text-align:right;font-weight:700;">100</span>
               </div>
             </div>
           </div>
 
           <!-- Row 4: Specific IV stat filter -->
           <div style="margin-top:12px;">
-            <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">IV específico (stat mínimo)</div>
+            <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">IV específico (stat mínimo)
+            </div>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="box-iv-filters">
               <div>
                 <div style="font-size:9px;color:#888;margin-bottom:3px;">HP</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="range" min="0" max="31" value="0" id="iv-hp"
-                    oninput="setBoxFilter('ivHP',+this.value)"
+                  <input type="range" min="0" max="31" value="0" id="iv-hp" oninput="setBoxFilter('ivHP',+this.value)"
                     style="flex:1;accent-color:#6BCB77;">
                   <span id="iv-hp-val" style="font-size:10px;color:#6BCB77;width:20px;text-align:right;">0</span>
                 </div>
@@ -2752,8 +2791,7 @@
               <div>
                 <div style="font-size:9px;color:#888;margin-bottom:3px;">Ataque</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="range" min="0" max="31" value="0" id="iv-atk"
-                    oninput="setBoxFilter('ivATK',+this.value)"
+                  <input type="range" min="0" max="31" value="0" id="iv-atk" oninput="setBoxFilter('ivATK',+this.value)"
                     style="flex:1;accent-color:#FF6B35;">
                   <span id="iv-atk-val" style="font-size:10px;color:#FF6B35;width:20px;text-align:right;">0</span>
                 </div>
@@ -2761,8 +2799,7 @@
               <div>
                 <div style="font-size:9px;color:#888;margin-bottom:3px;">Defensa</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="range" min="0" max="31" value="0" id="iv-def"
-                    oninput="setBoxFilter('ivDEF',+this.value)"
+                  <input type="range" min="0" max="31" value="0" id="iv-def" oninput="setBoxFilter('ivDEF',+this.value)"
                     style="flex:1;accent-color:#3B8BFF;">
                   <span id="iv-def-val" style="font-size:10px;color:#3B8BFF;width:20px;text-align:right;">0</span>
                 </div>
@@ -2770,8 +2807,7 @@
               <div>
                 <div style="font-size:9px;color:#888;margin-bottom:3px;">At.Esp</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="range" min="0" max="31" value="0" id="iv-spa"
-                    oninput="setBoxFilter('ivSPA',+this.value)"
+                  <input type="range" min="0" max="31" value="0" id="iv-spa" oninput="setBoxFilter('ivSPA',+this.value)"
                     style="flex:1;accent-color:#C77DFF;">
                   <span id="iv-spa-val" style="font-size:10px;color:#C77DFF;width:20px;text-align:right;">0</span>
                 </div>
@@ -2779,8 +2815,7 @@
               <div>
                 <div style="font-size:9px;color:#888;margin-bottom:3px;">Def.Esp</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="range" min="0" max="31" value="0" id="iv-spd"
-                    oninput="setBoxFilter('ivSPD',+this.value)"
+                  <input type="range" min="0" max="31" value="0" id="iv-spd" oninput="setBoxFilter('ivSPD',+this.value)"
                     style="flex:1;accent-color:#89CFF0;">
                   <span id="iv-spd-val" style="font-size:10px;color:#89CFF0;width:20px;text-align:right;">0</span>
                 </div>
@@ -2788,8 +2823,7 @@
               <div>
                 <div style="font-size:9px;color:#888;margin-bottom:3px;">Velocidad</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="range" min="0" max="31" value="0" id="iv-spe"
-                    oninput="setBoxFilter('ivSPE',+this.value)"
+                  <input type="range" min="0" max="31" value="0" id="iv-spe" oninput="setBoxFilter('ivSPE',+this.value)"
                     style="flex:1;accent-color:#FFD93D;">
                   <span id="iv-spe-val" style="font-size:10px;color:#FFD93D;width:20px;text-align:right;">0</span>
                 </div>
@@ -2838,83 +2872,86 @@
 
   <!-- BATTLE SCREEN -->
   <div id="battle-screen" class="screen">
-    <div class="battle-arena" id="battle-arena" style="position:relative;overflow:hidden;">
-      <canvas id="battle-bg-canvas"
-        style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;border-radius:18px;"></canvas>
-      <div class="battle-combatants"
-        style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px 12px;position:relative;z-index:1;min-height:300px;">
-        <!-- TOP-LEFT: Enemy HP info -->
-        <div style="display:flex;align-items:flex-start;justify-content:flex-start;align-self:start;">
-          <div class="battle-pokemon-info" style="width:100%;max-width:220px;">
-            <div class="battle-name" id="enemy-name">???</div>
-            <div class="battle-level" id="enemy-level">Nv. 1</div>
-            <div class="hp-bar-wrap" style="width:100%">
-              <div class="hp-bar hp-high" id="enemy-hp-bar" style="width:100%"></div>
+    <div class="battle-container">
+      <div class="battle-arena" id="battle-arena" style="position:relative;overflow:hidden;">
+        <canvas id="battle-bg-canvas"
+          style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;border-radius:18px;"></canvas>
+        <div class="battle-combatants"
+          style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px 12px;position:relative;z-index:1;min-height:420px;">
+          <!-- TOP-LEFT: Enemy HP info -->
+          <div style="display:flex;align-items:flex-start;justify-content:flex-start;align-self:start;">
+            <div class="battle-pokemon-info" style="width:100%;max-width:220px;">
+              <div class="battle-name" id="enemy-name">???</div>
+              <div class="battle-level" id="enemy-level">Nv. 1</div>
+              <div class="hp-bar-wrap" style="width:100%">
+                <div class="hp-bar hp-high" id="enemy-hp-bar" style="width:100%"></div>
+              </div>
+              <div class="battle-hp-text" id="enemy-hp-text">HP: ?/?</div>
             </div>
-            <div class="battle-hp-text" id="enemy-hp-text">HP: ?/?</div>
           </div>
-        </div>
 
-        <!-- TOP-RIGHT: Enemy sprite -->
-        <div style="display:flex;align-items:flex-start;justify-content:flex-end;align-self:start;">
-          <div id="enemy-sprite-wrap"
-            style="height:160px;display:flex;align-items:flex-start;justify-content:flex-end;">
-            <img id="enemy-sprite-img" src="" alt=""
-              style="height:160px;width:160px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
-            <span id="enemy-sprite-emoji" class="battle-sprite enemy-sprite"
-              style="font-size:110px;line-height:1;">❓</span>
-          </div>
-        </div>
-
-        <!-- BOTTOM-LEFT: Player sprite -->
-        <div style="display:flex;align-items:flex-end;justify-content:flex-start;align-self:end;">
-          <div id="player-sprite-wrap"
-            style="height:160px;display:flex;align-items:flex-end;justify-content:flex-start;">
-            <img id="player-sprite-img" src="" alt=""
-              style="height:160px;width:160px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
-            <span id="player-sprite-emoji" class="battle-sprite player-sprite"
-              style="font-size:110px;line-height:1;">❓</span>
-          </div>
-        </div>
-
-        <!-- BOTTOM-RIGHT: Player HP info -->
-        <div style="display:flex;align-items:flex-end;justify-content:flex-end;align-self:end;">
-          <div class="battle-pokemon-info" style="width:100%;max-width:220px;text-align:right;">
-            <div class="battle-name" id="player-battle-name">???</div>
-            <div class="battle-level" id="player-battle-level">Nv. 1</div>
-            <div class="hp-bar-wrap" style="width:100%">
-              <div class="hp-bar hp-high" id="player-hp-bar" style="width:100%"></div>
+          <!-- TOP-RIGHT: Enemy sprite -->
+          <div style="display:flex;align-items:flex-start;justify-content:flex-end;align-self:start;">
+            <div id="enemy-sprite-wrap"
+              style="height:280px;display:flex;align-items:flex-start;justify-content:flex-end;">
+              <img id="enemy-sprite-img" src="" alt=""
+                style="height:280px;width:280px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
+              <span id="enemy-sprite-emoji" class="battle-sprite enemy-sprite"
+                style="font-size:220px;line-height:1;">❓</span>
             </div>
-            <div class="battle-hp-text" id="player-hp-text">HP: ?/?</div>
+          </div>
+
+          <!-- BOTTOM-LEFT: Player sprite -->
+          <div style="display:flex;align-items:flex-end;justify-content:flex-start;align-self:end;">
+            <div id="player-sprite-wrap"
+              style="height:280px;display:flex;align-items:flex-end;justify-content:flex-start;">
+              <img id="player-sprite-img" src="" alt=""
+                style="height:280px;width:280px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
+              <span id="player-sprite-emoji" class="battle-sprite player-sprite"
+                style="font-size:220px;line-height:1;">❓</span>
+            </div>
+          </div>
+
+          <!-- BOTTOM-RIGHT: Player HP info -->
+          <div style="display:flex;align-items:flex-end;justify-content:flex-end;align-self:end;">
+            <div class="battle-pokemon-info" style="width:100%;max-width:220px;text-align:right;">
+              <div class="battle-name" id="player-battle-name">???</div>
+              <div class="battle-level" id="player-battle-level">Nv. 1</div>
+              <div class="hp-bar-wrap" style="width:100%">
+                <div class="hp-bar hp-high" id="player-hp-bar" style="width:100%"></div>
+              </div>
+              <div class="battle-hp-text" id="player-hp-text">HP: ?/?</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="battle-log" id="battle-log">
-      <div class="log-entry log-info">¡Un Pokémon salvaje apareció!</div>
-    </div>
+      <div class="battle-log" id="battle-log">
+        <div class="log-entry log-info">¡Un Pokémon salvaje apareció!</div>
+      </div>
 
-    <div id="move-panel">
-      <div class="battle-actions" id="move-buttons"></div>
-      <div class="action-row">
-        <button class="action-btn btn-fight" id="btn-fight" onclick="showMoves()">⚔️ LUCHAR</button>
-        <button class="action-btn btn-catch" id="btn-catch" onclick="tryCatch()"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'>
-  <circle cx='20' cy='20' r='19' fill='%23222' stroke='%23111' stroke-width='1.5'/>
-  <path d='M1 20 A19 19 0 0 1 39 20 Z' fill='%23e63030'/>
-  <path d='M1 20 A19 19 0 0 0 39 20 Z' fill='%23f5f5f5'/>
-  <rect x='1' y='18' width='38' height='4' fill='%23111'/>
-  <circle cx='20' cy='20' r='6' fill='%23111'/>
-  <circle cx='20' cy='20' r='4' fill='%23f5f5f5'/>
-  <circle cx='18' cy='18' r='1.2' fill='%23ffffff' opacity='0.7'/>
-</svg>" width="24" height="24" style="vertical-align:middle;margin-right:4px;"> CAPTURAR</button>
-        <button class="action-btn" id="btn-bag" onclick="showBattleBag()"
-          style="background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:var(--green);">🎒
-          MOCHILA</button>
-        <button class="action-btn" id="btn-switch" onclick="showBattleSwitch()"
-          style="background:rgba(199,125,255,0.15);border:1px solid rgba(199,125,255,0.3);color:var(--purple);">🔄
-          CAMBIAR</button>
-        <button class="action-btn btn-run" onclick="runFromBattle()">🏃 HUIR</button>
+      <div id="move-panel">
+        <div class="battle-actions" id="move-buttons"></div>
+        <div class="action-row">
+          <button class="action-btn btn-fight" id="btn-fight" onclick="showMoves()">⚔️ LUCHAR</button>
+          <button class="action-btn btn-catch" id="btn-catch" onclick="tryCatch()"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'>
+    <circle cx='20' cy='20' r='19' fill='%23222' stroke='%23111' stroke-width='1.5'/>
+    <path d='M1 20 A19 19 0 0 1 39 20 Z' fill='%23e63030'/>
+    <path d='M1 20 A19 19 0 0 0 39 20 Z' fill='%23f5f5f5'/>
+    <rect x='1' y='18' width='38' height='4' fill='%23111'/>
+    <circle cx='20' cy='20' r='6' fill='%23111'/>
+    <circle cx='20' cy='20' r='4' fill='%23f5f5f5'/>
+    <circle cx='18' cy='18' r='1.2' fill='%23ffffff' opacity='0.7'/>
+  </svg>" width="24" height="24" style="vertical-align:middle;margin-right:4px;"> CAPTURAR</button>
+          <button class="action-btn" id="btn-bag" onclick="showBattleBag()"
+            style="background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:var(--green);">🎒
+            MOCHILA</button>
+          <button class="action-btn" id="btn-switch" onclick="showBattleSwitch()"
+            style="background:rgba(199,125,255,0.15);border:1px solid rgba(199,125,255,0.3);color:var(--purple);">🔄
+            CAMBIAR</button>
+          <button class="action-btn" id="btn-run" onclick="runFromBattle()"
+            style="background:rgba(255,255,255,0.05);color:var(--gray);">🏃 HUIR</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3015,7 +3052,7 @@
           // Normalizar badges (si era array, convertir a contador)
           if (Array.isArray(state.badges)) state.badges = state.badges.length;
           else state.badges = parseInt(state.badges) || 0;
-          
+
           state.trainer = username;
           updateHud();
           document.getElementById('hud-name').textContent = username.toUpperCase();
@@ -3764,87 +3801,141 @@
     }
 
     const FIRE_RED_MAPS = [
-      { id: 'route1', name: 'Ruta 1', icon: '🌾', badges: 0, desc: 'Pueblo Paleta - Ciudad Verde.', 
+      {
+        id: 'route1', name: 'Ruta 1', icon: '🌾', badges: 0, desc: 'Pueblo Paleta - Ciudad Verde.',
         wild: { morning: ['pidgey', 'rattata'], day: ['pidgey', 'rattata'], dusk: ['rattata', 'pidgey'], night: ['rattata', 'oddish'] },
-        rates: { morning: [50, 50], day: [50, 50], dusk: [70, 30], night: [90, 10] }, lv: [2, 5] },
-      { id: 'route2', name: 'Ruta 2', icon: '🌿', badges: 0, desc: 'Ciudad Verde - Ciudad Plateada.', 
+        rates: { morning: [50, 50], day: [50, 50], dusk: [70, 30], night: [90, 10] }, lv: [2, 5]
+      },
+      {
+        id: 'route2', name: 'Ruta 2', icon: '🌿', badges: 0, desc: 'Ciudad Verde - Ciudad Plateada.',
         wild: { morning: ['pidgey', 'rattata', 'caterpie', 'weedle'], day: ['pidgey', 'rattata', 'caterpie', 'weedle'], dusk: ['rattata', 'zubat', 'nidoran_f'], night: ['rattata', 'zubat', 'nidoran_m'] },
-        rates: { morning: [40, 40, 10, 10], day: [40, 40, 10, 10], dusk: [40, 40, 20], night: [40, 40, 20] }, lv: [3, 5] },
-      { id: 'forest', name: 'Bosque Viridian', icon: '🌲', badges: 0, desc: 'Hogar de bichos y el raro Pikachu.', 
+        rates: { morning: [40, 40, 10, 10], day: [40, 40, 10, 10], dusk: [40, 40, 20], night: [40, 40, 20] }, lv: [3, 5]
+      },
+      {
+        id: 'forest', name: 'Bosque Viridian', icon: '🌲', badges: 0, desc: 'Hogar de bichos y el raro Pikachu.',
         wild: { morning: ['caterpie', 'metapod', 'weedle', 'kakuna', 'pikachu'], day: ['caterpie', 'metapod', 'weedle', 'kakuna', 'pikachu'], dusk: ['weedle', 'kakuna', 'venonat'], night: ['zubat', 'venonat', 'oddish'] },
-        rates: { morning: [35, 10, 35, 10, 10], day: [35, 10, 35, 10, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [3, 6] },
-      { id: 'route22', name: 'Ruta 22', icon: '🌾', badges: 0, desc: 'Camino a la Liga Pokémon.', 
+        rates: { morning: [35, 10, 35, 10, 10], day: [35, 10, 35, 10, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [3, 6]
+      },
+      {
+        id: 'route22', name: 'Ruta 22', icon: '🌾', badges: 0, desc: 'Camino a la Liga Pokémon.',
         wild: { morning: ['rattata', 'spearow', 'mankey', 'nidoran_m', 'nidoran_f'], day: ['rattata', 'spearow', 'mankey', 'nidoran_m', 'nidoran_f'], dusk: ['rattata', 'mankey'], night: ['rattata', 'mankey'] },
-        rates: { morning: [30, 30, 10, 15, 15], day: [30, 30, 10, 15, 15], dusk: [50, 50], night: [70, 30] }, lv: [3, 5] },
-      { id: 'route3', name: 'Ruta 3', icon: '⛰️', badges: 1, desc: 'Hacia el Mt. Moon.', 
+        rates: { morning: [30, 30, 10, 15, 15], day: [30, 30, 10, 15, 15], dusk: [50, 50], night: [70, 30] }, lv: [3, 5]
+      },
+      {
+        id: 'route3', name: 'Ruta 3', icon: '⛰️', badges: 1, desc: 'Hacia el Mt. Moon.',
         wild: { morning: ['pidgey', 'spearow', 'jigglypuff', 'sandshrew', 'mankey'], day: ['pidgey', 'spearow', 'jigglypuff', 'sandshrew', 'mankey'], dusk: ['zubat', 'rattata', 'sandshrew'], night: ['zubat', 'rattata', 'sandshrew'] },
-        rates: { morning: [30, 30, 10, 20, 10], day: [30, 30, 10, 20, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [6, 12] },
-      { id: 'mt_moon', name: 'Mt. Moon', icon: '🌋', badges: 1, desc: 'Cueva de fósiles y Clefairy.', 
+        rates: { morning: [30, 30, 10, 20, 10], day: [30, 30, 10, 20, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [6, 12]
+      },
+      {
+        id: 'mt_moon', name: 'Mt. Moon', icon: '🌋', badges: 1, desc: 'Cueva de fósiles y Clefairy.',
         wild: { morning: ['zubat', 'geodude', 'paras', 'clefairy'], day: ['zubat', 'geodude', 'paras', 'clefairy'], dusk: ['zubat', 'paras'], night: ['zubat', 'geodude', 'paras', 'clefairy'] },
-        rates: { morning: [60, 25, 10, 5], day: [60, 25, 10, 5], dusk: [70, 30], night: [50, 30, 15, 5] }, lv: [8, 12] },
-      { id: 'route4', name: 'Ruta 4', icon: '🍃', badges: 1, desc: 'Salida de la cueva.', 
+        rates: { morning: [60, 25, 10, 5], day: [60, 25, 10, 5], dusk: [70, 30], night: [50, 30, 15, 5] }, lv: [8, 12]
+      },
+      {
+        id: 'route4', name: 'Ruta 4', icon: '🍃', badges: 1, desc: 'Salida de la cueva.',
         wild: { morning: ['rattata', 'spearow', 'ekans', 'sandshrew'], day: ['rattata', 'spearow', 'ekans', 'sandshrew'], dusk: ['rattata', 'ekans'], night: ['rattata', 'sandshrew'] },
-        rates: { morning: [30, 30, 20, 20], day: [30, 30, 20, 20], dusk: [60, 40], night: [60, 40] }, lv: [10, 14] },
-      { id: 'route24', name: 'Ruta 24', icon: '🌉', badges: 2, desc: 'Puente Pepita.', 
+        rates: { morning: [30, 30, 20, 20], day: [30, 30, 20, 20], dusk: [60, 40], night: [60, 40] }, lv: [10, 14]
+      },
+      {
+        id: 'route24', name: 'Ruta 24', icon: '🌉', badges: 2, desc: 'Puente Pepita.',
         wild: { morning: ['pidgey', 'oddish', 'bellsprout', 'abra', 'venonat'], day: ['pidgey', 'oddish', 'bellsprout', 'abra', 'venonat'], dusk: ['oddish', 'venonat', 'abra'], night: ['oddish', 'meowth', 'abra'] },
-        rates: { morning: [25, 25, 25, 15, 10], day: [25, 25, 25, 15, 10], dusk: [40, 40, 20], night: [40, 40, 20] }, lv: [12, 16] },
-      { id: 'route25', name: 'Ruta 25', icon: '🏠', badges: 2, desc: 'Cerca de la casa de Bill.', 
+        rates: { morning: [25, 25, 25, 15, 10], day: [25, 25, 25, 15, 10], dusk: [40, 40, 20], night: [40, 40, 20] }, lv: [12, 16]
+      },
+      {
+        id: 'route25', name: 'Ruta 25', icon: '🏠', badges: 2, desc: 'Cerca de la casa de Bill.',
         wild: { morning: ['pidgey', 'oddish', 'bellsprout', 'abra', 'metapod', 'kakuna'], day: ['pidgey', 'oddish', 'bellsprout', 'abra', 'metapod', 'kakuna'], dusk: ['abra', 'venonat'], night: ['abra', 'meowth'] },
-        rates: { morning: [20, 20, 20, 10, 15, 15], day: [20, 20, 20, 10, 15, 15], dusk: [50, 50], night: [50, 50] }, lv: [12, 16] },
-      { id: 'route5', name: 'Ruta 5', icon: '🌾', badges: 2, desc: 'Hacia Ciudad Azafrán.', 
+        rates: { morning: [20, 20, 20, 10, 15, 15], day: [20, 20, 20, 10, 15, 15], dusk: [50, 50], night: [50, 50] }, lv: [12, 16]
+      },
+      {
+        id: 'route5', name: 'Ruta 5', icon: '🌾', badges: 2, desc: 'Hacia Ciudad Azafrán.',
         wild: { morning: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'abra'], day: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'abra'], dusk: ['meowth', 'abra'], night: ['meowth', 'abra'] },
-        rates: { morning: [30, 25, 15, 15, 15], day: [30, 25, 15, 15, 15], dusk: [60, 40], night: [70, 30] }, lv: [13, 16] },
-      { id: 'route6', name: 'Ruta 6', icon: '🌾', badges: 2, desc: 'Conecta Celeste con Carmín.', 
+        rates: { morning: [30, 25, 15, 15, 15], day: [30, 25, 15, 15, 15], dusk: [60, 40], night: [70, 30] }, lv: [13, 16]
+      },
+      {
+        id: 'route6', name: 'Ruta 6', icon: '🌾', badges: 2, desc: 'Conecta Celeste con Carmín.',
         wild: { morning: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'psyduck', 'mankey'], day: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'psyduck', 'mankey'], dusk: ['meowth', 'psyduck'], night: ['meowth', 'psyduck'] },
-        rates: { morning: [20, 20, 15, 15, 15, 15], day: [20, 20, 15, 15, 15, 15], dusk: [50, 50], night: [60, 40] }, lv: [13, 16] },
-      { id: 'route11', name: 'Ruta 11', icon: '🌾', badges: 3, desc: 'Al este de Carmín.', 
+        rates: { morning: [20, 20, 15, 15, 15, 15], day: [20, 20, 15, 15, 15, 15], dusk: [50, 50], night: [60, 40] }, lv: [13, 16]
+      },
+      {
+        id: 'route11', name: 'Ruta 11', icon: '🌾', badges: 3, desc: 'Al este de Carmín.',
         wild: { morning: ['spearow', 'ekans', 'sandshrew', 'drowzee'], day: ['spearow', 'ekans', 'sandshrew', 'drowzee'], dusk: ['drowzee', 'spearow'], night: ['drowzee', 'hypno'] },
-        rates: { morning: [25, 25, 25, 25], day: [25, 25, 25, 25], dusk: [70, 30], night: [90, 10] }, lv: [15, 19] },
-      { id: 'diglett_cave', name: 'Cueva Diglett', icon: '🕳️', badges: 2, desc: 'Atajo bajo tierra.', 
+        rates: { morning: [25, 25, 25, 25], day: [25, 25, 25, 25], dusk: [70, 30], night: [90, 10] }, lv: [15, 19]
+      },
+      {
+        id: 'diglett_cave', name: 'Cueva Diglett', icon: '🕳️', badges: 2, desc: 'Atajo bajo tierra.',
         wild: { morning: ['diglett', 'dugtrio'], day: ['diglett', 'dugtrio'], dusk: ['diglett'], night: ['diglett', 'dugtrio'] },
-        rates: { morning: [95, 5], day: [95, 5], dusk: [100], night: [98, 2] }, lv: [15, 31] },
-      { id: 'route9', name: 'Ruta 9', icon: '⛰️', badges: 3, desc: 'Hacia el Túnel Roca.', 
+        rates: { morning: [95, 5], day: [95, 5], dusk: [100], night: [98, 2] }, lv: [15, 31]
+      },
+      {
+        id: 'route9', name: 'Ruta 9', icon: '⛰️', badges: 3, desc: 'Hacia el Túnel Roca.',
         wild: { morning: ['spearow', 'rattata', 'ekans', 'sandshrew', 'nidoran_m', 'nidoran_f'], day: ['spearow', 'rattata', 'ekans', 'sandshrew', 'nidoran_m', 'nidoran_f'], dusk: ['zubat', 'rattata'], night: ['zubat', 'rattata'] },
-        rates: { morning: [20, 20, 15, 15, 15, 15], day: [20, 20, 15, 15, 15, 15], dusk: [60, 40], night: [70, 30] }, lv: [14, 18] },
-      { id: 'rock_tunnel', name: 'Túnel Roca', icon: '🔦', badges: 3, desc: 'Oscuridad total.', 
+        rates: { morning: [20, 20, 15, 15, 15, 15], day: [20, 20, 15, 15, 15, 15], dusk: [60, 40], night: [70, 30] }, lv: [14, 18]
+      },
+      {
+        id: 'rock_tunnel', name: 'Túnel Roca', icon: '🔦', badges: 3, desc: 'Oscuridad total.',
         wild: { morning: ['zubat', 'geodude', 'machop', 'onix'], day: ['zubat', 'geodude', 'machop', 'onix'], dusk: ['zubat', 'geodude'], night: ['zubat', 'geodude', 'machop', 'onix'] },
-        rates: { morning: [50, 40, 5, 5], day: [50, 40, 5, 5], dusk: [60, 40], night: [50, 35, 10, 5] }, lv: [16, 21] },
-      { id: 'route10', name: 'Ruta 10', icon: '⚡', badges: 3, desc: 'Cerca de la Central Energía.', 
+        rates: { morning: [50, 40, 5, 5], day: [50, 40, 5, 5], dusk: [60, 40], night: [50, 35, 10, 5] }, lv: [16, 21]
+      },
+      {
+        id: 'route10', name: 'Ruta 10', icon: '⚡', badges: 3, desc: 'Cerca de la Central Energía.',
         wild: { morning: ['spearow', 'ekans', 'sandshrew', 'voltorb', 'magnemite'], day: ['spearow', 'ekans', 'sandshrew', 'voltorb', 'magnemite'], dusk: ['magnemite', 'voltorb'], night: ['magnemite', 'voltorb'] },
-        rates: { morning: [20, 20, 20, 20, 20], day: [20, 20, 20, 20, 20], dusk: [50, 50], night: [60, 40] }, lv: [16, 20] },
-      { id: 'power_plant', name: 'Central Energía', icon: '⚡', badges: 5, desc: 'Hogar del legendario Zapdos.', 
+        rates: { morning: [20, 20, 20, 20, 20], day: [20, 20, 20, 20, 20], dusk: [50, 50], night: [60, 40] }, lv: [16, 20]
+      },
+      {
+        id: 'power_plant', name: 'Central Energía', icon: '⚡', badges: 5, desc: 'Hogar del legendario Zapdos.',
         wild: { morning: ['pikachu', 'magnemite', 'magneton', 'voltorb', 'electrode', 'electabuzz'], day: ['pikachu', 'magnemite', 'magneton', 'voltorb', 'electrode', 'electabuzz'], dusk: ['magnemite', 'voltorb'], night: ['magneton', 'electrode', 'electabuzz'] },
-        rates: { morning: [25, 25, 10, 20, 10, 10], day: [25, 25, 10, 20, 10, 10], dusk: [50, 50], night: [40, 40, 20] }, lv: [30, 35] },
-      { id: 'route8', name: 'Ruta 8', icon: '🌾', badges: 4, desc: 'Conecta Lavanda con Azafrán.', 
+        rates: { morning: [25, 25, 10, 20, 10, 10], day: [25, 25, 10, 20, 10, 10], dusk: [50, 50], night: [40, 40, 20] }, lv: [30, 35]
+      },
+      {
+        id: 'route8', name: 'Ruta 8', icon: '🌾', badges: 4, desc: 'Conecta Lavanda con Azafrán.',
         wild: { morning: ['pidgey', 'meowth', 'ekans', 'sandshrew', 'growlithe', 'vulpix', 'abra'], day: ['pidgey', 'meowth', 'ekans', 'sandshrew', 'growlithe', 'vulpix', 'abra'], dusk: ['meowth', 'abra', 'kadabra'], night: ['meowth', 'abra', 'kadabra'] },
-        rates: { morning: [20, 20, 15, 15, 10, 10, 10], day: [20, 20, 15, 15, 10, 10, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [18, 22] },
-      { id: 'pokemon_tower', name: 'Torre Pokémon', icon: '👻', badges: 4, desc: 'Descanso de los Pokémon.', 
+        rates: { morning: [20, 20, 15, 15, 10, 10, 10], day: [20, 20, 15, 15, 10, 10, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [18, 22]
+      },
+      {
+        id: 'pokemon_tower', name: 'Torre Pokémon', icon: '👻', badges: 4, desc: 'Descanso de los Pokémon.',
         wild: { morning: ['gastly'], day: ['gastly'], dusk: ['gastly', 'haunter'], night: ['gastly', 'haunter', 'cubone'] },
-        rates: { morning: [100], day: [100], dusk: [80, 20], night: [70, 20, 10] }, lv: [20, 25] },
-      { id: 'route12', name: 'Ruta 12', icon: '🎣', badges: 4, desc: 'Vía marítima.', 
+        rates: { morning: [100], day: [100], dusk: [80, 20], night: [70, 20, 10] }, lv: [20, 25]
+      },
+      {
+        id: 'route12', name: 'Ruta 12', icon: '🎣', badges: 4, desc: 'Vía marítima.',
         wild: { morning: ['pidgey', 'oddish', 'bellsprout', 'venonat', 'weepinbell', 'gloom', 'snorlax'], day: ['pidgey', 'oddish', 'bellsprout', 'venonat', 'weepinbell', 'gloom', 'snorlax'], dusk: ['venonat', 'zubat'], night: ['venonat', 'zubat', 'golbat'] },
-        rates: { morning: [20, 20, 20, 15, 10, 10, 5], day: [20, 20, 20, 15, 10, 10, 5], dusk: [60, 40], night: [50, 40, 10] }, lv: [22, 26] },
-      { id: 'route13', name: 'Ruta 13', icon: '🌾', badges: 5, desc: 'Laberinto de vallas.', 
+        rates: { morning: [20, 20, 20, 15, 10, 10, 5], day: [20, 20, 20, 15, 10, 10, 5], dusk: [60, 40], night: [50, 40, 10] }, lv: [22, 26]
+      },
+      {
+        id: 'route13', name: 'Ruta 13', icon: '🌾', badges: 5, desc: 'Laberinto de vallas.',
         wild: { morning: ['pidgey', 'pidgeotto', 'oddish', 'bellsprout', 'venonat', 'ditto'], day: ['pidgey', 'pidgeotto', 'oddish', 'bellsprout', 'venonat', 'ditto'], dusk: ['venonat', 'ditto'], night: ['venonat', 'ditto'] },
-        rates: { morning: [20, 10, 20, 20, 20, 10], day: [20, 10, 20, 20, 20, 10], dusk: [60, 40], night: [70, 30] }, lv: [24, 28] },
-      { id: 'safari_zone', name: 'Zona Safari', icon: '🦒', badges: 5, desc: 'Pokémon raros de todo el mundo.', 
+        rates: { morning: [20, 10, 20, 20, 20, 10], day: [20, 10, 20, 20, 20, 10], dusk: [60, 40], night: [70, 30] }, lv: [24, 28]
+      },
+      {
+        id: 'safari_zone', name: 'Zona Safari', icon: '🦒', badges: 5, desc: 'Pokémon raros de todo el mundo.',
         wild: { morning: ['nidoran_f', 'nidoran_m', 'parasect', 'venomoth', 'scyther', 'pinsir', 'chansey', 'tauros', 'kangaskhan', 'exeggcute', 'rhyhorn'], day: ['nidoran_f', 'nidoran_m', 'parasect', 'venomoth', 'scyther', 'pinsir', 'chansey', 'tauros', 'kangaskhan', 'exeggcute', 'rhyhorn'], dusk: ['venomoth', 'parasect'], night: ['venomoth', 'parasect'] },
-        rates: { morning: [10, 10, 10, 10, 5, 5, 5, 5, 5, 20, 15], day: [10, 10, 10, 10, 5, 5, 5, 5, 5, 20, 15], dusk: [50, 50], night: [60, 40] }, lv: [25, 35] },
-      { id: 'seafoam_islands', name: 'Islas Espuma', icon: '❄️', badges: 6, desc: 'Cueva de hielo y Articuno.', 
+        rates: { morning: [10, 10, 10, 10, 5, 5, 5, 5, 5, 20, 15], day: [10, 10, 10, 10, 5, 5, 5, 5, 5, 20, 15], dusk: [50, 50], night: [60, 40] }, lv: [25, 35]
+      },
+      {
+        id: 'seafoam_islands', name: 'Islas Espuma', icon: '❄️', badges: 6, desc: 'Cueva de hielo y Articuno.',
         wild: { morning: ['seel', 'dewgong', 'shellder', 'horsea', 'krabby', 'golduck', 'slowbro', 'jynx'], day: ['seel', 'dewgong', 'shellder', 'horsea', 'krabby', 'golduck', 'slowbro', 'jynx'], dusk: ['seel', 'shellder'], night: ['seel', 'dewgong', 'staryu'] },
-        rates: { morning: [20, 10, 15, 15, 15, 10, 10, 5], day: [20, 10, 15, 15, 15, 10, 10, 5], dusk: [60, 40], night: [50, 30, 20] }, lv: [30, 40] },
-      { id: 'mansion', name: 'Mansión Pokémon', icon: '🏚️', badges: 7, desc: 'Laboratorio quemado.', 
+        rates: { morning: [20, 10, 15, 15, 15, 10, 10, 5], day: [20, 10, 15, 15, 15, 10, 10, 5], dusk: [60, 40], night: [50, 30, 20] }, lv: [30, 40]
+      },
+      {
+        id: 'mansion', name: 'Mansión Pokémon', icon: '🏚️', badges: 7, desc: 'Laboratorio quemado.',
         wild: { morning: ['koffing', 'weezing', 'grimer', 'muk', 'ponyta', 'rapidash', 'magmar', 'vulpix', 'growlithe'], day: ['koffing', 'weezing', 'grimer', 'muk', 'ponyta', 'rapidash', 'magmar', 'vulpix', 'growlithe'], dusk: ['koffing', 'grimer', 'magmar'], night: ['weezing', 'muk', 'magmar'] },
-        rates: { morning: [15, 10, 15, 10, 15, 10, 5, 10, 10], day: [15, 10, 15, 10, 15, 10, 5, 10, 10], dusk: [40, 40, 20], night: [40, 40, 20] }, lv: [32, 38] },
-      { id: 'route23', name: 'Ruta 23', icon: '⛰️', badges: 8, desc: 'Acceso a Calle Victoria.', 
+        rates: { morning: [15, 10, 15, 10, 15, 10, 5, 10, 10], day: [15, 10, 15, 10, 15, 10, 5, 10, 10], dusk: [40, 40, 20], night: [40, 40, 20] }, lv: [32, 38]
+      },
+      {
+        id: 'route23', name: 'Ruta 23', icon: '⛰️', badges: 8, desc: 'Acceso a Calle Victoria.',
         wild: { morning: ['spearow', 'fearow', 'ekans', 'arbok', 'sandshrew', 'sandslash', 'mankey', 'primeape'], day: ['spearow', 'fearow', 'ekans', 'arbok', 'sandshrew', 'sandslash', 'mankey', 'primeape'], dusk: ['fearow', 'arbok'], night: ['sandslash', 'primeape'] },
-        rates: { morning: [15, 10, 15, 10, 15, 10, 15, 10], day: [15, 10, 15, 10, 15, 10, 15, 10], dusk: [50, 50], night: [50, 50] }, lv: [40, 45] },
-      { id: 'victory_road', name: 'Calle Victoria', icon: '⛰️', badges: 8, desc: 'El desafío final.', 
+        rates: { morning: [15, 10, 15, 10, 15, 10, 15, 10], day: [15, 10, 15, 10, 15, 10, 15, 10], dusk: [50, 50], night: [50, 50] }, lv: [40, 45]
+      },
+      {
+        id: 'victory_road', name: 'Calle Victoria', icon: '⛰️', badges: 8, desc: 'El desafío final.',
         wild: { morning: ['machop', 'machoke', 'geodude', 'graveler', 'onix', 'marowak', 'hitmonlee', 'hitmonchan'], day: ['machop', 'machoke', 'geodude', 'graveler', 'onix', 'marowak', 'hitmonlee', 'hitmonchan'], dusk: ['machoke', 'graveler', 'onix'], night: ['machop', 'machoke', 'geodude', 'graveler', 'onix', 'marowak', 'hitmonlee', 'hitmonchan'] },
-        rates: { morning: [15, 15, 15, 15, 10, 10, 10, 10], day: [15, 15, 15, 15, 10, 10, 10, 10], dusk: [40, 30, 30], night: [15, 15, 15, 15, 10, 10, 10, 10] }, lv: [42, 50] },
-      { id: 'cerulean_cave', name: 'Cueva Celeste', icon: '✨', badges: 8, desc: 'Lugar de descanso de Mewtwo.', 
+        rates: { morning: [15, 15, 15, 15, 10, 10, 10, 10], day: [15, 15, 15, 15, 10, 10, 10, 10], dusk: [40, 30, 30], night: [15, 15, 15, 15, 10, 10, 10, 10] }, lv: [42, 50]
+      },
+      {
+        id: 'cerulean_cave', name: 'Cueva Celeste', icon: '✨', badges: 8, desc: 'Lugar de descanso de Mewtwo.',
         wild: { morning: ['kadabra', 'rhydon', 'golduck', 'magneton', 'parasect', 'venomoth', 'dragonair', 'chansey'], day: ['kadabra', 'rhydon', 'golduck', 'magneton', 'parasect', 'venomoth', 'dragonair', 'chansey'], dusk: ['kadabra', 'magneton'], night: ['kadabra', 'magneton', 'dragonite'] },
-        rates: { morning: [15, 15, 15, 15, 15, 15, 5, 5], day: [15, 15, 15, 15, 15, 15, 5, 5], dusk: [50, 50], night: [40, 40, 20] }, lv: [50, 65] }
+        rates: { morning: [15, 15, 15, 15, 15, 15, 5, 5], day: [15, 15, 15, 15, 15, 15, 5, 5], dusk: [50, 50], night: [40, 40, 20] }, lv: [50, 65]
+      }
     ];
 
     const GYMS = [
@@ -4300,7 +4391,7 @@
       const nature = NATURES[Math.floor(Math.random() * NATURES.length)];
       const abilityList = ABILITIES[id] || ['Espesura'];
       const ability = abilityList[Math.floor(Math.random() * abilityList.length)];
-      
+
       const p = {
         id, name: base.name, emoji: base.emoji, type: base.type,
         level, exp: 0, expNeeded: getExpNeeded(level),
@@ -4308,7 +4399,7 @@
         moves: getMovesAtLevel(id, level),
         status: null, sleepTurns: 0, friendship: 70
       };
-      
+
       recalcPokemonStats(p);
       p.hp = p.maxHp;
       return p;
@@ -4317,7 +4408,7 @@
     function recalcPokemonStats(p) {
       const base = POKEMON_DB[p.id];
       const natureData = NATURE_DATA[p.nature] || { up: null, down: null };
-      
+
       const getStat = (baseVal, iv, level, statName) => {
         let val = Math.floor((baseVal * 2 + iv) * level / 100 + 5);
         if (natureData.up === statName) val = Math.floor(val * 1.1);
@@ -4345,7 +4436,7 @@
 
       // Check evolution
       if (typeof checkEvolution === 'function') checkEvolution(p);
-      
+
       // Learn moves
       const base = POKEMON_DB[p.id];
       if (base.learnset) {
@@ -4384,9 +4475,11 @@
       // Al abrir la tab de amigos, ocultar el badge (el usuario ya lo está viendo)
       if (tab === 'friends') {
         const badge = document.getElementById('friends-nav-badge');
-        if (badge) badge.style.display = 'none';
+        if (badge) {
+          badge.style.display = 'none';
+          badge.textContent = '';
+        }
       } else {
-        // Al cambiar a otra tab, refrescar badge para ver si hay algo nuevo
         refreshFriendsBadge();
       }
     }
@@ -4734,17 +4827,17 @@
     function renderGyms() {
       const list = document.getElementById('gym-list');
       const TYPE_ICON = {
-        rock:'🪨', water:'💧', electric:'⚡', grass:'🌿',
-        poison:'☠️', psychic:'🔮', fire:'🔥', ground:'🏜️',
-        normal:'⬜', ice:'❄️', fighting:'🥊', flying:'🪶',
-        ghost:'👻', dragon:'🐉', dark:'🌑', steel:'⚙️', bug:'🐛'
+        rock: '🪨', water: '💧', electric: '⚡', grass: '🌿',
+        poison: '☠️', psychic: '🔮', fire: '🔥', ground: '🏜️',
+        normal: '⬜', ice: '❄️', fighting: '🥊', flying: '🪶',
+        ghost: '👻', dragon: '🐉', dark: '🌑', steel: '⚙️', bug: '🐛'
       };
 
       list.innerHTML = GYMS.map(gym => {
-        const defeated  = state.defeatedGyms?.includes(gym.id);
-        const locked    = state.badges < gym.badgesRequired;
+        const defeated = state.defeatedGyms?.includes(gym.id);
+        const locked = state.badges < gym.badgesRequired;
         const typeColor = gym.typeColor || '#888';
-        const onclick   = (!defeated && !locked) ? `challengeGym('${gym.id}')` : '';
+        const onclick = (!defeated && !locked) ? `challengeGym('${gym.id}')` : '';
 
         // Pokémon team preview (sprites from PokeAPI)
         const teamHtml = gym.pokemon.map(id => {
@@ -4759,14 +4852,14 @@
         }).join('');
 
         // Ace = last Pokémon in array
-        const aceIdx   = gym.pokemon.length - 1;
+        const aceIdx = gym.pokemon.length - 1;
         const aceLevel = gym.levels[aceIdx];
 
         // State badge
         const stateBadge = defeated
           ? `<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.4);font-size:10px;color:var(--green);font-weight:700;">✅ Completado — ${gym.badge} obtenida</div>`
           : locked
-            ? `<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.2);font-size:10px;color:var(--red);">🔒 Requiere ${gym.badgesRequired} medalla${gym.badgesRequired!==1?'s':''}</div>`
+            ? `<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.2);font-size:10px;color:var(--red);">🔒 Requiere ${gym.badgesRequired} medalla${gym.badgesRequired !== 1 ? 's' : ''}</div>`
             : `<button onclick="${onclick}" style="padding:8px 20px;border:none;border-radius:20px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:7px;
                 background:linear-gradient(135deg,${typeColor},${typeColor}99);color:#fff;font-weight:900;
                 box-shadow:0 2px 12px ${typeColor}55;transition:all .2s;"
@@ -4776,7 +4869,7 @@
 
         return `
           <div style="background:var(--card);border-radius:20px;overflow:hidden;
-            border:2px solid ${defeated ? 'rgba(107,203,119,0.35)' : locked ? 'rgba(255,255,255,0.05)' : typeColor+'44'};
+            border:2px solid ${defeated ? 'rgba(107,203,119,0.35)' : locked ? 'rgba(255,255,255,0.05)' : typeColor + '44'};
             transition:all .3s;opacity:${locked ? '0.5' : '1'};"
             ${!defeated && !locked ? `onmouseover="this.style.boxShadow='0 4px 24px ${typeColor}33'" onmouseout="this.style.boxShadow='none'"` : ''}>
 
@@ -4795,7 +4888,7 @@
                   <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Líder: <span style="color:#eee;">${gym.leader}</span></div>
                   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
                     <span style="font-size:11px;background:${typeColor}22;color:${typeColor};padding:3px 8px;border-radius:10px;font-weight:700;border:1px solid ${typeColor}44;">
-                      ${TYPE_ICON[gym.type]} ${gym.type.charAt(0).toUpperCase()+gym.type.slice(1)}
+                      ${TYPE_ICON[gym.type]} ${gym.type.charAt(0).toUpperCase() + gym.type.slice(1)}
                     </span>
                     <span style="font-size:11px;color:var(--yellow);">${gym.badge} ${gym.badgeName}</span>
                     <span style="font-size:10px;color:var(--gray);">As: Nv.${aceLevel}</span>
@@ -4807,7 +4900,7 @@
 
                 <!-- Right: gym image -->
                 <div style="flex-shrink:0;width:96px;text-align:center;">
-                  <img src="GIMNASIO.png" alt="${gym.name}"
+                  <img src="${gym.sprite}" alt="${gym.name}"
                     style="height:96px;width:auto;image-rendering:pixelated;filter:drop-shadow(0 2px 8px ${typeColor}66);"
                     onerror="this.outerHTML='<div style=\'font-size:52px;line-height:1;\'>${gym.badge}</div>'">
                 </div>
@@ -4840,7 +4933,7 @@
     function updateHud() {
       // Robust badge count check (handles legacy array format)
       const badgeCount = (Array.isArray(state.badges) ? state.badges.length : (parseInt(state.badges) || 0));
-      
+
       const cycle = getDayCycle();
       const cycleInfo = {
         morning: { icon: '\uD83C\uDF05', label: 'Amanecer', color: '#FFD93D' },
@@ -4859,7 +4952,7 @@
 
       const badgeEl = document.getElementById('badge-count');
       if (badgeEl) badgeEl.textContent = badgeCount;
-      
+
       document.getElementById('ball-count').textContent = state.balls;
       document.getElementById('trainer-level').textContent = state.trainerLevel;
       document.getElementById('hud-money').textContent = '₽' + (state.money || 0).toLocaleString();
@@ -4882,7 +4975,7 @@
       const badgeCount = (Array.isArray(state.badges) ? state.badges.length : (parseInt(state.badges) || 0));
 
       let html = '';
-      
+
       // Siempre añadir el Centro Pokémon primero
       html += `<div class="location-card location-card-center" onclick="openPokemonCenter()"
             style="grid-column: 1 / -1; border-color:rgba(255,100,150,0.4);background:linear-gradient(135deg,#1a1a3e,#2a1a2e);margin-bottom:16px;">
@@ -4899,10 +4992,10 @@
         // Build time slots preview — show which Pokémon are exclusive to each slot
         const allSlots = ['morning', 'day', 'dusk', 'night'];
         const slotMeta = {
-          morning: { icon: '🌅', label: 'Alba',  color: '#FFD93D' },
-          day:     { icon: '☀️',  label: 'Día',   color: '#FFEEAD' },
-          dusk:    { icon: '🌆', label: 'Crepúsculo', color: '#FF9632' },
-          night:   { icon: '🌙', label: 'Noche', color: '#9b4dca'  },
+          morning: { icon: '🌅', label: 'Alba', color: '#FFD93D' },
+          day: { icon: '☀️', label: 'Día', color: '#FFEEAD' },
+          dusk: { icon: '🌆', label: 'Crepúsculo', color: '#FF9632' },
+          night: { icon: '🌙', label: 'Noche', color: '#9b4dca' },
         };
 
         // Pokémon exclusive to each slot (not in day pool)
@@ -4917,9 +5010,9 @@
 
         // Helper: render a small Pokémon sprite with emoji fallback
         const spriteImg = (id) => {
-          const num  = POKEMON_SPRITE_IDS[id];
+          const num = POKEMON_SPRITE_IDS[id];
           const pData = POKEMON_DB[id];
-          const name  = pData?.name || id;
+          const name = pData?.name || id;
           const emoji = pData?.emoji || '❓';
           if (!num) return `<span title="${name}" style="font-size:18px;line-height:1;">${emoji}</span>`;
           return `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${num}.png"
@@ -4929,15 +5022,15 @@
         };
 
         const timeSlotsHtml = Object.entries(exclusives).map(([slot, ids]) => {
-          const meta   = slotMeta[slot];
+          const meta = slotMeta[slot];
           const active = slot === cycle;
           return `<div style="display:flex;align-items:center;gap:2px;padding:3px 6px;border-radius:8px;
             background:${active ? 'rgba(255,255,255,0.08)' : 'transparent'};
             border:1px solid ${active ? meta.color + '55' : 'transparent'};">
             <span style="font-size:10px;margin-right:2px;">${meta.icon}</span>
-            <span style="font-size:8px;color:${meta.color};font-weight:${active?'700':'400'};margin-right:4px;white-space:nowrap;">${meta.label}:</span>
-            ${ids.slice(0,4).map(id => spriteImg(id)).join('')}
-            ${ids.length > 4 ? `<span style="font-size:9px;color:#666;margin-left:2px;">+${ids.length-4}</span>` : ''}
+            <span style="font-size:8px;color:${meta.color};font-weight:${active ? '700' : '400'};margin-right:4px;white-space:nowrap;">${meta.label}:</span>
+            ${ids.slice(0, 4).map(id => spriteImg(id)).join('')}
+            ${ids.length > 4 ? `<span style="font-size:9px;color:#666;margin-left:2px;">+${ids.length - 4}</span>` : ''}
           </div>`;
         }).join('');
 
@@ -4950,8 +5043,8 @@
           <div style="margin-top:8px;">
             <div style="font-size:8px;color:#666;margin-bottom:4px;">Ahora disponibles:</div>
             <div style="display:flex;flex-wrap:wrap;gap:0px;align-items:center;">
-              ${availableWild.slice(0,6).map(id => spriteImg(id)).join('')}
-              ${availableWild.length > 6 ? `<span style="font-size:9px;color:#666;margin-left:4px;">+${availableWild.length-6}</span>` : ''}
+              ${availableWild.slice(0, 6).map(id => spriteImg(id)).join('')}
+              ${availableWild.length > 6 ? `<span style="font-size:9px;color:#666;margin-left:4px;">+${availableWild.length - 6}</span>` : ''}
             </div>
           </div>
           ${timeSlotsHtml ? `<div style="margin-top:6px;display:flex;flex-direction:column;gap:2px;">${timeSlotsHtml}</div>` : ''}
@@ -4971,7 +5064,7 @@
       }
       const loc = FIRE_RED_MAPS.find(l => l.id === locId);
       if (!loc) return;
-      
+
       const badgeCount = state.badges;
       if (badgeCount < loc.badges) {
         notify(`¡Necesitás ${loc.badges} medallas para acceder!`, '🔒');
@@ -4987,7 +5080,7 @@
       let rand = Math.random() * totalRate;
       let cumulative = 0;
       let selectedId = wildPool[0];
-      
+
       for (let i = 0; i < wildPool.length; i++) {
         cumulative += wildRates[i] || 0;
         if (rand <= cumulative) {
@@ -5038,14 +5131,14 @@
       document.getElementById('gym-intro-btn').onclick = () => {
         introOv.remove();
         // Ace = last Pokémon in the array (the strongest)
-        const aceIdx  = gym.pokemon.length - 1;
-        const aceId   = gym.pokemon[aceIdx];
-        const aceLevel= gym.levels[aceIdx];
-        const ace     = makePokemon(aceId, aceLevel);
+        const aceIdx = gym.pokemon.length - 1;
+        const aceId = gym.pokemon[aceIdx];
+        const aceLevel = gym.levels[aceIdx];
+        const ace = makePokemon(aceId, aceLevel);
         // Label it with the leader name
         ace._gymLeader = gym.leader;
-        ace._gymBadge  = gym.badge;
-        ace.name       = `${ace.name} (${gym.leader})`;
+        ace._gymBadge = gym.badge;
+        ace.name = `${ace.name} (${gym.leader})`;
         startBattle(ace, true, gymId, 'gym');
       };
     }
@@ -5081,6 +5174,7 @@
 
     // ===== BATTLE =====
     function startBattle(enemy, isGym, gymId, locationId) {
+      _battleLock = false;
       const player = state.team.find(p => p.hp > 0);
       // Reset battle-only status flags
       player.confused = 0; player.flinched = false;
@@ -6231,16 +6325,16 @@
       const filtered = SHOP_ITEMS.filter(i => _marketCat === 'todos' || i.cat === _marketCat);
       const grid = document.getElementById('market-grid');
       grid.innerHTML = filtered.map(item => {
-          const locked = state.trainerLevel < item.unlockLv;
-          const canAfford = state.money >= item.price;
-          const tierCls = tierColors[item.tier];
-          const typeTag = item.type ? `<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:${typeTagColors[item.type] || '#666'}22;color:${typeTagColors[item.type] || '#aaa'};border:1px solid ${typeTagColors[item.type] || '#666'}44;">${typeTagLabels[item.type] || item.type}</span>` : '';
-          return `<div class="market-card ${locked ? 'locked' : ''}">
+        const locked = state.trainerLevel < item.unlockLv;
+        const canAfford = state.money >= item.price;
+        const tierCls = tierColors[item.tier];
+        const typeTag = item.type ? `<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:${typeTagColors[item.type] || '#666'}22;color:${typeTagColors[item.type] || '#aaa'};border:1px solid ${typeTagColors[item.type] || '#666'}44;">${typeTagLabels[item.type] || item.type}</span>` : '';
+        return `<div class="market-card ${locked ? 'locked' : ''}">
         <span class="market-tier-badge ${tierCls}">${tierLabels[item.tier]}</span>
         <div class="market-item-icon">
           ${item.sprite
-              ? `<img src="${item.sprite}" width="40" height="40" style="image-rendering:pixelated;" onerror="this.style.display='none'">`
-              : `<span style="font-size:32px">${item.icon}</span>`}
+            ? `<img src="${item.sprite}" width="40" height="40" style="image-rendering:pixelated;" onerror="this.style.display='none'">`
+            : `<span style="font-size:32px">${item.icon}</span>`}
         </div>
         <div class="market-item-name">${item.name}</div>
         ${typeTag}
@@ -6252,7 +6346,7 @@
           ${locked ? '🔒 BLOQUEADO' : !canAfford ? 'SIN FONDOS' : 'COMPRAR'}
         </button>
       </div>`;
-        }).join('');
+      }).join('');
     }
 
     function buyItem(itemId) {
@@ -6341,9 +6435,9 @@
       // dawn/dusk share same art for: bosque, playa, ruta, pvp; puente and montana have separate
       const cycleKey = {
         morning: 'dawn',
-        day:     'day',
-        dusk:    'dusk',
-        night:   'night',
+        day: 'day',
+        dusk: 'dusk',
+        night: 'night',
       }[cycle] || 'day';
 
       // For biomes that share dawn/dusk art
@@ -6374,12 +6468,20 @@
       ctx.imageSmoothingEnabled = false; // keep pixel art sharp
 
       const cycle = cycleOverride || getDayCycle();
-      const key   = _getBgKey(locationId, cycle);
-      const src   = BATTLE_BG_DATA[key] || BATTLE_BG_DATA.ruta_day;
+      let key = _getBgKey(locationId, cycle);
+      let src = BATTLE_BG_DATA[key] || BATTLE_BG_DATA.ruta_day;
+
+      if (locationId === 'gym') {
+        src = 'assets/GIMNASIO.jpg';
+      } else if (locationId === 'pvp') {
+        // Match cycle to provided PVP assets
+        const pvpBgs = { morning: 'assets/PVP_MORNING.jpg', day: 'assets/PVP_DAY.jpg', afternoon: 'assets/PVP_DAY.jpg', night: 'assets/PVP_NIGHT.jpg' };
+        src = pvpBgs[cycle] || 'assets/PVP_DAY.jpg';
+      }
 
       function draw(img) {
         // Cover-fit: fill entire canvas, crop from center
-        const iw = img.naturalWidth  || img.width;
+        const iw = img.naturalWidth || img.width;
         const ih = img.naturalHeight || img.height;
         if (!iw || !ih) return;
         const scale = Math.max(W / iw, H / ih);
@@ -6387,7 +6489,7 @@
         const dx = (W - dw) / 2, dy = (H - dh) / 2;
         ctx.drawImage(img, dx, dy, dw, dh);
         // Subtle vignette for better sprite readability
-        const vgr = ctx.createRadialGradient(W/2, H/2, H*0.15, W/2, H/2, H*0.9);
+        const vgr = ctx.createRadialGradient(W / 2, H / 2, H * 0.15, W / 2, H / 2, H * 0.9);
         vgr.addColorStop(0, 'rgba(0,0,0,0)');
         vgr.addColorStop(1, 'rgba(0,0,0,0.32)');
         ctx.fillStyle = vgr; ctx.fillRect(0, 0, W, H);
@@ -6455,7 +6557,7 @@
         + (pendingBattles?.length || 0);
 
       const badge = document.getElementById('friends-nav-badge');
-      const lbl   = document.getElementById('friends-nav-label');
+      const lbl = document.getElementById('friends-nav-label');
       // Si el usuario ya está mirando la tab de amigos, no mostrar el badge
       const friendsTabOpen = document.getElementById('tab-friends')?.style.display !== 'none';
       if (badge) {
@@ -6975,8 +7077,8 @@
         .select('*').eq('sender_id', currentUser.id).eq('status', 'accepted');
 
       const section = document.getElementById('trades-pending-section');
-      const list    = document.getElementById('trades-pending-list');
-      const hasAny  = (incoming?.length || 0) + (accepted?.length || 0) > 0;
+      const list = document.getElementById('trades-pending-list');
+      const hasAny = (incoming?.length || 0) + (accepted?.length || 0) > 0;
       if (!hasAny) { section.style.display = 'none'; refreshFriendsBadge(); return; }
 
       // Fetch all sender profiles for incoming trades
@@ -7022,8 +7124,8 @@
 
       // ── Pending incoming offers ─────────────────────────────────
       const incomingHtml = (incoming || []).map(t => {
-        const sender  = profiles?.find(p => p.id === t.sender_id);
-        const isGift  = !t.request_pokemon && !Object.keys(t.request_items || {}).length && !t.request_money;
+        const sender = profiles?.find(p => p.id === t.sender_id);
+        const isGift = !t.request_pokemon && !Object.keys(t.request_items || {}).length && !t.request_money;
         const offerLines = [];
         if (t.offer_pokemon) offerLines.push(`${t.offer_pokemon.emoji || '❓'} ${t.offer_pokemon.name} Nv.${t.offer_pokemon.level}`);
         Object.entries(t.offer_items || {}).forEach(([k, v]) => offerLines.push(`${k} x${v}`));
@@ -7445,17 +7547,17 @@
     // B: 112–139             C: 84–111   D: 56–83    F: 0–55
     const BOX_TIER_CONFIG = {
       'S+': { min: 186, max: 186, color: '#FFD700', bg: 'rgba(255,215,0,0.18)', label: 'S+' },
-      'S':  { min: 168, max: 185, color: '#FFB800', bg: 'rgba(255,184,0,0.14)', label: 'S'  },
-      'A':  { min: 140, max: 167, color: '#6BCB77', bg: 'rgba(107,203,119,0.14)', label: 'A' },
-      'B':  { min: 112, max: 139, color: '#3B8BFF', bg: 'rgba(59,139,255,0.14)', label: 'B'  },
-      'C':  { min: 84,  max: 111, color: '#C77DFF', bg: 'rgba(199,125,255,0.14)', label: 'C' },
-      'D':  { min: 56,  max: 83,  color: '#FF9632', bg: 'rgba(255,150,50,0.14)', label: 'D'  },
-      'F':  { min: 0,   max: 55,  color: '#FF3B3B', bg: 'rgba(255,59,59,0.14)', label: 'F'   },
+      'S': { min: 168, max: 185, color: '#FFB800', bg: 'rgba(255,184,0,0.14)', label: 'S' },
+      'A': { min: 140, max: 167, color: '#6BCB77', bg: 'rgba(107,203,119,0.14)', label: 'A' },
+      'B': { min: 112, max: 139, color: '#3B8BFF', bg: 'rgba(59,139,255,0.14)', label: 'B' },
+      'C': { min: 84, max: 111, color: '#C77DFF', bg: 'rgba(199,125,255,0.14)', label: 'C' },
+      'D': { min: 56, max: 83, color: '#FF9632', bg: 'rgba(255,150,50,0.14)', label: 'D' },
+      'F': { min: 0, max: 55, color: '#FF3B3B', bg: 'rgba(255,59,59,0.14)', label: 'F' },
     };
 
     function getPokemonTier(p) {
       const ivs = p.ivs || {};
-      const total = (ivs.hp||0)+(ivs.atk||0)+(ivs.def||0)+(ivs.spa||0)+(ivs.spd||0)+(ivs.spe||0);
+      const total = (ivs.hp || 0) + (ivs.atk || 0) + (ivs.def || 0) + (ivs.spa || 0) + (ivs.spd || 0) + (ivs.spe || 0);
       for (const [tier, cfg] of Object.entries(BOX_TIER_CONFIG)) {
         if (total >= cfg.min && total <= cfg.max) return { tier, total, ...cfg };
       }
@@ -7463,8 +7565,10 @@
     }
 
     // ── Active filters state ─────────────────────────────────────
-    let _boxFilters = { tier: 'all', type: 'all', levelMin: 1, levelMax: 100,
-      ivHP: 0, ivATK: 0, ivDEF: 0, ivSPA: 0, ivSPD: 0, ivSPE: 0 };
+    let _boxFilters = {
+      tier: 'all', type: 'all', levelMin: 1, levelMax: 100,
+      ivHP: 0, ivATK: 0, ivDEF: 0, ivSPA: 0, ivSPD: 0, ivSPE: 0
+    };
     let _boxFiltersOpen = false;
 
     function toggleBoxFilters() {
@@ -7478,10 +7582,10 @@
     function setBoxFilter(key, val) {
       _boxFilters[key] = val;
       // Sync slider labels
-      if (key === 'levelMin') { const el = document.getElementById('box-level-min-val'); if(el) el.textContent = val; }
-      if (key === 'levelMax') { const el = document.getElementById('box-level-max-val'); if(el) el.textContent = val; }
+      if (key === 'levelMin') { const el = document.getElementById('box-level-min-val'); if (el) el.textContent = val; }
+      if (key === 'levelMax') { const el = document.getElementById('box-level-max-val'); if (el) el.textContent = val; }
       const ivMap = { ivHP: 'iv-hp-val', ivATK: 'iv-atk-val', ivDEF: 'iv-def-val', ivSPA: 'iv-spa-val', ivSPD: 'iv-spd-val', ivSPE: 'iv-spe-val' };
-      if (ivMap[key]) { const el = document.getElementById(ivMap[key]); if(el) el.textContent = val; }
+      if (ivMap[key]) { const el = document.getElementById(ivMap[key]); if (el) el.textContent = val; }
       // Active state on tier buttons
       if (key === 'tier') {
         document.querySelectorAll('[data-tier]').forEach(b => {
@@ -7500,15 +7604,17 @@
     }
 
     function resetBoxFilters() {
-      _boxFilters = { tier: 'all', type: 'all', levelMin: 1, levelMax: 100,
-        ivHP: 0, ivATK: 0, ivDEF: 0, ivSPA: 0, ivSPD: 0, ivSPE: 0 };
+      _boxFilters = {
+        tier: 'all', type: 'all', levelMin: 1, levelMax: 100,
+        ivHP: 0, ivATK: 0, ivDEF: 0, ivSPA: 0, ivSPD: 0, ivSPE: 0
+      };
       // Reset sliders
-      ['box-level-min','box-level-max','iv-hp','iv-atk','iv-def','iv-spa','iv-spd','iv-spe'].forEach(id => {
+      ['box-level-min', 'box-level-max', 'iv-hp', 'iv-atk', 'iv-def', 'iv-spa', 'iv-spd', 'iv-spe'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = id.includes('max') ? 100 : (id.includes('level-min') ? 1 : 0);
       });
-      ['box-level-min-val','box-level-max-val','iv-hp-val','iv-atk-val','iv-def-val','iv-spa-val','iv-spd-val','iv-spe-val'].forEach((id,i) => {
-        const el = document.getElementById(id); if(el) el.textContent = i===1?'100':i===0?'1':'0';
+      ['box-level-min-val', 'box-level-max-val', 'iv-hp-val', 'iv-atk-val', 'iv-def-val', 'iv-spa-val', 'iv-spd-val', 'iv-spe-val'].forEach((id, i) => {
+        const el = document.getElementById(id); if (el) el.textContent = i === 1 ? '100' : i === 0 ? '1' : '0';
       });
       document.querySelectorAll('[data-tier]').forEach(b => {
         b.style.outline = b.dataset.tier === 'all' ? '2px solid currentColor' : 'none';
@@ -7533,20 +7639,20 @@
         // Level
         if (p.level < f.levelMin || p.level > f.levelMax) return false;
         // IV minimums
-        if ((ivs.hp||0) < f.ivHP) return false;
-        if ((ivs.atk||0) < f.ivATK) return false;
-        if ((ivs.def||0) < f.ivDEF) return false;
-        if ((ivs.spa||0) < f.ivSPA) return false;
-        if ((ivs.spd||0) < f.ivSPD) return false;
-        if ((ivs.spe||0) < f.ivSPE) return false;
+        if ((ivs.hp || 0) < f.ivHP) return false;
+        if ((ivs.atk || 0) < f.ivATK) return false;
+        if ((ivs.def || 0) < f.ivDEF) return false;
+        if ((ivs.spa || 0) < f.ivSPA) return false;
+        if ((ivs.spd || 0) < f.ivSPD) return false;
+        if ((ivs.spe || 0) < f.ivSPE) return false;
         return true;
       });
     }
 
     function _hasActiveFilters() {
       const f = _boxFilters;
-      return f.tier!=='all' || f.type!=='all' || f.levelMin>1 || f.levelMax<100 ||
-        f.ivHP>0 || f.ivATK>0 || f.ivDEF>0 || f.ivSPA>0 || f.ivSPD>0 || f.ivSPE>0;
+      return f.tier !== 'all' || f.type !== 'all' || f.levelMin > 1 || f.levelMax < 100 ||
+        f.ivHP > 0 || f.ivATK > 0 || f.ivDEF > 0 || f.ivSPA > 0 || f.ivSPD > 0 || f.ivSPE > 0;
     }
 
     function renderBox() {
@@ -7567,7 +7673,7 @@
       const summaryEl = document.getElementById('box-filter-summary');
       if (summaryEl) {
         if (isFiltered) {
-          summaryEl.textContent = `${filtered.length} resultado${filtered.length!==1?'s':''}`;
+          summaryEl.textContent = `${filtered.length} resultado${filtered.length !== 1 ? 's' : ''}`;
           summaryEl.style.color = 'var(--yellow)';
         } else { summaryEl.textContent = ''; }
       }
@@ -7602,8 +7708,8 @@
         if (f.tier !== 'all' && getPokemonTier(p).tier !== f.tier) return false;
         if (f.type !== 'all' && p.type !== f.type) return false;
         if (p.level < f.levelMin || p.level > f.levelMax) return false;
-        if ((ivs.hp||0) < f.ivHP || (ivs.atk||0) < f.ivATK || (ivs.def||0) < f.ivDEF) return false;
-        if ((ivs.spa||0) < f.ivSPA || (ivs.spd||0) < f.ivSPD || (ivs.spe||0) < f.ivSPE) return false;
+        if ((ivs.hp || 0) < f.ivHP || (ivs.atk || 0) < f.ivATK || (ivs.def || 0) < f.ivDEF) return false;
+        if ((ivs.spa || 0) < f.ivSPA || (ivs.spd || 0) < f.ivSPD || (ivs.spe || 0) < f.ivSPE) return false;
         return true;
       });
 
@@ -7743,8 +7849,8 @@
           </div>
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:12px;color:${typeColor};margin-bottom:6px;">${p.name}</div>
-            <div style="font-size:12px;color:#888;">Nivel ${p.level} · ${p.type.charAt(0).toUpperCase()+p.type.slice(1)}</div>
-            <div style="font-size:11px;color:#555;margin-top:4px;">#${String(POKEMON_SPRITE_IDS[p.id]||'???').padStart(3,'0')}</div>
+            <div style="font-size:12px;color:#888;">Nivel ${p.level} · ${p.type.charAt(0).toUpperCase() + p.type.slice(1)}</div>
+            <div style="font-size:11px;color:#555;margin-top:4px;">#${String(POKEMON_SPRITE_IDS[p.id] || '???').padStart(3, '0')}</div>
           </div>
         </div>
         <button onclick="document.getElementById('box-detail-overlay').style.display='none'" style="background:rgba(255,255,255,0.1);border:none;border-radius:10px;color:#aaa;font-size:18px;cursor:pointer;padding:6px 12px;">✕</button>
@@ -7755,17 +7861,17 @@
           <span style="font-size:12px;color:#888;">${p.hp} / ${p.maxHp}</span>
         </div>
         <div style="background:rgba(255,255,255,0.1);border-radius:10px;height:10px;overflow:hidden;">
-          <div style="width:${pct*100}%;height:100%;border-radius:10px;" class="${hpClass}"></div>
+          <div style="width:${pct * 100}%;height:100%;border-radius:10px;" class="${hpClass}"></div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
         <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;text-align:center;">
           <div style="font-size:10px;color:#888;margin-bottom:4px;">Naturaleza</div>
-          ${buildNatureTooltip(p.nature||'Serio')}
+          ${buildNatureTooltip(p.nature || 'Serio')}
         </div>
         <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;text-align:center;">
           <div style="font-size:10px;color:#888;margin-bottom:4px;">Habilidad</div>
-          ${buildAbilityTooltip(p.ability||'—')}
+          ${buildAbilityTooltip(p.ability || '—')}
         </div>
       </div>
       <div style="margin-bottom:16px;">
@@ -7828,19 +7934,19 @@
     function renderBag(category = 'all') {
       const grid = document.getElementById('bag-grid');
       const empty = document.getElementById('bag-empty-warning');
-      
+
       // Update tab active state
       document.querySelectorAll('#bag-tabs .market-tab-btn').forEach(btn => btn.classList.remove('active'));
       const activeTab = document.getElementById(`bag-tab-${category}`);
       if (activeTab) activeTab.classList.add('active');
 
       const allItems = Object.entries(state.inventory || {}).filter(([name, qty]) => qty > 0);
-      
+
       const filteredItems = allItems.filter(([name, qty]) => {
         if (category === 'all') return true;
         const itemInfo = SHOP_ITEMS.find(i => i.name === name);
-        if (!itemInfo) return category === 'etc'; 
-        
+        if (!itemInfo) return category === 'etc';
+
         if (category === 'potion') return itemInfo.cat === 'pociones';
         if (category === 'ball') return itemInfo.cat === 'pokeballs';
         if (category === 'etc') return !['pociones', 'pokeballs'].includes(itemInfo.cat);
@@ -8328,8 +8434,8 @@
         phase: 'sync',
         myPick: null,       // { type:'move', moveIndex } | { type:'switch', switchIndex }
         enemyPick: null,    // host only: client's committed pick
-        myStages:    { atk:0, def:0, spa:0, spd:0, spe:0, acc:0 },
-        enemyStages: { atk:0, def:0, spa:0, spd:0, spe:0, acc:0 },
+        myStages: { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, acc: 0 },
+        enemyStages: { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, acc: 0 },
         _teamAcknowledged: false,
         _announceCount: 0,
       };
@@ -8344,7 +8450,7 @@
           _pvpState.channel.send({ type: 'broadcast', event: 'pvp_team_ack', payload: {} });
           if (_pvpState.enemyTeam) return;
           _pvpState.enemyTeam = payload.team;
-          _pvpState.enemyHp   = payload.team.map(p => p.hp);
+          _pvpState.enemyHp = payload.team.map(p => p.hp);
           _pvpState.phase = 'choosing';
           renderPvpBattle();
           _pvpLoadSprites();
@@ -8411,7 +8517,7 @@
         ov.style.cssText = 'position:fixed;inset:0;z-index:600;background:#0d1117;overflow-y:auto;';
         document.body.appendChild(ov);
       }
-      const me    = _pvpState.myTeam[_pvpState.myActive];
+      const me = _pvpState.myTeam[_pvpState.myActive];
       const enemy = _pvpState.enemyTeam?.[_pvpState.enemyActive];
 
       ov.innerHTML = `
@@ -8495,7 +8601,7 @@
     }
 
     function _pvpLoadSprites() {
-      const me    = _pvpState.myTeam[_pvpState.myActive];
+      const me = _pvpState.myTeam[_pvpState.myActive];
       const enemy = _pvpState.enemyTeam?.[_pvpState.enemyActive];
       if (me) {
         const img = document.getElementById('pvp-player-img');
@@ -8511,20 +8617,20 @@
 
     // ── Move panel renderer (phase-aware) ────────────────────────
     function _pvpRenderMoves() {
-      const panel  = document.getElementById('pvp-move-buttons');
+      const panel = document.getElementById('pvp-move-buttons');
       const status = document.getElementById('pvp-status-msg');
       if (!panel || !_pvpState) return;
 
-      const me    = _pvpState.myTeam[_pvpState.myActive];
+      const me = _pvpState.myTeam[_pvpState.myActive];
       const phase = _pvpState.phase;
 
       // Status message
       if (status) {
         const msgs = {
-          sync:         '⏳ Conectando...',
-          choosing:     '⚔️ ¡Elegí tu movimiento!',
-          waiting:      '⏳ Esperando al rival...',
-          resolving:    '⚡ Resolviendo turno...',
+          sync: '⏳ Conectando...',
+          choosing: '⚔️ ¡Elegí tu movimiento!',
+          waiting: '⏳ Esperando al rival...',
+          resolving: '⚡ Resolviendo turno...',
           faint_switch: '💀 Esperando cambio del rival...',
         };
         status.textContent = msgs[phase] || '';
@@ -8543,28 +8649,28 @@
       if (!me) { panel.innerHTML = ''; return; }
 
       const TYPE_COL = {
-        normal:'#aaa', fire:'#FF6B35', water:'#3B8BFF', grass:'#6BCB77',
-        electric:'#FFD93D', ice:'#7DF9FF', fighting:'#FF3B3B', poison:'#C77DFF',
-        ground:'#c8a060', flying:'#89CFF0', psychic:'#FF6EFF', bug:'#8BC34A',
-        rock:'#c8a060', ghost:'#7B2FBE', dragon:'#5C16C5', dark:'#555', steel:'#9E9E9E'
+        normal: '#aaa', fire: '#FF6B35', water: '#3B8BFF', grass: '#6BCB77',
+        electric: '#FFD93D', ice: '#7DF9FF', fighting: '#FF3B3B', poison: '#C77DFF',
+        ground: '#c8a060', flying: '#89CFF0', psychic: '#FF6EFF', bug: '#8BC34A',
+        rock: '#c8a060', ghost: '#7B2FBE', dragon: '#5C16C5', dark: '#555', steel: '#9E9E9E'
       };
-      const CAT_ICO = { physical:'⚔️', special:'✨', status:'🔮' };
+      const CAT_ICO = { physical: '⚔️', special: '✨', status: '🔮' };
       const waiting = phase === 'waiting';
 
       panel.innerHTML = (me.moves || []).map((mv, i) => {
-        const md  = MOVE_DATA[mv.name] || { power: mv.power||40, type:'normal', cat:'physical' };
+        const md = MOVE_DATA[mv.name] || { power: mv.power || 40, type: 'normal', cat: 'physical' };
         const col = TYPE_COL[md.type] || '#aaa';
         const disabled = mv.pp <= 0 || waiting;
-        const opacity  = waiting ? '0.45' : '1';
+        const opacity = waiting ? '0.45' : '1';
         return `<button onclick="pvpUseMove(${i})" ${disabled ? 'disabled' : ''}
-          style="font-family:'Press Start 2P',monospace;font-size:7px;padding:10px 8px;border:none;border-radius:12px;cursor:${waiting?'default':'pointer'};
+          style="font-family:'Press Start 2P',monospace;font-size:7px;padding:10px 8px;border:none;border-radius:12px;cursor:${waiting ? 'default' : 'pointer'};
                  opacity:${opacity};background:rgba(59,139,255,0.12);color:var(--blue);border-left:3px solid ${col};
                  border-right:none;border-top:1px solid rgba(59,139,255,0.2);border-bottom:1px solid rgba(59,139,255,0.2);
                  display:flex;flex-direction:column;gap:3px;align-items:flex-start;width:100%;">
           <span style="color:#fff;">${mv.name}</span>
           <span style="display:flex;gap:6px;align-items:center;">
-            <span style="color:${col};">${md.type?.toUpperCase()} ${CAT_ICO[md.cat]||''}</span>
-            <span style="color:var(--gray);">POD:${md.power||'—'} PP:${mv.pp}/${mv.maxPP}</span>
+            <span style="color:${col};">${md.type?.toUpperCase()} ${CAT_ICO[md.cat] || ''}</span>
+            <span style="color:var(--gray);">POD:${md.power || '—'} PP:${mv.pp}/${mv.maxPP}</span>
           </span>
         </button>`;
       }).join('');
@@ -8573,33 +8679,33 @@
     function addPvpLog(msg, cls) {
       const el = document.getElementById('pvp-log');
       if (!el) return;
-      el.innerHTML += `<div class="${cls||''}" style="margin-bottom:3px;">${msg}</div>`;
+      el.innerHTML += `<div class="${cls || ''}" style="margin-bottom:3px;">${msg}</div>`;
       el.scrollTop = el.scrollHeight;
     }
 
     function renderPvpBattle() {
       if (!_pvpState) return;
-      const me    = _pvpState.myTeam[_pvpState.myActive];
+      const me = _pvpState.myTeam[_pvpState.myActive];
       const enemy = _pvpState.enemyTeam?.[_pvpState.enemyActive];
-      const myHp    = _pvpState.myHp[_pvpState.myActive]    ?? me?.hp    ?? 0;
+      const myHp = _pvpState.myHp[_pvpState.myActive] ?? me?.hp ?? 0;
       const enemyHp = enemy ? (_pvpState.enemyHp[_pvpState.enemyActive] ?? enemy.hp) : 0;
 
       if (me) {
         const pct = Math.max(0, myHp / me.maxHp);
         const bar = document.getElementById('pvp-player-hp-bar');
-        if (bar) { bar.style.width=(pct*100)+'%'; bar.className='hp-bar '+getHpClass(pct); }
-        const ht = document.getElementById('pvp-player-hp-text'); if (ht) ht.textContent = myHp+'/'+me.maxHp+' HP';
-        const nm = document.getElementById('pvp-player-name');    if (nm) nm.textContent = me.name;
-        const lv = document.getElementById('pvp-player-level');   if (lv) lv.textContent = 'Nv. '+me.level;
+        if (bar) { bar.style.width = (pct * 100) + '%'; bar.className = 'hp-bar ' + getHpClass(pct); }
+        const ht = document.getElementById('pvp-player-hp-text'); if (ht) ht.textContent = myHp + '/' + me.maxHp + ' HP';
+        const nm = document.getElementById('pvp-player-name'); if (nm) nm.textContent = me.name;
+        const lv = document.getElementById('pvp-player-level'); if (lv) lv.textContent = 'Nv. ' + me.level;
       }
       if (enemy) {
         const pct = Math.max(0, enemyHp / enemy.maxHp);
         const bar = document.getElementById('pvp-enemy-hp-bar');
-        if (bar) { bar.style.width=(pct*100)+'%'; bar.className='hp-bar '+getHpClass(pct); }
-        const ht = document.getElementById('pvp-enemy-hp-text');  if (ht) ht.textContent = enemyHp+'/'+enemy.maxHp+' HP';
-        const nm = document.getElementById('pvp-enemy-name');     if (nm) nm.textContent = enemy.name;
-        const lv = document.getElementById('pvp-enemy-level');    if (lv) lv.textContent = 'Nv. '+enemy.level;
-        const tr = document.getElementById('pvp-enemy-trainer');  if (tr && _pvpState.enemyUsername) tr.textContent = '🎮 '+_pvpState.enemyUsername;
+        if (bar) { bar.style.width = (pct * 100) + '%'; bar.className = 'hp-bar ' + getHpClass(pct); }
+        const ht = document.getElementById('pvp-enemy-hp-text'); if (ht) ht.textContent = enemyHp + '/' + enemy.maxHp + ' HP';
+        const nm = document.getElementById('pvp-enemy-name'); if (nm) nm.textContent = enemy.name;
+        const lv = document.getElementById('pvp-enemy-level'); if (lv) lv.textContent = 'Nv. ' + enemy.level;
+        const tr = document.getElementById('pvp-enemy-trainer'); if (tr && _pvpState.enemyUsername) tr.textContent = '🎮 ' + _pvpState.enemyUsername;
       }
       _pvpRenderMoves();
     }
@@ -8607,38 +8713,38 @@
     function _pvpUpdateEnemy() {
       const enemy = _pvpState.enemyTeam?.[_pvpState.enemyActive];
       if (!enemy) return;
-      const nm = document.getElementById('pvp-enemy-name');    if (nm) nm.textContent = enemy.name;
-      const lv = document.getElementById('pvp-enemy-level');   if (lv) lv.textContent = 'Nv. '+enemy.level;
-      const hp  = _pvpState.enemyHp[_pvpState.enemyActive] ?? enemy.hp;
+      const nm = document.getElementById('pvp-enemy-name'); if (nm) nm.textContent = enemy.name;
+      const lv = document.getElementById('pvp-enemy-level'); if (lv) lv.textContent = 'Nv. ' + enemy.level;
+      const hp = _pvpState.enemyHp[_pvpState.enemyActive] ?? enemy.hp;
       const pct = Math.max(0, hp / enemy.maxHp);
       const bar = document.getElementById('pvp-enemy-hp-bar');
-      if (bar) { bar.style.width=(pct*100)+'%'; bar.className='hp-bar '+getHpClass(pct); }
-      const ht = document.getElementById('pvp-enemy-hp-text'); if (ht) ht.textContent = hp+'/'+enemy.maxHp+' HP';
+      if (bar) { bar.style.width = (pct * 100) + '%'; bar.className = 'hp-bar ' + getHpClass(pct); }
+      const ht = document.getElementById('pvp-enemy-hp-text'); if (ht) ht.textContent = hp + '/' + enemy.maxHp + ' HP';
       const img = document.getElementById('pvp-enemy-img');
       const emo = document.getElementById('pvp-enemy-emoji');
-      if (img && emo) { img.style.display='none'; emo.style.display='block'; emo.textContent=enemy.emoji; loadSprite(img, emo, getSpriteUrl(enemy.id), enemy.emoji); }
+      if (img && emo) { img.style.display = 'none'; emo.style.display = 'block'; emo.textContent = enemy.emoji; loadSprite(img, emo, getSpriteUrl(enemy.id), enemy.emoji); }
     }
 
     function _pvpUpdateMyPokemon() {
       const me = _pvpState.myTeam[_pvpState.myActive];
       if (!me) return;
-      const nm = document.getElementById('pvp-player-name');   if (nm) nm.textContent = me.name;
-      const lv = document.getElementById('pvp-player-level');  if (lv) lv.textContent = 'Nv. '+me.level;
-      const hp  = _pvpState.myHp[_pvpState.myActive] ?? me.hp;
+      const nm = document.getElementById('pvp-player-name'); if (nm) nm.textContent = me.name;
+      const lv = document.getElementById('pvp-player-level'); if (lv) lv.textContent = 'Nv. ' + me.level;
+      const hp = _pvpState.myHp[_pvpState.myActive] ?? me.hp;
       const pct = Math.max(0, hp / me.maxHp);
       const bar = document.getElementById('pvp-player-hp-bar');
-      if (bar) { bar.style.width=(pct*100)+'%'; bar.className='hp-bar '+getHpClass(pct); }
-      const ht = document.getElementById('pvp-player-hp-text'); if (ht) ht.textContent = hp+'/'+me.maxHp+' HP';
+      if (bar) { bar.style.width = (pct * 100) + '%'; bar.className = 'hp-bar ' + getHpClass(pct); }
+      const ht = document.getElementById('pvp-player-hp-text'); if (ht) ht.textContent = hp + '/' + me.maxHp + ' HP';
       const img = document.getElementById('pvp-player-img');
       const emo = document.getElementById('pvp-player-emoji');
-      if (img && emo) { img.style.display='none'; emo.style.display='block'; emo.textContent=me.emoji; loadSprite(img, emo, getBackSpriteUrl(me.id), me.emoji); }
+      if (img && emo) { img.style.display = 'none'; emo.style.display = 'block'; emo.textContent = me.emoji; loadSprite(img, emo, getBackSpriteUrl(me.id), me.emoji); }
       _pvpRenderMoves();
     }
 
     // ── Commit action (both sides) ───────────────────────────────
     function pvpUseMove(moveIndex) {
       if (!_pvpState || _pvpState.over || _pvpState.phase !== 'choosing') return;
-      const me   = _pvpState.myTeam[_pvpState.myActive];
+      const me = _pvpState.myTeam[_pvpState.myActive];
       const move = me?.moves?.[moveIndex];
       if (!move) return;
       if (move.pp <= 0) { notify('Sin PP', '⚠️'); return; }
@@ -8649,7 +8755,7 @@
     function _pvpCommitPick(pick) {
       if (!_pvpState || _pvpState.phase !== 'choosing') return;
       _pvpState.myPick = pick;
-      _pvpState.phase  = 'waiting';
+      _pvpState.phase = 'waiting';
       _pvpRenderMoves(); // Gray out buttons, show "waiting"
 
       if (_pvpState.isHost) {
@@ -8667,18 +8773,18 @@
       _pvpState.phase = 'resolving';
       _pvpRenderMoves();
 
-      const s          = _pvpState;
-      const hostPoke   = s.myTeam[s.myActive];
+      const s = _pvpState;
+      const hostPoke = s.myTeam[s.myActive];
       const clientPoke = s.enemyTeam[s.enemyActive];
-      if (!s.myStages)    s.myStages    = { atk:0, def:0, spa:0, spd:0, spe:0, acc:0 };
-      if (!s.enemyStages) s.enemyStages = { atk:0, def:0, spa:0, spd:0, spe:0, acc:0 };
+      if (!s.myStages) s.myStages = { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, acc: 0 };
+      if (!s.enemyStages) s.enemyStages = { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, acc: 0 };
 
-      const hostPick   = s.myPick;
+      const hostPick = s.myPick;
       const clientPick = s.enemyPick;
 
       // ── Determine who attacks first ───────────────────────────
       let firstIsHost;
-      if (hostPick.type === 'switch')   { firstIsHost = true; }
+      if (hostPick.type === 'switch') { firstIsHost = true; }
       else if (clientPick.type === 'switch') { firstIsHost = false; }
       else {
         const hMove = hostPoke.moves[hostPick.moveIndex];
@@ -8688,62 +8794,62 @@
         if (hPrio !== cPrio) {
           firstIsHost = hPrio > cPrio;
         } else {
-          const hSpe = Math.max(1, Math.floor((hostPoke.spe||40) * stageMult(s.myStages.spe||0)) * (hostPoke.status==='paralyze' ? 0.5 : 1));
-          const cSpe = Math.max(1, Math.floor((clientPoke.spe||40) * stageMult(s.enemyStages.spe||0)) * (clientPoke.status==='paralyze' ? 0.5 : 1));
+          const hSpe = Math.max(1, Math.floor((hostPoke.spe || 40) * stageMult(s.myStages.spe || 0)) * (hostPoke.status === 'paralyze' ? 0.5 : 1));
+          const cSpe = Math.max(1, Math.floor((clientPoke.spe || 40) * stageMult(s.enemyStages.spe || 0)) * (clientPoke.status === 'paralyze' ? 0.5 : 1));
           firstIsHost = hSpe > cSpe || (hSpe === cSpe && Math.random() < 0.5);
         }
       }
 
       // ── Calculate a single action (doesn't apply HP yet) ──────
       function calcAction(actorIsHost) {
-        const attacker  = actorIsHost ? hostPoke   : clientPoke;
-        const defender  = actorIsHost ? clientPoke : hostPoke;
-        const atkS      = actorIsHost ? s.myStages    : s.enemyStages;
-        const defS      = actorIsHost ? s.enemyStages : s.myStages;
-        const pick      = actorIsHost ? hostPick : clientPick;
+        const attacker = actorIsHost ? hostPoke : clientPoke;
+        const defender = actorIsHost ? clientPoke : hostPoke;
+        const atkS = actorIsHost ? s.myStages : s.enemyStages;
+        const defS = actorIsHost ? s.enemyStages : s.myStages;
+        const pick = actorIsHost ? hostPick : clientPick;
         const actorName = attacker.name;
-        const targName  = defender.name;
+        const targName = defender.name;
 
         if (pick.type === 'switch') {
           const newPoke = actorIsHost ? s.myTeam[pick.switchIndex] : s.enemyTeam[pick.switchIndex];
-          return { type:'switch', switchIndex:pick.switchIndex, pokeName:newPoke?.name||'?', actorIsHost, faintedTarget:false };
+          return { type: 'switch', switchIndex: pick.switchIndex, pokeName: newPoke?.name || '?', actorIsHost, faintedTarget: false };
         }
 
-        const move    = attacker.moves[pick.moveIndex];
+        const move = attacker.moves[pick.moveIndex];
         const moveName = move?.name || '???';
-        const md      = MOVE_DATA[moveName] || { power:move?.power||40, type:'normal', cat:'physical', acc:100 };
+        const md = MOVE_DATA[moveName] || { power: move?.power || 40, type: 'normal', cat: 'physical', acc: 100 };
 
         // Status prevents moving
         if (attacker.status === 'sleep') {
-          if ((attacker.sleepTurns||0) > 0) { attacker.sleepTurns--; return { type:'move', moveName, actorIsHost, actorName, targName, statusBlocked:'sleep', damage:0, eff:1, faintedTarget:false }; }
+          if ((attacker.sleepTurns || 0) > 0) { attacker.sleepTurns--; return { type: 'move', moveName, actorIsHost, actorName, targName, statusBlocked: 'sleep', damage: 0, eff: 1, faintedTarget: false }; }
           attacker.status = null;
         }
         if (attacker.status === 'freeze') {
-          if (Math.random() < 0.8) return { type:'move', moveName, actorIsHost, actorName, targName, statusBlocked:'freeze', damage:0, eff:1, faintedTarget:false };
+          if (Math.random() < 0.8) return { type: 'move', moveName, actorIsHost, actorName, targName, statusBlocked: 'freeze', damage: 0, eff: 1, faintedTarget: false };
           attacker.status = null;
         }
         if (attacker.status === 'paralyze' && Math.random() < 0.25) {
-          return { type:'move', moveName, actorIsHost, actorName, targName, statusBlocked:'paralyze', damage:0, eff:1, faintedTarget:false };
+          return { type: 'move', moveName, actorIsHost, actorName, targName, statusBlocked: 'paralyze', damage: 0, eff: 1, faintedTarget: false };
         }
 
         // Accuracy
-        if (md.acc && Math.random()*100 > (md.acc) * stageMult(atkS.acc||0)) {
-          return { type:'move', moveName, actorIsHost, actorName, targName, missed:true, damage:0, eff:1, faintedTarget:false };
+        if (md.acc && Math.random() * 100 > (md.acc) * stageMult(atkS.acc || 0)) {
+          return { type: 'move', moveName, actorIsHost, actorName, targName, missed: true, damage: 0, eff: 1, faintedTarget: false };
         }
 
         if (md.cat === 'status') {
           const effectLog = [];
           applyMoveEffect(md.effect, attacker, defender, atkS, defS, m => effectLog.push(m));
-          return { type:'move', moveName, actorIsHost, actorName, targName, isStatus:true, damage:0, eff:1, faintedTarget:false, effectLog };
+          return { type: 'move', moveName, actorIsHost, actorName, targName, isStatus: true, damage: 0, eff: 1, faintedTarget: false, effectLog };
         }
 
-        const { dmg, eff } = calcDamage(attacker, defender, move, atkS.atk||0, defS.def||0);
+        const { dmg, eff } = calcDamage(attacker, defender, move, atkS.atk || 0, defS.def || 0);
         // Tentative new HP (don't apply yet)
-        const defHpArr  = actorIsHost ? s.enemyHp : s.myHp;
+        const defHpArr = actorIsHost ? s.enemyHp : s.myHp;
         const defActIdx = actorIsHost ? s.enemyActive : s.myActive;
-        const curHp     = defHpArr[defActIdx] ?? defender.hp;
-        const newHp     = Math.max(0, curHp - dmg);
-        return { type:'move', moveName, actorIsHost, actorName, targName, missed:false, damage:dmg, eff, newDefHp:newHp, faintedTarget:newHp<=0 };
+        const curHp = defHpArr[defActIdx] ?? defender.hp;
+        const newHp = Math.max(0, curHp - dmg);
+        return { type: 'move', moveName, actorIsHost, actorName, targName, missed: false, damage: dmg, eff, newDefHp: newHp, faintedTarget: newHp <= 0 };
       }
 
       // ── Run first action ─────────────────────────────────────
@@ -8751,12 +8857,12 @@
 
       // Apply first action's HP changes so second action sees correct state
       if (firstAction.type === 'switch') {
-        if (firstIsHost) s.myActive    = firstAction.switchIndex;
-        else             s.enemyActive = firstAction.switchIndex;
+        if (firstIsHost) s.myActive = firstAction.switchIndex;
+        else s.enemyActive = firstAction.switchIndex;
       } else if (firstAction.newDefHp !== undefined) {
         const arr = firstIsHost ? s.enemyHp : s.myHp;
         const idx = firstIsHost ? s.enemyActive : s.myActive;
-        arr[idx]  = firstAction.newDefHp;
+        arr[idx] = firstAction.newDefHp;
       }
 
       // ── Run second action (unless first fainted the target) ───
@@ -8764,12 +8870,12 @@
       if (!firstAction.faintedTarget) {
         secondAction = calcAction(!firstIsHost);
         if (secondAction.type === 'switch') {
-          if (!firstIsHost) s.myActive    = secondAction.switchIndex;
-          else              s.enemyActive = secondAction.switchIndex;
+          if (!firstIsHost) s.myActive = secondAction.switchIndex;
+          else s.enemyActive = secondAction.switchIndex;
         } else if (secondAction.newDefHp !== undefined) {
           const arr = !firstIsHost ? s.enemyHp : s.myHp;
           const idx = !firstIsHost ? s.enemyActive : s.myActive;
-          arr[idx]  = secondAction.newDefHp;
+          arr[idx] = secondAction.newDefHp;
         }
       }
 
@@ -8787,16 +8893,16 @@
 
       const result = {
         firstIsHost,
-        first:  firstAction,
+        first: firstAction,
         second: secondAction,
-        hostActiveIdx:   s.myActive,
+        hostActiveIdx: s.myActive,
         clientActiveIdx: s.enemyActive,
-        hostHp:   s.myHp[s.myActive]       ?? hostPoke.hp,
+        hostHp: s.myHp[s.myActive] ?? hostPoke.hp,
         clientHp: s.enemyHp[s.enemyActive] ?? clientPoke.hp,
         // Status sync for client
-        hostPokeStatus:       s.myTeam[s.myActive]?.status       ?? null,
-        hostPokeSleepTurns:   s.myTeam[s.myActive]?.sleepTurns   ?? 0,
-        clientPokeStatus:     s.enemyTeam[s.enemyActive]?.status  ?? null,
+        hostPokeStatus: s.myTeam[s.myActive]?.status ?? null,
+        hostPokeSleepTurns: s.myTeam[s.myActive]?.sleepTurns ?? 0,
+        clientPokeStatus: s.enemyTeam[s.enemyActive]?.status ?? null,
         clientPokeSleepTurns: s.enemyTeam[s.enemyActive]?.sleepTurns ?? 0,
         // PP sync for host's move
         hostMovePpIdx: hostPick.type === 'move' ? hostPick.moveIndex : -1,
@@ -8806,7 +8912,7 @@
       };
 
       // Broadcast BEFORE applying locally so client receives first
-      s.channel.send({ type:'broadcast', event:'pvp_turn_result', payload: result });
+      s.channel.send({ type: 'broadcast', event: 'pvp_turn_result', payload: result });
       _pvpApplyTurnResult(result);
     }
 
@@ -8821,9 +8927,9 @@
 
       // ── CLIENT: Apply authoritative HP + active indices ───────
       if (!isHost) {
-        _pvpState.myActive    = result.clientActiveIdx;
+        _pvpState.myActive = result.clientActiveIdx;
         _pvpState.enemyActive = result.hostActiveIdx;
-        _pvpState.myHp[_pvpState.myActive]       = result.clientHp;
+        _pvpState.myHp[_pvpState.myActive] = result.clientHp;
         _pvpState.enemyHp[_pvpState.enemyActive] = result.hostHp;
 
         // Sync PP
@@ -8837,10 +8943,10 @@
         }
 
         // Sync status
-        const myPoke  = _pvpState.myTeam[_pvpState.myActive];
-        const enPoke  = _pvpState.enemyTeam[_pvpState.enemyActive];
-        if (myPoke) { myPoke.status = result.clientPokeStatus; myPoke.sleepTurns = result.clientPokeSleepTurns||0; }
-        if (enPoke) { enPoke.status = result.hostPokeStatus;   enPoke.sleepTurns = result.hostPokeSleepTurns||0; }
+        const myPoke = _pvpState.myTeam[_pvpState.myActive];
+        const enPoke = _pvpState.enemyTeam[_pvpState.enemyActive];
+        if (myPoke) { myPoke.status = result.clientPokeStatus; myPoke.sleepTurns = result.clientPokeSleepTurns || 0; }
+        if (enPoke) { enPoke.status = result.hostPokeStatus; enPoke.sleepTurns = result.hostPokeSleepTurns || 0; }
       }
 
       // ── Animate + log each action sequentially ────────────────
@@ -8857,11 +8963,11 @@
           if (action.type === 'switch') {
             addPvpLog(`¡${action.pokeName} salió a combatir!`, myAction ? 'log-player' : 'log-enemy');
             if (myAction) _pvpUpdateMyPokemon();
-            else          _pvpUpdateEnemy();
+            else _pvpUpdateEnemy();
 
           } else if (action.statusBlocked) {
-            const statusMsg = { sleep:'está dormido', freeze:'está congelado', paralyze:'está paralizado' };
-            addPvpLog(`¡${action.actorName} ${statusMsg[action.statusBlocked]||'no pudo moverse'}!`,
+            const statusMsg = { sleep: 'está dormido', freeze: 'está congelado', paralyze: 'está paralizado' };
+            addPvpLog(`¡${action.actorName} ${statusMsg[action.statusBlocked] || 'no pudo moverse'}!`,
               myAction ? 'log-player' : 'log-enemy');
 
           } else if (action.missed) {
@@ -8884,8 +8990,8 @@
             const pEmo = document.getElementById('pvp-player-emoji');
             const eImg = document.getElementById('pvp-enemy-img');
             const eEmo = document.getElementById('pvp-enemy-emoji');
-            const pEl  = pImg?.style.display !== 'none' ? pImg : pEmo;
-            const eEl  = eImg?.style.display !== 'none' ? eImg : eEmo;
+            const pEl = pImg?.style.display !== 'none' ? pImg : pEmo;
+            const eEl = eImg?.style.display !== 'none' ? eImg : eEmo;
             if (myAction) {
               pEl?.classList.add('anim-attack-right');
               setTimeout(() => { pEl?.classList.remove('anim-attack-right'); eEl?.classList.add('anim-damage'); setTimeout(() => eEl?.classList.remove('anim-damage'), 500); }, 400);
@@ -8903,7 +9009,7 @@
         if (!_pvpState || _pvpState.over) return;
         renderPvpBattle();
 
-        const myHpNow    = _pvpState.myHp[_pvpState.myActive]    ?? 0;
+        const myHpNow = _pvpState.myHp[_pvpState.myActive] ?? 0;
         const enemyHpNow = _pvpState.enemyHp[_pvpState.enemyActive] ?? 0;
 
         if (myHpNow <= 0) {
@@ -8924,8 +9030,8 @@
         }
 
         // Next turn
-        _pvpState.phase   = 'choosing';
-        _pvpState.myPick  = null;
+        _pvpState.phase = 'choosing';
+        _pvpState.myPick = null;
         if (_pvpState.isHost) _pvpState.enemyPick = null;
         _pvpRenderMoves();
         addPvpLog('─── Nuevo turno ───', 'log-info');
@@ -8942,7 +9048,7 @@
       if (!alive.length) { notify('No hay más Pokémon disponibles', '⚠️'); return; }
 
       _pvpBuildSwitchOverlay(alive, i => {
-        _pvpCommitPick({ type:'switch', switchIndex: i });
+        _pvpCommitPick({ type: 'switch', switchIndex: i });
         addPvpLog(`¡Vas a cambiar a ${_pvpState.myTeam[i].name}!`, 'log-player');
       }, true);
     }
@@ -8959,11 +9065,11 @@
         _pvpState.myActive = i;
         const p = _pvpState.myTeam[i];
         addPvpLog(`¡${p.name} salió a combatir!`, 'log-player');
-        _pvpState.channel.send({ type:'broadcast', event:'pvp_forced_switch', payload:{ index: i } });
+        _pvpState.channel.send({ type: 'broadcast', event: 'pvp_forced_switch', payload: { index: i } });
         _pvpUpdateMyPokemon();
         // Resume next turn (only if not waiting for enemy's forced switch too)
-        _pvpState.phase   = 'choosing';
-        _pvpState.myPick  = null;
+        _pvpState.phase = 'choosing';
+        _pvpState.myPick = null;
         if (_pvpState.isHost) _pvpState.enemyPick = null;
         _pvpRenderMoves();
         addPvpLog('─── Nuevo turno ───', 'log-info');
@@ -8978,8 +9084,8 @@
       ov.innerHTML = `<div style="background:var(--card);border-radius:20px;padding:20px;width:100%;max-width:340px;">
         <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);margin-bottom:14px;">🔄 ELEGÍ UN POKÉMON</div>
         ${alive.map(({ p, i }) => {
-          const hp = _pvpState.myHp[i] ?? p.hp;
-          return `<div onclick="(function(){document.getElementById('pvp-switch-overlay').remove();(${onPick.toString()})(${i});})()"
+        const hp = _pvpState.myHp[i] ?? p.hp;
+        return `<div onclick="(function(){document.getElementById('pvp-switch-overlay').remove();(${onPick.toString()})(${i});})()"
             style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border-radius:10px;padding:10px;margin-bottom:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);"
             onmouseover="this.style.borderColor='rgba(199,125,255,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
             <span style="font-size:28px;">${p.emoji}</span>
@@ -8988,7 +9094,7 @@
               <div style="font-size:10px;color:var(--gray);">${hp}/${p.maxHp} HP · Nv.${p.level}</div>
             </div>
           </div>`;
-        }).join('')}
+      }).join('')}
         ${canCancel ? `<button onclick="document.getElementById('pvp-switch-overlay').remove()"
           style="width:100%;padding:10px;border:none;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.06);color:var(--gray);font-size:12px;">Cancelar</button>` : ''}
       </div>`;

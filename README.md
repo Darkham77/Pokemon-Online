@@ -22,4 +22,15 @@ Un simulador de combates, colección y mundo abierto basado en Pokémon, constru
 2. **Abrir el juego**
    Simplemente tienes que abrir el archivo `index.html` en tu navegador web de preferencia (se recomienda Google Chrome, Edge o Firefox). Al usar Supabase por detrás, no se requiere ningún servidor local para que el juego y los datos de la nube funcionen.
 
+## 🆕 Novedades de la última versión
+
+*   **🏆 Mejora en Gimnasios**: Se han corregido los sprites de los líderes (Brock, Misty, etc.) y se ha añadido el fondo oficial `GIMNASIO.jpg` para todos los desafíos.
+*   **⚔️ Batallas Premium**: Ahora los combates se muestran en una **ventana modal** más inmersiva con fondo desenfocado. Los sprites de los Pokémon son un **100% más grandes** para una mejor visualización.
+*   **🌅 Fondos Dinámicos PVP**: Los combates contra otros jugadores ahora cuentan con fondos que cambian según el ciclo del día (`Mñana`, `Día`, `Noche`).
+*   **🐞 Corrección de Bugs**:
+    *   Se solucionó el problema donde el badge de notificaciones de amigos no se limpiaba al abrir la pestaña.
+    *   Se corrigió el error de bloqueo en batalla que ocurría tras curar a todo el equipo debilitado.
+
+---
+
 ¡Atrápalos a todos!
