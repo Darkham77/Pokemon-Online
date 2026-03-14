@@ -3980,7 +3980,7 @@
         id: 'vermilion', name: 'Gimnasio Carmín', city: 'Ciudad Carmín',
         leader: 'Lt. Surge', type: 'electric', typeColor: '#FFD93D',
         badge: '⚡', badgeName: 'Medalla Trueno',
-        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/surge.png',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/ltsurge.png',
         quote: '¡La electricidad es el arma definitiva! ¡Nunca me han derrotado!',
         pokemon: ['voltorb', 'pikachu', 'raichu'], levels: [21, 24, 28], badgesRequired: 2,
       },
@@ -5134,8 +5134,8 @@
             style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,0.08);border:none;
             border-radius:8px;color:var(--gray);font-size:18px;cursor:pointer;width:32px;height:32px;
             display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
-          <img src="GIMNASIO.png" alt="${gym.name}"
-            style="height:120px;image-rendering:pixelated;margin-bottom:12px;
+          <img src="${gym.sprite}" alt="${gym.name}"
+            style="height:140px;width:auto;image-rendering:pixelated;margin-bottom:12px;
             filter:drop-shadow(0 4px 16px ${gym.typeColor}88);"
             onerror="this.outerHTML='<div style=\'font-size:80px;\'>${gym.badge}</div>'">
           <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:${gym.typeColor};margin-bottom:6px;">${gym.leader}</div>
