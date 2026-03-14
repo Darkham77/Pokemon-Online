@@ -2494,6 +2494,10 @@
           </div>
         </div>
         <div class="hud-items">
+          <div id="time-cycle-display" style="display:flex;align-items:center;background:rgba(255,255,255,0.05);padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);font-size:12px;gap:8px;cursor:help;" title="Ciclo Día/Noche (Argentina)">
+            <span id="time-icon">🕒</span>
+            <span id="time-label">Cargando...</span>
+          </div>
           <span class="badge-count">🏅 <span id="badge-count">0</span></span>
           <span class="ball-count"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'>
   <circle cx='20' cy='20' r='19' fill='%23222' stroke='%23111' stroke-width='1.5'/>
@@ -2529,40 +2533,9 @@
       </div>
 
       <!-- MAP TAB -->
-      <div id="tab-map" class="tab-content">
-        <div class="map-grid">
-          <div class="location-card" onclick="goLocation('forest')">
-            <span class="location-tag tag-wild">Pokémon Salvajes</span>
-            <div class="location-icon">🌲</div>
-            <div class="location-name">Bosque Viridian</div>
-            <div class="location-desc">Pokémon de tipo Bicho y Planta habitan este denso bosque.</div>
-          </div>
-          <div class="location-card" onclick="goLocation('cave')">
-            <span class="location-tag tag-wild">Pokémon Salvajes</span>
-            <div class="location-icon">⛰️</div>
-            <div class="location-name">Cueva Roca</div>
-            <div class="location-desc">Pokémon de tipo Roca y tierra viven entre las oscuras cavernas.</div>
-          </div>
-          <div class="location-card" onclick="goLocation('water')">
-            <span class="location-tag tag-wild">Pokémon Salvajes</span>
-            <div class="location-icon">🌊</div>
-            <div class="location-name">Ruta Cerúlea</div>
-            <div class="location-desc">Las aguas cristalinas albergan Pokémon de tipo Agua.</div>
-          </div>
-          <div class="location-card" onclick="goLocation('plains')">
-            <span class="location-tag tag-wild">Pokémon Salvajes</span>
-            <div class="location-icon">🌾</div>
-            <div class="location-name">Llanura Carmín</div>
-            <div class="location-desc">Pokémon normales y eléctricos merodean por la hierba alta.</div>
-          </div>
-          <div class="location-card location-card-center" onclick="openPokemonCenter()"
-            style="border-color:rgba(255,100,150,0.4);background:linear-gradient(135deg,#1a1a3e,#2a1a2e);">
-            <span class="location-tag" style="background:rgba(255,100,150,0.2);color:#ff6496;">🏥 Curación</span>
-            <div class="location-icon">🏥</div>
-            <div class="location-name" style="color:#ff6496;">Centro Pokémon</div>
-            <div class="location-desc">La enfermera Joy curará a todos tus Pokémon y restaurará sus PP completamente.
-            </div>
-          </div>
+      <div id="tab-map" class="tab-content" style="padding-bottom:100px;">
+        <div id="map-list" class="map-grid">
+          <!-- Dynamically rendered -->
         </div>
       </div>
 
@@ -3626,12 +3599,50 @@
       return last4.map(m => ({ name: m.name, pp: m.pp, maxPP: m.pp }));
     }
 
-    const LOCATIONS = {
-      forest: { name: 'Bosque Viridian', wild: ['pidgey', 'caterpie', 'weedle', 'eevee'], minLv: 2, maxLv: 8 },
-      cave: { name: 'Cueva Roca', wild: ['geodude', 'zubat', 'jigglypuff'], minLv: 8, maxLv: 15 },
-      water: { name: 'Ruta Cerúlea', wild: ['psyduck', 'magikarp', 'squirtle'], minLv: 5, maxLv: 12 },
-      plains: { name: 'Llanura Carmín', wild: ['rattata', 'pikachu', 'eevee', 'pidgey'], minLv: 3, maxLv: 10 },
-    };
+    const FIRE_RED_MAPS = [
+      { id: 'route1', name: 'Ruta 1', icon: '🌾', badges: 0, desc: 'Conecta Pueblo Paleta con Ciudad Verde.', 
+        wild: { morning: ['pidgey', 'rattata'], day: ['pidgey', 'rattata'], dusk: ['rattata'], night: ['rattata'] },
+        rates: { morning: [50, 50], day: [50, 50], dusk: [100], night: [100] }, lv: [2, 5] },
+      { id: 'route2', name: 'Ruta 2', icon: '🌿', badges: 0, desc: 'Camino hacia el Bosque Viridian.', 
+        wild: { morning: ['pidgey', 'rattata', 'caterpie', 'weedle'], day: ['pidgey', 'rattata', 'caterpie', 'weedle'], dusk: ['rattata', 'zubat'], night: ['rattata', 'zubat'] },
+        rates: { morning: [40, 40, 10, 10], day: [40, 40, 10, 10], dusk: [90, 10], night: [80, 20] }, lv: [2, 6] },
+      { id: 'forest', name: 'Bosque Viridian', icon: '🌲', badges: 0, desc: 'Un bosque espeso y laberíntico.', 
+        wild: { morning: ['caterpie', 'weedle', 'metapod', 'kakuna', 'pikachu'], day: ['caterpie', 'weedle', 'metapod', 'kakuna', 'pikachu'], dusk: ['weedle', 'kakuna'], night: ['zubat', 'pidgey'] },
+        rates: { morning: [40, 40, 8, 8, 4], day: [40, 40, 8, 8, 4], dusk: [70, 30], night: [50, 50] }, lv: [3, 9] },
+      { id: 'route22', name: 'Ruta 22', icon: '🌾', badges: 0, desc: 'Camino hacia la Liga Pokémon.', 
+        wild: { morning: ['rattata', 'spearow', 'mankey'], day: ['rattata', 'spearow', 'mankey'], dusk: ['rattata'], night: ['rattata'] },
+        rates: { morning: [45, 45, 10], day: [45, 45, 10], dusk: [100], night: [100] }, lv: [2, 5] },
+      { id: 'route3', name: 'Ruta 3', icon: '⛰️', badges: 1, desc: 'Camino montañoso al MT. Moon.', 
+        wild: { morning: ['pidgey', 'spearow', 'jigglypuff', 'mankey'], day: ['pidgey', 'spearow', 'jigglypuff', 'mankey'], dusk: ['pidgey', 'zubat'], night: ['zubat', 'rattata'] },
+        rates: { morning: [40, 40, 10, 10], day: [40, 40, 10, 10], dusk: [60, 40], night: [80, 20] }, lv: [6, 12] },
+      { id: 'mt_moon', name: 'Mt. Moon', icon: '🌋', badges: 1, desc: 'Cueva famosa por sus fósiles.', 
+        wild: { morning: ['zubat', 'geodude', 'paras', 'clefairy'], day: ['zubat', 'geodude', 'paras', 'clefairy'], dusk: ['zubat', 'paras'], night: ['zubat', 'geodude', 'paras', 'clefairy'] },
+        rates: { morning: [60, 30, 5, 5], day: [60, 30, 5, 5], dusk: [80, 20], night: [60, 30, 5, 5] }, lv: [8, 14] },
+      { id: 'route4', name: 'Ruta 4', icon: '🍃', badges: 1, desc: 'Salida del Mt. Moon hacia Ciudad Celeste.', 
+        wild: { morning: ['rattata', 'spearow', 'ekans'], day: ['rattata', 'spearow', 'ekans'], dusk: ['rattata'], night: ['rattata'] },
+        rates: { morning: [40, 40, 20], day: [40, 40, 20], dusk: [100], night: [100] }, lv: [8, 12] },
+      { id: 'route24', name: 'Ruta 24', icon: '🌉', badges: 2, desc: 'El Puente Pepita.', 
+        wild: { morning: ['pidgey', 'oddish', 'abra', 'metapod'], day: ['pidgey', 'oddish', 'abra', 'metapod'], dusk: ['venonat', 'oddish'], night: ['venonat', 'oddish'] },
+        rates: { morning: [40, 40, 15, 5], day: [40, 40, 15, 5], dusk: [40, 60], night: [50, 50] }, lv: [10, 16] },
+      { id: 'diglett_cave', name: 'Cueva Diglett', icon: '🕳️', badges: 2, desc: 'Atajo hacia Ciudad Plateada.', 
+        wild: { morning: ['diglett', 'dugtrio'], day: ['diglett', 'dugtrio'], dusk: ['diglett'], night: ['diglett'] },
+        rates: { morning: [95, 5], day: [95, 5], dusk: [100], night: [100] }, lv: [15, 31] },
+      { id: 'route6', name: 'Ruta 6', icon: '🌾', badges: 2, desc: 'Conecta Celeste con Carmín.', 
+        wild: { morning: ['pidgey', 'oddish', 'meowth', 'psyduck'], day: ['pidgey', 'oddish', 'meowth', 'psyduck'], dusk: ['meowth', 'psyduck'], night: ['meowth', 'psyduck'] },
+        rates: { morning: [30, 30, 30, 10], day: [30, 30, 30, 10], dusk: [60, 40], night: [60, 40] }, lv: [12, 18] },
+      { id: 'route11', name: 'Ruta 11', icon: '🌾', badges: 3, desc: 'Al este de Ciudad Carmín.', 
+        wild: { morning: ['spearow', 'drowzee', 'sandshrew'], day: ['spearow', 'drowzee', 'sandshrew'], dusk: ['drowzee'], night: ['drowzee'] },
+        rates: { morning: [40, 40, 20], day: [40, 40, 20], dusk: [100], night: [100] }, lv: [14, 20] },
+      { id: 'rock_tunnel', name: 'Túnel Roca', icon: '🔦', badges: 3, desc: 'Cueva oscura que requiere Destello.', 
+        wild: { morning: ['zubat', 'geodude', 'onix', 'machop'], day: ['zubat', 'geodude', 'onix', 'machop'], dusk: ['zubat', 'geodude'], night: ['zubat', 'geodude', 'onix', 'machop'] },
+        rates: { morning: [50, 40, 5, 5], day: [50, 40, 5, 5], dusk: [60, 40], night: [50, 40, 5, 5] }, lv: [15, 22] },
+      { id: 'route12', name: 'Ruta 12', icon: '🎣', badges: 4, desc: 'Vía marítima hacia Ciudad Fucsia.', 
+        wild: { morning: ['pidgey', 'oddish', 'venonat', 'weepinbell'], day: ['pidgey', 'oddish', 'venonat', 'weepinbell'], dusk: ['venonat', 'zubat'], night: ['venonat', 'zubat'] },
+        rates: { morning: [30, 30, 30, 10], day: [30, 30, 30, 10], dusk: [60, 40], night: [70, 30] }, lv: [22, 30] },
+      { id: 'victory_road', name: 'Calle Victoria', icon: '⛰️', badges: 8, desc: 'El desafío final antes de la Liga.', 
+        wild: { morning: ['machop', 'machoke', 'geodude', 'graveler', 'onix', 'marowak'], day: ['machop', 'machoke', 'geodude', 'graveler', 'onix', 'marowak'], dusk: ['machoke', 'graveler'], night: ['machop', 'machoke', 'geodude', 'graveler', 'onix', 'marowak'] },
+        rates: { morning: [20, 20, 20, 20, 10, 10], day: [20, 20, 20, 20, 10, 10], dusk: [50, 50], night: [20, 20, 20, 20, 10, 10] }, lv: [35, 50] }
+    ];
 
     const GYMS = [
       { id: 'pewter', name: 'Gimnasio Plateada', leader: 'Brock', type: 'rock', badge: '💎', emoji: '🪨', pokemon: ['geodude', 'geodude'], levels: [12, 14], badgesRequired: 0 },
@@ -4077,6 +4088,7 @@
       if (tab === 'pokedex') renderPokedex();
       if (tab === 'gyms') renderGyms();
       if (tab === 'market') renderMarket();
+      if (tab === 'map') renderMaps();
     }
 
     // ===== RENDER =====
@@ -4477,17 +4489,78 @@
     }
 
     // ===== LOCATION / WILD BATTLE =====
-    function goLocation(locationId) {
+    function renderMaps() {
+      const container = document.getElementById('map-list');
+      if (!container) return;
+      const cycle = getDayCycle();
+      const badgeCount = state.badges;
+
+      let html = '';
+      
+      // Siempre añadir el Centro Pokémon primero
+      html += `<div class="location-card location-card-center" onclick="openPokemonCenter()"
+            style="grid-column: 1 / -1; border-color:rgba(255,100,150,0.4);background:linear-gradient(135deg,#1a1a3e,#2a1a2e);margin-bottom:16px;">
+            <span class="location-tag" style="background:rgba(255,100,150,0.2);color:#ff6496;">🏥 Curación</span>
+            <div class="location-icon">🏥</div>
+            <div class="location-name" style="color:#ff6496;">Centro Pokémon</div>
+            <div class="location-desc">Saná a tus Pokémon y restaurá sus PP al máximo.</div>
+          </div>`;
+
+      FIRE_RED_MAPS.forEach(loc => {
+        const isLocked = badgeCount < loc.badges;
+        const availableWild = loc.wild[cycle] || loc.wild.day;
+        
+        html += `<div class="location-card ${isLocked ? 'locked' : ''}" onclick="${isLocked ? '' : `goLocation('${loc.id}')`}">
+          <span class="location-tag ${isLocked ? 'tag-locked' : 'tag-wild'}">${isLocked ? `🔒 Requiere ${loc.badges} Medallas` : '🌿 Pokémon Salvajes'}</span>
+          <div class="location-icon">${loc.icon}</div>
+          <div class="location-name">${loc.name}</div>
+          <div class="location-desc">${loc.desc}</div>
+          ${!isLocked ? `<div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,0.4);display:flex;flex-wrap:wrap;gap:4px;">
+            ${availableWild.slice(0, 3).map(id =>`<span>${POKEMON_DB[id]?.emoji || '❓'}</span>`).join('')}
+            <span>...</span>
+          </div>` : ''}
+        </div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // ===== LOCATION / WILD BATTLE =====
+    function goLocation(locId) {
       const alive = state.team.filter(p => p.hp > 0);
       if (alive.length === 0) {
         notify('¡Todos tus Pokémon están debilitados! Curá tu equipo primero.', '❤️‍🩹');
         return;
       }
-      const loc = LOCATIONS[locationId];
-      const wildId = loc.wild[Math.floor(Math.random() * loc.wild.length)];
-      const level = Math.floor(Math.random() * (loc.maxLv - loc.minLv + 1)) + loc.minLv;
-      const wild = makePokemon(wildId, level);
-      startBattle(wild, false, null, locationId);
+      const loc = FIRE_RED_MAPS.find(l => l.id === locId);
+      if (!loc) return;
+      
+      const badgeCount = state.badges;
+      if (badgeCount < loc.badges) {
+        notify(`¡Necesitás ${loc.badges} medallas para acceder!`, '🔒');
+        return;
+      }
+
+      const cycle = getDayCycle();
+      const wildPool = loc.wild[cycle] || loc.wild.day;
+      const wildRates = loc.rates[cycle] || loc.rates.day;
+
+      // Selección por probabilidad (Rates)
+      let rand = Math.random() * 100;
+      let cumulative = 0;
+      let selectedId = wildPool[0];
+      
+      for (let i = 0; i < wildPool.length; i++) {
+        cumulative += wildRates[i] || 0;
+        if (rand <= cumulative) {
+          selectedId = wildPool[i];
+          break;
+        }
+      }
+
+      const level = Math.floor(Math.random() * (loc.lv[1] - loc.lv[0] + 1)) + loc.lv[0];
+      const enemy = makePokemon(selectedId, level);
+      startBattle(enemy, false, null, locId);
     }
 
     // ===== GYM BATTLE =====
@@ -6627,7 +6700,8 @@
       notify(`Usaste ${itemName}. ¡${p.name} ${result}!`, '✨');
 
       if (context === 'team') renderTeam();
-      if (context === 'box') renderBox();
+      if (currentTab === 'map') renderMaps();
+      if (currentTab === 'bag') renderBag();
       scheduleSave();
     }
 
