@@ -3273,6 +3273,10 @@
         name: 'Ninetales', emoji: '🦊', type: 'fire', hp: 73, atk: 76, def: 75, spe: 100,
         learnset: [{ lv: 1, name: 'Ascuas', pp: 25 }, { lv: 1, name: 'Ataque Rápido', pp: 30 }, { lv: 1, name: 'Rayo Confuso', pp: 10 }, { lv: 1, name: 'Lanzallamas', pp: 15 }]
       },
+      jigglypuff: {
+        name: 'Jigglypuff', emoji: '🎵', type: 'normal', hp: 115, atk: 45, def: 20, spe: 20,
+        learnset: [{ lv: 1, name: 'Canto', pp: 15 }, { lv: 1, name: 'Destructor', pp: 35 }, { lv: 9, name: 'Doble Bofetón', pp: 10 }, { lv: 14, name: 'Cuerpo Pesado', pp: 15 }, { lv: 19, name: 'Rizo Defensa', pp: 40 }, { lv: 29, name: 'Doble Filo', pp: 15 }]
+      },
       wigglytuff: {
         name: 'Wigglytuff', emoji: '🎵', type: 'normal', hp: 140, atk: 70, def: 45, spe: 45,
         learnset: [{ lv: 1, name: 'Canto', pp: 15 }, { lv: 1, name: 'Destructor', pp: 35 }, { lv: 1, name: 'Doble Bofetón', pp: 10 }, { lv: 1, name: 'Cuerpo Pesado', pp: 15 }]
@@ -3328,6 +3332,10 @@
       persian: {
         name: 'Persian', emoji: '🐱', type: 'normal', hp: 65, atk: 70, def: 60, spe: 115,
         learnset: [{ lv: 1, name: 'Arañazo', pp: 35 }, { lv: 12, name: 'Mordisco', pp: 25 }, { lv: 30, name: 'Cuchillada', pp: 20 }]
+      },
+      psyduck: {
+        name: 'Psyduck', emoji: '🦆', type: 'water', hp: 50, atk: 52, def: 48, spe: 55,
+        learnset: [{ lv: 1, name: 'Arañazo', pp: 35 }, { lv: 10, name: 'Pistola Agua', pp: 25 }, { lv: 16, name: 'Confusión', pp: 25 }, { lv: 22, name: 'Gruñido', pp: 40 }, { lv: 28, name: 'Amnesia', pp: 20 }, { lv: 36, name: 'Hidrobomba', pp: 5 }]
       },
       golduck: {
         name: 'Golduck', emoji: '🦆', type: 'water', hp: 80, atk: 82, def: 78, spe: 85,
@@ -3809,10 +3817,70 @@
     ];
 
     const GYMS = [
-      { id: 'pewter', name: 'Gimnasio Plateada', leader: 'Brock', type: 'rock', badge: '💎', emoji: '🪨', pokemon: ['geodude', 'geodude'], levels: [12, 14], badgesRequired: 0 },
-      { id: 'cerulean', name: 'Gimnasio Celeste', leader: 'Misty', type: 'water', badge: '💧', emoji: '🌊', pokemon: ['psyduck', 'squirtle'], levels: [18, 21], badgesRequired: 1 },
-      { id: 'vermilion', name: 'Gimnasio Carmín', leader: 'Lt. Surge', type: 'electric', badge: '⚡', emoji: '⚡', pokemon: ['pikachu', 'pikachu'], levels: [24, 28], badgesRequired: 2 },
-      { id: 'celadon', name: 'Gimnasio Celacanto', leader: 'Erika', type: 'grass', badge: '🌿', emoji: '🌺', pokemon: ['bulbasaur', 'eevee'], levels: [29, 32], badgesRequired: 3 },
+      {
+        id: 'pewter', name: 'Gimnasio Plateada', city: 'Ciudad Plateada',
+        leader: 'Brock', type: 'rock', typeColor: '#c8a060',
+        badge: '💎', badgeName: 'Medalla Roca',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/brock.png',
+        quote: '¡Mis Pokémon de roca tienen una defensa impenetrable!',
+        pokemon: ['geodude', 'onix'], levels: [12, 14], badgesRequired: 0,
+      },
+      {
+        id: 'cerulean', name: 'Gimnasio Celeste', city: 'Ciudad Celeste',
+        leader: 'Misty', type: 'water', typeColor: '#3B8BFF',
+        badge: '💧', badgeName: 'Medalla Cascada',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/misty.png',
+        quote: '¡Soy la chica sensacional del agua! ¡No te voy a perdonar!',
+        pokemon: ['staryu', 'starmie'], levels: [18, 21], badgesRequired: 1,
+      },
+      {
+        id: 'vermilion', name: 'Gimnasio Carmín', city: 'Ciudad Carmín',
+        leader: 'Lt. Surge', type: 'electric', typeColor: '#FFD93D',
+        badge: '⚡', badgeName: 'Medalla Trueno',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/surge.png',
+        quote: '¡La electricidad es el arma definitiva! ¡Nunca me han derrotado!',
+        pokemon: ['voltorb', 'pikachu', 'raichu'], levels: [21, 24, 28], badgesRequired: 2,
+      },
+      {
+        id: 'celadon', name: 'Gimnasio Celacanto', city: 'Ciudad Celacanto',
+        leader: 'Erika', type: 'grass', typeColor: '#6BCB77',
+        badge: '🌿', badgeName: 'Medalla Arcoíris',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/erika.png',
+        quote: '¡Mis Pokémon de planta son tan hermosos como poderosos!',
+        pokemon: ['victreebel', 'tangela', 'vileplume'], levels: [29, 24, 29], badgesRequired: 3,
+      },
+      {
+        id: 'fuchsia', name: 'Gimnasio Fucsia', city: 'Ciudad Fucsia',
+        leader: 'Koga', type: 'poison', typeColor: '#C77DFF',
+        badge: '☠️', badgeName: 'Medalla Alma',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/koga.png',
+        quote: '¡El veneno es el arma más elegante de un ninja Pokémon!',
+        pokemon: ['koffing', 'muk', 'koffing', 'weezing'], levels: [37, 39, 37, 43], badgesRequired: 4,
+      },
+      {
+        id: 'saffron', name: 'Gimnasio Azafrán', city: 'Ciudad Azafrán',
+        leader: 'Sabrina', type: 'psychic', typeColor: '#FF6EFF',
+        badge: '🔮', badgeName: 'Medalla Marsh',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/sabrina.png',
+        quote: '¡Puedo leer tu mente y ver cada uno de tus movimientos!',
+        pokemon: ['kadabra', 'mr_mime', 'jynx', 'alakazam'], levels: [38, 37, 38, 43], badgesRequired: 5,
+      },
+      {
+        id: 'cinnabar', name: 'Gimnasio Canela', city: 'Isla Canela',
+        leader: 'Blaine', type: 'fire', typeColor: '#FF6B35',
+        badge: '🔥', badgeName: 'Medalla Volcán',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/blaine.png',
+        quote: '¡Si no podés soportar el calor, ¡salí de mi gimnasio!',
+        pokemon: ['growlithe', 'ponyta', 'rapidash', 'arcanine'], levels: [42, 40, 42, 47], badgesRequired: 6,
+      },
+      {
+        id: 'viridian', name: 'Gimnasio Verde', city: 'Ciudad Verde',
+        leader: 'Giovanni', type: 'ground', typeColor: '#c8a060',
+        badge: '🌍', badgeName: 'Medalla Tierra',
+        sprite: 'https://play.pokemonshowdown.com/sprites/trainers/giovanni.png',
+        quote: '¡Seré el último y más difícil obstáculo en tu camino!',
+        pokemon: ['rhyhorn', 'dugtrio', 'nidoqueen', 'nidoking', 'rhydon'], levels: [45, 42, 44, 45, 50], badgesRequired: 7,
+      },
     ];
 
     const // Categories: 'physical' | 'special' | 'status'
@@ -4626,23 +4694,98 @@
 
     function renderGyms() {
       const list = document.getElementById('gym-list');
+      const TYPE_ICON = {
+        rock:'🪨', water:'💧', electric:'⚡', grass:'🌿',
+        poison:'☠️', psychic:'🔮', fire:'🔥', ground:'🏜️',
+        normal:'⬜', ice:'❄️', fighting:'🥊', flying:'🪶',
+        ghost:'👻', dragon:'🐉', dark:'🌑', steel:'⚙️', bug:'🐛'
+      };
+
       list.innerHTML = GYMS.map(gym => {
-        const defeated = state.defeatedGyms.includes(gym.id);
-        const locked = state.badges < gym.badgesRequired;
-        const cls = defeated ? 'gym-defeated' : locked ? 'gym-locked' : '';
-        const status = defeated ? '✅' : locked ? '🔒' : '⚔️';
-        const onclick = (!defeated && !locked) ? `challengeGym('${gym.id}')` : '';
-        return `<div class="gym-card ${cls}" onclick="${onclick}">
-      <span class="gym-badge">${gym.emoji}</span>
-      <div class="gym-info">
-        <div class="gym-name">${gym.name}</div>
-        <div class="gym-leader">Líder: ${gym.leader}</div>
-        <div class="gym-type">Tipo: ${gym.type} — Medalla: ${gym.badge}</div>
-        ${locked ? `<div style="color:var(--red);font-size:11px;margin-top:4px">Necesitás ${gym.badgesRequired} medalla(s)</div>` : ''}
-        ${defeated ? `<div style="color:var(--green);font-size:11px;margin-top:4px">¡Ya ganaste esta medalla!</div>` : ''}
-      </div>
-      <span class="gym-status">${status}</span>
-    </div>`;
+        const defeated  = state.defeatedGyms?.includes(gym.id);
+        const locked    = state.badges < gym.badgesRequired;
+        const typeColor = gym.typeColor || '#888';
+        const onclick   = (!defeated && !locked) ? `challengeGym('${gym.id}')` : '';
+
+        // Pokémon team preview (sprites from PokeAPI)
+        const teamHtml = gym.pokemon.map(id => {
+          const num = POKEMON_SPRITE_IDS[id];
+          const pData = POKEMON_DB[id];
+          return num
+            ? `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${num}.png"
+                 width="36" height="36" style="image-rendering:pixelated;"
+                 title="${pData?.name || id}"
+                 onerror="this.style.display='none'">`
+            : `<span style="font-size:22px;">${pData?.emoji || '❓'}</span>`;
+        }).join('');
+
+        // Ace = last Pokémon in array
+        const aceIdx   = gym.pokemon.length - 1;
+        const aceLevel = gym.levels[aceIdx];
+
+        // State badge
+        const stateBadge = defeated
+          ? `<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.4);font-size:10px;color:var(--green);font-weight:700;">✅ Completado — ${gym.badge} obtenida</div>`
+          : locked
+            ? `<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.2);font-size:10px;color:var(--red);">🔒 Requiere ${gym.badgesRequired} medalla${gym.badgesRequired!==1?'s':''}</div>`
+            : `<button onclick="${onclick}" style="padding:8px 20px;border:none;border-radius:20px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:7px;
+                background:linear-gradient(135deg,${typeColor},${typeColor}99);color:#fff;font-weight:900;
+                box-shadow:0 2px 12px ${typeColor}55;transition:all .2s;"
+                onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                ⚔️ DESAFIAR
+              </button>`;
+
+        return `
+          <div style="background:var(--card);border-radius:20px;overflow:hidden;
+            border:2px solid ${defeated ? 'rgba(107,203,119,0.35)' : locked ? 'rgba(255,255,255,0.05)' : typeColor+'44'};
+            transition:all .3s;opacity:${locked ? '0.5' : '1'};"
+            ${!defeated && !locked ? `onmouseover="this.style.boxShadow='0 4px 24px ${typeColor}33'" onmouseout="this.style.boxShadow='none'"` : ''}>
+
+            <!-- Colored header stripe -->
+            <div style="background:linear-gradient(135deg,${typeColor}22,${typeColor}08);padding:16px 20px 0;
+              border-bottom:1px solid ${typeColor}22;">
+              <div style="display:flex;align-items:flex-start;gap:16px;">
+
+                <!-- Left: info -->
+                <div style="flex:1;min-width:0;">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                    <span style="font-size:18px;">${TYPE_ICON[gym.type] || '❓'}</span>
+                    <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:${typeColor};">${gym.name}</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--gray);margin-bottom:2px;">📍 ${gym.city}</div>
+                  <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Líder: <span style="color:#eee;">${gym.leader}</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                    <span style="font-size:11px;background:${typeColor}22;color:${typeColor};padding:3px 8px;border-radius:10px;font-weight:700;border:1px solid ${typeColor}44;">
+                      ${TYPE_ICON[gym.type]} ${gym.type.charAt(0).toUpperCase()+gym.type.slice(1)}
+                    </span>
+                    <span style="font-size:11px;color:var(--yellow);">${gym.badge} ${gym.badgeName}</span>
+                    <span style="font-size:10px;color:var(--gray);">As: Nv.${aceLevel}</span>
+                  </div>
+                  <div style="font-size:11px;color:#888;font-style:italic;margin-bottom:12px;line-height:1.5;">
+                    "${gym.quote}"
+                  </div>
+                </div>
+
+                <!-- Right: trainer sprite -->
+                <div style="flex-shrink:0;width:96px;text-align:center;">
+                  <img src="${gym.sprite}" alt="${gym.leader}"
+                    style="height:96px;width:auto;image-rendering:pixelated;filter:drop-shadow(0 2px 8px ${typeColor}66);"
+                    onerror="this.outerHTML='<div style=\'font-size:52px;line-height:1;\'>${gym.badge}</div>'">
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Bottom: team + action -->
+            <div style="padding:12px 20px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+              <div>
+                <div style="font-size:9px;color:var(--gray);margin-bottom:6px;font-weight:700;">EQUIPO</div>
+                <div style="display:flex;align-items:center;gap:4px;">${teamHtml}</div>
+              </div>
+              ${stateBadge}
+            </div>
+
+          </div>`;
       }).join('');
     }
 
@@ -4713,16 +4856,52 @@
       FIRE_RED_MAPS.forEach(loc => {
         const isLocked = badgeCount < loc.badges;
         const availableWild = loc.wild[cycle] || loc.wild.day;
-        
+
+        // Build time slots preview — show which Pokémon are exclusive to each slot
+        const allSlots = ['morning', 'day', 'dusk', 'night'];
+        const slotMeta = {
+          morning: { icon: '🌅', label: 'Alba',  color: '#FFD93D' },
+          day:     { icon: '☀️',  label: 'Día',   color: '#FFEEAD' },
+          dusk:    { icon: '🌆', label: 'Crepúsculo', color: '#FF9632' },
+          night:   { icon: '🌙', label: 'Noche', color: '#9b4dca'  },
+        };
+
+        // Pokémon exclusive to each slot (not in day pool)
+        const dayPool = new Set(loc.wild.day || []);
+        const exclusives = {};
+        allSlots.forEach(slot => {
+          if (slot === 'day') return;
+          const pool = loc.wild[slot] || [];
+          const ex = pool.filter(id => !dayPool.has(id));
+          if (ex.length) exclusives[slot] = ex;
+        });
+
+        const timeSlotsHtml = Object.entries(exclusives).map(([slot, ids]) => {
+          const meta = slotMeta[slot];
+          const active = slot === cycle;
+          return `<div style="display:flex;align-items:center;gap:4px;padding:3px 6px;border-radius:8px;
+            background:${active ? 'rgba(255,255,255,0.1)' : 'transparent'};
+            border:1px solid ${active ? meta.color + '55' : 'transparent'};">
+            <span style="font-size:10px;">${meta.icon}</span>
+            <span style="font-size:9px;color:${meta.color};font-weight:${active?'700':'400'};">${meta.label}:</span>
+            ${ids.slice(0,3).map(id => `<span title="${POKEMON_DB[id]?.name||id}" style="font-size:12px;">${POKEMON_DB[id]?.emoji||'❓'}</span>`).join('')}
+            ${ids.length > 3 ? `<span style="font-size:9px;color:#666;">+${ids.length-3}</span>` : ''}
+          </div>`;
+        }).join('');
+
         html += `<div class="location-card ${isLocked ? 'locked' : ''}" onclick="${isLocked ? '' : `goLocation('${loc.id}')`}">
-          <span class="location-tag ${isLocked ? 'tag-locked' : 'tag-wild'}">${isLocked ? `🔒 Requiere ${loc.badges} Medallas` : '🌿 Pokémon Salvajes'}</span>
+          <span class="location-tag ${isLocked ? 'tag-locked' : 'tag-wild'}">${isLocked ? `🔒 ${loc.badges} Medallas` : `${slotMeta[cycle].icon} ${slotMeta[cycle].label}`}</span>
           <div class="location-icon">${loc.icon}</div>
           <div class="location-name">${loc.name}</div>
           <div class="location-desc">${loc.desc}</div>
-          ${!isLocked ? `<div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,0.4);display:flex;flex-wrap:wrap;gap:4px;">
-            ${availableWild.slice(0, 3).map(id =>`<span>${POKEMON_DB[id]?.emoji || '❓'}</span>`).join('')}
-            <span>...</span>
-          </div>` : ''}
+          ${!isLocked ? `
+          <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:3px;align-items:center;">
+            <span style="font-size:9px;color:#666;margin-right:2px;">Ahora:</span>
+            ${availableWild.slice(0,5).map(id => `<span title="${POKEMON_DB[id]?.name||id}" style="font-size:14px;">${POKEMON_DB[id]?.emoji||'❓'}</span>`).join('')}
+            ${availableWild.length > 5 ? `<span style="font-size:9px;color:#666;">+${availableWild.length-5}</span>` : ''}
+          </div>
+          ${timeSlotsHtml ? `<div style="margin-top:6px;display:flex;flex-direction:column;gap:2px;">${timeSlotsHtml}</div>` : ''}
+          ` : ''}
         </div>`;
       });
 
@@ -4776,12 +4955,40 @@
         notify('¡Todos tus Pokémon están debilitados!', '❤️‍🩹');
         return;
       }
-      // Create gym leader pokemon (first one)
-      const leadPokemonId = gym.pokemon[0];
-      const leadLevel = gym.levels[0];
-      const leader = makePokemon(leadPokemonId, leadLevel);
-      leader.name = `${leader.name} (${gym.leader})`;
-      startBattle(leader, true, gymId, 'gym');
+      // Show leader intro overlay before battle
+      const introOv = document.createElement('div');
+      introOv.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease;';
+      introOv.innerHTML = `
+        <div style="background:var(--card);border-radius:24px;padding:32px;max-width:380px;width:100%;
+          border:2px solid ${gym.typeColor}55;text-align:center;">
+          <img src="${gym.sprite}" alt="${gym.leader}"
+            style="height:120px;image-rendering:pixelated;margin-bottom:12px;
+            filter:drop-shadow(0 4px 16px ${gym.typeColor}88);"
+            onerror="this.outerHTML='<div style=\'font-size:80px;\'>${gym.badge}</div>'">
+          <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:${gym.typeColor};margin-bottom:6px;">${gym.leader}</div>
+          <div style="font-size:12px;color:var(--gray);margin-bottom:6px;">Líder del ${gym.name}</div>
+          <div style="font-size:13px;color:#eee;margin:16px 0;line-height:1.6;font-style:italic;">"${gym.quote}"</div>
+          <button id="gym-intro-btn" style="font-family:'Press Start 2P',monospace;font-size:9px;padding:14px 28px;border:none;border-radius:14px;
+            cursor:pointer;background:linear-gradient(135deg,${gym.typeColor},${gym.typeColor}99);color:#fff;
+            box-shadow:0 4px 16px ${gym.typeColor}55;margin-top:8px;">
+            ⚔️ ¡A PELEAR!
+          </button>
+        </div>`;
+      document.body.appendChild(introOv);
+
+      document.getElementById('gym-intro-btn').onclick = () => {
+        introOv.remove();
+        // Ace = last Pokémon in the array (the strongest)
+        const aceIdx  = gym.pokemon.length - 1;
+        const aceId   = gym.pokemon[aceIdx];
+        const aceLevel= gym.levels[aceIdx];
+        const ace     = makePokemon(aceId, aceLevel);
+        // Label it with the leader name
+        ace._gymLeader = gym.leader;
+        ace._gymBadge  = gym.badge;
+        ace.name       = `${ace.name} (${gym.leader})`;
+        startBattle(ace, true, gymId, 'gym');
+      };
     }
 
 
@@ -5456,8 +5663,8 @@
             state.defeatedGyms.push(b.gymId);
             state.badges++;
             updateHud();
-            addLog(`¡Obtuviste la medalla ${gym.badge} de ${gym.leader}!`, 'log-catch');
-            notify(`¡Medalla ${gym.badge} obtenida!`, '🏆');
+            addLog(`¡Obtuviste la ${gym.badgeName || gym.badge} de ${gym.leader}!`, 'log-catch');
+            notify(`¡${gym.badgeName || gym.badge} obtenida! 🏆`, '🏆');
           }
         }
 
