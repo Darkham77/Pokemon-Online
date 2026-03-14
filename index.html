@@ -2603,13 +2603,186 @@
         <div class="section-title" style="margin:0;">📦 Caja Pokémon</div>
         <div id="box-count-badge" style="font-size:11px;color:var(--gray);"></div>
       </div>
-      <div style="font-size:12px;color:var(--gray);margin-bottom:16px;">
+      <div style="font-size:12px;color:var(--gray);margin-bottom:12px;">
         Tocá un Pokémon para intercambiarlo con uno de tu equipo activo.
       </div>
+
+      <!-- FILTER PANEL -->
+      <div id="box-filter-panel" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;margin-bottom:14px;">
+        <!-- Toggle header -->
+        <div onclick="toggleBoxFilters()" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+          <span style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--purple);">🔍 FILTROS</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="box-filter-summary" style="font-size:10px;color:var(--gray);"></span>
+            <span id="box-filter-chevron" style="color:var(--gray);font-size:14px;transition:transform .2s;">▼</span>
+          </div>
+        </div>
+
+        <!-- Filter body (collapsible) -->
+        <div id="box-filter-body" style="display:none;margin-top:14px;">
+
+          <!-- Row 1: Tier -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">Tier</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;" id="box-tier-btns">
+              <button onclick="setBoxFilter('tier','all')" data-tier="all" class="box-filter-btn box-filter-active"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;cursor:pointer;background:rgba(255,255,255,0.1);color:#eee;">Todos</button>
+              <button onclick="setBoxFilter('tier','S+')" data-tier="S+" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,215,0,0.4);border-radius:20px;cursor:pointer;background:rgba(255,215,0,0.12);color:#FFD700;">S+</button>
+              <button onclick="setBoxFilter('tier','S')" data-tier="S" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,180,0,0.4);border-radius:20px;cursor:pointer;background:rgba(255,180,0,0.12);color:#FFB800;">S</button>
+              <button onclick="setBoxFilter('tier','A')" data-tier="A" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(107,203,119,0.4);border-radius:20px;cursor:pointer;background:rgba(107,203,119,0.12);color:var(--green);">A</button>
+              <button onclick="setBoxFilter('tier','B')" data-tier="B" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(59,139,255,0.4);border-radius:20px;cursor:pointer;background:rgba(59,139,255,0.12);color:var(--blue);">B</button>
+              <button onclick="setBoxFilter('tier','C')" data-tier="C" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(199,125,255,0.4);border-radius:20px;cursor:pointer;background:rgba(199,125,255,0.12);color:var(--purple);">C</button>
+              <button onclick="setBoxFilter('tier','D')" data-tier="D" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,150,50,0.4);border-radius:20px;cursor:pointer;background:rgba(255,150,50,0.12);color:#FF9632;">D</button>
+              <button onclick="setBoxFilter('tier','F')" data-tier="F" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,59,59,0.4);border-radius:20px;cursor:pointer;background:rgba(255,59,59,0.12);color:var(--red);">F</button>
+            </div>
+          </div>
+
+          <!-- Row 2: Type -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">Tipo</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;" id="box-type-btns">
+              <button onclick="setBoxFilter('type','all')" data-type="all" class="box-filter-btn box-filter-active"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;cursor:pointer;background:rgba(255,255,255,0.1);color:#eee;">Todos</button>
+              <button onclick="setBoxFilter('type','fire')" data-type="fire" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,59,59,0.35);border-radius:20px;cursor:pointer;background:rgba(255,59,59,0.1);color:var(--red);">🔥 Fuego</button>
+              <button onclick="setBoxFilter('type','water')" data-type="water" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(59,139,255,0.35);border-radius:20px;cursor:pointer;background:rgba(59,139,255,0.1);color:var(--blue);">💧 Agua</button>
+              <button onclick="setBoxFilter('type','grass')" data-type="grass" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(107,203,119,0.35);border-radius:20px;cursor:pointer;background:rgba(107,203,119,0.1);color:var(--green);">🌿 Planta</button>
+              <button onclick="setBoxFilter('type','electric')" data-type="electric" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,217,61,0.35);border-radius:20px;cursor:pointer;background:rgba(255,217,61,0.1);color:var(--yellow);">⚡ Eléctrico</button>
+              <button onclick="setBoxFilter('type','psychic')" data-type="psychic" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(199,125,255,0.35);border-radius:20px;cursor:pointer;background:rgba(199,125,255,0.1);color:var(--purple);">🔮 Psíquico</button>
+              <button onclick="setBoxFilter('type','normal')" data-type="normal" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,200,200,0.25);border-radius:20px;cursor:pointer;background:rgba(200,200,200,0.07);color:#bbb;">⬜ Normal</button>
+              <button onclick="setBoxFilter('type','rock')" data-type="rock" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,160,96,0.35);border-radius:20px;cursor:pointer;background:rgba(200,160,96,0.1);color:#c8a060;">🪨 Roca</button>
+              <button onclick="setBoxFilter('type','ground')" data-type="ground" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(200,160,96,0.35);border-radius:20px;cursor:pointer;background:rgba(200,160,96,0.1);color:#c8a060;">🏜️ Tierra</button>
+              <button onclick="setBoxFilter('type','poison')" data-type="poison" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(199,125,255,0.35);border-radius:20px;cursor:pointer;background:rgba(199,125,255,0.1);color:var(--purple);">☠️ Veneno</button>
+              <button onclick="setBoxFilter('type','bug')" data-type="bug" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(139,195,74,0.35);border-radius:20px;cursor:pointer;background:rgba(139,195,74,0.1);color:#8BC34A;">🐛 Bicho</button>
+              <button onclick="setBoxFilter('type','flying')" data-type="flying" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(137,207,240,0.35);border-radius:20px;cursor:pointer;background:rgba(137,207,240,0.1);color:#89CFF0;">🪶 Volador</button>
+              <button onclick="setBoxFilter('type','ghost')" data-type="ghost" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(123,47,190,0.35);border-radius:20px;cursor:pointer;background:rgba(123,47,190,0.1);color:#9B59B6;">👻 Fantasma</button>
+              <button onclick="setBoxFilter('type','ice')" data-type="ice" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(125,249,255,0.35);border-radius:20px;cursor:pointer;background:rgba(125,249,255,0.1);color:#7DF9FF;">❄️ Hielo</button>
+              <button onclick="setBoxFilter('type','dragon')" data-type="dragon" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(92,22,197,0.35);border-radius:20px;cursor:pointer;background:rgba(92,22,197,0.1);color:#8060FF;">🐉 Dragón</button>
+              <button onclick="setBoxFilter('type','fighting')" data-type="fighting" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(255,59,59,0.35);border-radius:20px;cursor:pointer;background:rgba(255,59,59,0.1);color:var(--red);">🥊 Lucha</button>
+              <button onclick="setBoxFilter('type','dark')" data-type="dark" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(100,100,100,0.35);border-radius:20px;cursor:pointer;background:rgba(100,100,100,0.1);color:#888;">🌑 Siniestro</button>
+              <button onclick="setBoxFilter('type','steel')" data-type="steel" class="box-filter-btn"
+                style="font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;border:1px solid rgba(158,158,158,0.35);border-radius:20px;cursor:pointer;background:rgba(158,158,158,0.1);color:#9E9E9E;">⚙️ Acero</button>
+            </div>
+          </div>
+
+          <!-- Row 3: Level + IV filter -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px;">
+            <div>
+              <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">Nivel mínimo</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <input type="range" id="box-level-min" min="1" max="100" value="1"
+                  oninput="setBoxFilter('levelMin',+this.value)"
+                  style="flex:1;accent-color:var(--purple);">
+                <span id="box-level-min-val" style="font-size:11px;color:var(--yellow);width:26px;text-align:right;font-weight:700;">1</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">Nivel máximo</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <input type="range" id="box-level-max" min="1" max="100" value="100"
+                  oninput="setBoxFilter('levelMax',+this.value)"
+                  style="flex:1;accent-color:var(--purple);">
+                <span id="box-level-max-val" style="font-size:11px;color:var(--yellow);width:26px;text-align:right;font-weight:700;">100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 4: Specific IV stat filter -->
+          <div style="margin-top:12px;">
+            <div style="font-size:10px;color:var(--gray);margin-bottom:6px;font-weight:700;">IV específico (stat mínimo)</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="box-iv-filters">
+              <div>
+                <div style="font-size:9px;color:#888;margin-bottom:3px;">HP</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="range" min="0" max="31" value="0" id="iv-hp"
+                    oninput="setBoxFilter('ivHP',+this.value)"
+                    style="flex:1;accent-color:#6BCB77;">
+                  <span id="iv-hp-val" style="font-size:10px;color:#6BCB77;width:20px;text-align:right;">0</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:9px;color:#888;margin-bottom:3px;">Ataque</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="range" min="0" max="31" value="0" id="iv-atk"
+                    oninput="setBoxFilter('ivATK',+this.value)"
+                    style="flex:1;accent-color:#FF6B35;">
+                  <span id="iv-atk-val" style="font-size:10px;color:#FF6B35;width:20px;text-align:right;">0</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:9px;color:#888;margin-bottom:3px;">Defensa</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="range" min="0" max="31" value="0" id="iv-def"
+                    oninput="setBoxFilter('ivDEF',+this.value)"
+                    style="flex:1;accent-color:#3B8BFF;">
+                  <span id="iv-def-val" style="font-size:10px;color:#3B8BFF;width:20px;text-align:right;">0</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:9px;color:#888;margin-bottom:3px;">At.Esp</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="range" min="0" max="31" value="0" id="iv-spa"
+                    oninput="setBoxFilter('ivSPA',+this.value)"
+                    style="flex:1;accent-color:#C77DFF;">
+                  <span id="iv-spa-val" style="font-size:10px;color:#C77DFF;width:20px;text-align:right;">0</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:9px;color:#888;margin-bottom:3px;">Def.Esp</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="range" min="0" max="31" value="0" id="iv-spd"
+                    oninput="setBoxFilter('ivSPD',+this.value)"
+                    style="flex:1;accent-color:#89CFF0;">
+                  <span id="iv-spd-val" style="font-size:10px;color:#89CFF0;width:20px;text-align:right;">0</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:9px;color:#888;margin-bottom:3px;">Velocidad</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="range" min="0" max="31" value="0" id="iv-spe"
+                    oninput="setBoxFilter('ivSPE',+this.value)"
+                    style="flex:1;accent-color:#FFD93D;">
+                  <span id="iv-spe-val" style="font-size:10px;color:#FFD93D;width:20px;text-align:right;">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reset button -->
+          <button onclick="resetBoxFilters()" style="width:100%;margin-top:12px;padding:8px;border:none;border-radius:10px;
+            cursor:pointer;background:rgba(255,255,255,0.05);color:var(--gray);font-size:11px;">
+            ↺ Limpiar filtros
+          </button>
+        </div>
+      </div>
+
       <div id="box-full-warning" style="display:none;background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.3);
           border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:var(--red);">
         ⚠️ <strong>¡Caja llena!</strong> No podés capturar más Pokémon. Soltá algunos desde la Caja o el Equipo.
       </div>
+      <div id="box-results-info" style="font-size:11px;color:var(--gray);margin-bottom:8px;"></div>
       <div id="box-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;"></div>
     </div>
   </div>
@@ -6836,33 +7009,194 @@
     }
 
     // ===== BOX SYSTEM =====
+
+    // ── Tier system (based on sum of all 6 IVs, max = 186) ──────
+    // S+: 186 (all perfect)  S: 168–185  A: 140–167
+    // B: 112–139             C: 84–111   D: 56–83    F: 0–55
+    const BOX_TIER_CONFIG = {
+      'S+': { min: 186, max: 186, color: '#FFD700', bg: 'rgba(255,215,0,0.18)', label: 'S+' },
+      'S':  { min: 168, max: 185, color: '#FFB800', bg: 'rgba(255,184,0,0.14)', label: 'S'  },
+      'A':  { min: 140, max: 167, color: '#6BCB77', bg: 'rgba(107,203,119,0.14)', label: 'A' },
+      'B':  { min: 112, max: 139, color: '#3B8BFF', bg: 'rgba(59,139,255,0.14)', label: 'B'  },
+      'C':  { min: 84,  max: 111, color: '#C77DFF', bg: 'rgba(199,125,255,0.14)', label: 'C' },
+      'D':  { min: 56,  max: 83,  color: '#FF9632', bg: 'rgba(255,150,50,0.14)', label: 'D'  },
+      'F':  { min: 0,   max: 55,  color: '#FF3B3B', bg: 'rgba(255,59,59,0.14)', label: 'F'   },
+    };
+
+    function getPokemonTier(p) {
+      const ivs = p.ivs || {};
+      const total = (ivs.hp||0)+(ivs.atk||0)+(ivs.def||0)+(ivs.spa||0)+(ivs.spd||0)+(ivs.spe||0);
+      for (const [tier, cfg] of Object.entries(BOX_TIER_CONFIG)) {
+        if (total >= cfg.min && total <= cfg.max) return { tier, total, ...cfg };
+      }
+      return { tier: 'F', total, ...BOX_TIER_CONFIG['F'] };
+    }
+
+    // ── Active filters state ─────────────────────────────────────
+    let _boxFilters = { tier: 'all', type: 'all', levelMin: 1, levelMax: 100,
+      ivHP: 0, ivATK: 0, ivDEF: 0, ivSPA: 0, ivSPD: 0, ivSPE: 0 };
+    let _boxFiltersOpen = false;
+
+    function toggleBoxFilters() {
+      _boxFiltersOpen = !_boxFiltersOpen;
+      const body = document.getElementById('box-filter-body');
+      const chevron = document.getElementById('box-filter-chevron');
+      if (body) body.style.display = _boxFiltersOpen ? 'block' : 'none';
+      if (chevron) chevron.style.transform = _boxFiltersOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    function setBoxFilter(key, val) {
+      _boxFilters[key] = val;
+      // Sync slider labels
+      if (key === 'levelMin') { const el = document.getElementById('box-level-min-val'); if(el) el.textContent = val; }
+      if (key === 'levelMax') { const el = document.getElementById('box-level-max-val'); if(el) el.textContent = val; }
+      const ivMap = { ivHP: 'iv-hp-val', ivATK: 'iv-atk-val', ivDEF: 'iv-def-val', ivSPA: 'iv-spa-val', ivSPD: 'iv-spd-val', ivSPE: 'iv-spe-val' };
+      if (ivMap[key]) { const el = document.getElementById(ivMap[key]); if(el) el.textContent = val; }
+      // Active state on tier buttons
+      if (key === 'tier') {
+        document.querySelectorAll('[data-tier]').forEach(b => {
+          b.classList.toggle('box-filter-active', b.dataset.tier === val);
+          b.style.outline = b.dataset.tier === val ? '2px solid currentColor' : 'none';
+        });
+      }
+      // Active state on type buttons
+      if (key === 'type') {
+        document.querySelectorAll('[data-type]').forEach(b => {
+          b.classList.toggle('box-filter-active', b.dataset.type === val);
+          b.style.outline = b.dataset.type === val ? '2px solid currentColor' : 'none';
+        });
+      }
+      renderBox();
+    }
+
+    function resetBoxFilters() {
+      _boxFilters = { tier: 'all', type: 'all', levelMin: 1, levelMax: 100,
+        ivHP: 0, ivATK: 0, ivDEF: 0, ivSPA: 0, ivSPD: 0, ivSPE: 0 };
+      // Reset sliders
+      ['box-level-min','box-level-max','iv-hp','iv-atk','iv-def','iv-spa','iv-spd','iv-spe'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = id.includes('max') ? 100 : (id.includes('level-min') ? 1 : 0);
+      });
+      ['box-level-min-val','box-level-max-val','iv-hp-val','iv-atk-val','iv-def-val','iv-spa-val','iv-spd-val','iv-spe-val'].forEach((id,i) => {
+        const el = document.getElementById(id); if(el) el.textContent = i===1?'100':i===0?'1':'0';
+      });
+      document.querySelectorAll('[data-tier]').forEach(b => {
+        b.style.outline = b.dataset.tier === 'all' ? '2px solid currentColor' : 'none';
+      });
+      document.querySelectorAll('[data-type]').forEach(b => {
+        b.style.outline = b.dataset.type === 'all' ? '2px solid currentColor' : 'none';
+      });
+      renderBox();
+    }
+
+    function _applyBoxFilters(box) {
+      return box.filter((p, i) => {
+        const f = _boxFilters;
+        const ivs = p.ivs || {};
+        // Tier
+        if (f.tier !== 'all') {
+          const { tier } = getPokemonTier(p);
+          if (tier !== f.tier) return false;
+        }
+        // Type
+        if (f.type !== 'all' && p.type !== f.type) return false;
+        // Level
+        if (p.level < f.levelMin || p.level > f.levelMax) return false;
+        // IV minimums
+        if ((ivs.hp||0) < f.ivHP) return false;
+        if ((ivs.atk||0) < f.ivATK) return false;
+        if ((ivs.def||0) < f.ivDEF) return false;
+        if ((ivs.spa||0) < f.ivSPA) return false;
+        if ((ivs.spd||0) < f.ivSPD) return false;
+        if ((ivs.spe||0) < f.ivSPE) return false;
+        return true;
+      });
+    }
+
+    function _hasActiveFilters() {
+      const f = _boxFilters;
+      return f.tier!=='all' || f.type!=='all' || f.levelMin>1 || f.levelMax<100 ||
+        f.ivHP>0 || f.ivATK>0 || f.ivDEF>0 || f.ivSPA>0 || f.ivSPD>0 || f.ivSPE>0;
+    }
+
     function renderBox() {
       if (!state.box) state.box = [];
       const grid = document.getElementById('box-grid');
       const badge = document.getElementById('box-count-badge');
       const warning = document.getElementById('box-full-warning');
+      const resultsInfo = document.getElementById('box-results-info');
 
       badge.textContent = `${state.box.length}/100 Pokémon`;
       warning.style.display = state.box.length >= 100 ? 'block' : 'none';
+
+      // Apply filters
+      const filtered = _applyBoxFilters(state.box);
+      const isFiltered = _hasActiveFilters();
+
+      // Summary in filter header
+      const summaryEl = document.getElementById('box-filter-summary');
+      if (summaryEl) {
+        if (isFiltered) {
+          summaryEl.textContent = `${filtered.length} resultado${filtered.length!==1?'s':''}`;
+          summaryEl.style.color = 'var(--yellow)';
+        } else { summaryEl.textContent = ''; }
+      }
+
+      // Results info bar
+      if (resultsInfo) {
+        if (isFiltered) {
+          resultsInfo.textContent = `Mostrando ${filtered.length} de ${state.box.length} Pokémon`;
+          resultsInfo.style.display = 'block';
+        } else { resultsInfo.style.display = 'none'; }
+      }
 
       if (state.box.length === 0) {
         grid.innerHTML = '<div class="empty-state"><span class="empty-icon">📦</span>La Caja está vacía.<br>Los Pokémon capturados con el equipo lleno van aquí.</div>';
         return;
       }
 
-      grid.innerHTML = state.box.map((p, i) => {
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;padding:32px;text-align:center;">
+          <span class="empty-icon" style="font-size:48px;display:block;margin-bottom:12px;">🔍</span>
+          <div style="font-size:12px;color:var(--gray);">Ningún Pokémon cumple<br>los filtros activos.</div>
+          <button onclick="resetBoxFilters()" style="margin-top:12px;padding:8px 16px;border:none;border-radius:10px;
+            cursor:pointer;background:rgba(255,255,255,0.08);color:var(--gray);font-size:11px;">↺ Limpiar filtros</button>
+        </div>`;
+        return;
+      }
+
+      // Build cards — filtered array has real box indices mapped
+      const indexedFiltered = state.box.map((p, i) => ({ p, i })).filter(({ p }) => {
+        const ivs = p.ivs || {};
+        const f = _boxFilters;
+        if (f.tier !== 'all' && getPokemonTier(p).tier !== f.tier) return false;
+        if (f.type !== 'all' && p.type !== f.type) return false;
+        if (p.level < f.levelMin || p.level > f.levelMax) return false;
+        if ((ivs.hp||0) < f.ivHP || (ivs.atk||0) < f.ivATK || (ivs.def||0) < f.ivDEF) return false;
+        if ((ivs.spa||0) < f.ivSPA || (ivs.spd||0) < f.ivSPD || (ivs.spe||0) < f.ivSPE) return false;
+        return true;
+      });
+
+      grid.innerHTML = indexedFiltered.map(({ p, i }) => {
         const sid = getSpriteId(p.id);
         const hpPct = Math.round(p.hp / p.maxHp * 100);
         const hpCol = hpPct > 50 ? 'var(--green)' : hpPct > 20 ? 'var(--yellow)' : 'var(--red)';
+        const tierInfo = getPokemonTier(p);
+        const ivTotal = tierInfo.total;
         return `<div onclick="openBoxPokemonMenu(${i})" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
-      border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .2s;"
+      border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .2s;position:relative;"
       onmouseover="this.style.borderColor='rgba(199,125,255,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+      <!-- Tier badge -->
+      <div style="position:absolute;top:5px;right:5px;background:${tierInfo.bg};color:${tierInfo.color};
+        font-family:'Press Start 2P',monospace;font-size:6px;padding:2px 5px;border-radius:6px;
+        border:1px solid ${tierInfo.color}44;line-height:1.4;">${tierInfo.tier}</div>
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${sid}.png"
         width="56" height="56" style="image-rendering:pixelated;"
         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span style="display:none;font-size:32px;line-height:1;">${p.emoji}</span>
       <div style="font-size:9px;font-weight:700;margin-top:4px;">${p.name}</div>
       <div style="font-size:9px;color:var(--gray);">Nv.${p.level}</div>
+      <div style="font-size:8px;color:${tierInfo.color};margin-top:1px;">IVs: ${ivTotal}/186</div>
       <div style="background:rgba(255,255,255,0.1);border-radius:3px;height:4px;margin-top:4px;overflow:hidden;">
         <div style="width:${hpPct}%;height:100%;background:${hpCol};border-radius:3px;"></div>
       </div>
@@ -7539,9 +7873,14 @@
     }
 
     // ── Core PvP ────────────────────────────────────────────────
-    function startPvpBattle(invite, isHost) {
+    async function startPvpBattle(invite, isHost) {
       const myTeam = state.team.filter(p => p.hp > 0).map(p => JSON.parse(JSON.stringify(p)));
       if (!myTeam.length) { notify('¡No tenés Pokémon disponibles!', '⚠️'); return; }
+
+      // Fetch opponent username
+      const opponentId = isHost ? invite.opponent_id : invite.challenger_id;
+      const { data: _oppProf } = await sb.from('profiles').select('username').eq('id', opponentId).single();
+      const enemyUsername = _oppProf?.username || 'Rival';
 
       _pvpState = {
         invite, isHost,
@@ -7554,6 +7893,7 @@
         over: false,
         waitingForEnemy: true,
         channel: null,
+        enemyUsername,
       };
       _pvpLock = false;
 
@@ -7565,6 +7905,7 @@
           _pvpState.enemyHp = payload.team.map(p => p.hp);
           _pvpState.waitingForEnemy = false;
           renderPvpBattle();
+          _pvpLoadSprites();
           addPvpLog('¡La batalla comenzó!', 'log-info');
         })
         .on('broadcast', { event: 'pvp_move' }, ({ payload }) => {
@@ -7573,9 +7914,11 @@
         })
         .on('broadcast', { event: 'pvp_switch' }, ({ payload }) => {
           _pvpState.enemyActive = payload.index;
+          _pvpState.waitingForEnemy = false;
           const ep = _pvpState.enemyTeam[payload.index];
           addPvpLog(`¡${ep?.name} salió a combatir!`, 'log-enemy');
           _pvpUpdateEnemy();
+          _pvpRenderMoves();
         })
         .on('broadcast', { event: 'pvp_forfeit' }, () => {
           if (!_pvpState.over) pvpEnd(true, false);
@@ -7649,6 +7992,7 @@
         <!-- Enemy Pokémon — right, front sprite -->
         <div class="battle-pokemon" id="pvp-enemy-side" style="flex:1;display:flex;flex-direction:column;align-items:flex-end;">
           <div class="battle-pokemon-info" style="width:100%;max-width:200px;text-align:right;">
+            <div style="font-size:9px;color:var(--yellow);font-weight:700;margin-bottom:2px;" id="pvp-enemy-trainer">${_pvpState.enemyUsername ? '🎮 ' + _pvpState.enemyUsername : ''}</div>
             <div class="battle-name" id="pvp-enemy-name">${enemy?.name || '???'}</div>
             <div class="battle-level" id="pvp-enemy-level">Nv. ${enemy?.level || '?'}</div>
             <div class="hp-bar-wrap"><div class="hp-bar hp-high" id="pvp-enemy-hp-bar" style="width:100%"></div></div>
@@ -7776,6 +8120,8 @@
         if (nm) nm.textContent = enemy.name;
         const lv = document.getElementById('pvp-enemy-level');
         if (lv) lv.textContent = 'Nv. ' + enemy.level;
+        const tr = document.getElementById('pvp-enemy-trainer');
+        if (tr && _pvpState.enemyUsername) tr.textContent = '🎮 ' + _pvpState.enemyUsername;
       }
 
       _pvpRenderMoves();
@@ -7826,11 +8172,13 @@
     function pvpUseMove(moveIndex) {
       if (!_pvpState || _pvpState.over || _pvpState.waitingForEnemy || _pvpLock) return;
       const me = _pvpState.myTeam[_pvpState.myActive];
-      const enemy = _pvpState.enemyTeam[_pvpState.enemyActive];
+      const enemy = _pvpState.enemyTeam?.[_pvpState.enemyActive];
       const move = me?.moves?.[moveIndex];
-      if (!move) return;
+      if (!move || !enemy) return;
       if (move.pp <= 0) { notify('Sin PP', '⚠️'); return; }
       _pvpLock = true;
+      // Safety: always unlock after 3s to prevent freezes
+      setTimeout(() => { _pvpLock = false; }, 3000);
       move.pp--;
 
       const md = MOVE_DATA[move.name] || { power: move.power || 40, type: 'normal', cat: 'physical', acc: 100 };
@@ -7893,6 +8241,11 @@
         addPvpLog(`¡${enemy.name} se desmayó!`, 'log-player');
         const aliveCount = _pvpState.enemyHp.filter(h => h > 0).length;
         if (aliveCount === 0) { setTimeout(() => pvpEnd(true), 800); }
+        else {
+          // Wait for the enemy to send pvp_switch before allowing attacks
+          _pvpState.waitingForEnemy = true;
+          _pvpRenderMoves();
+        }
       }
     }
 
