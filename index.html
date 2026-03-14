@@ -655,9 +655,38 @@
     }
 
     #battle-screen .battle-arena {
-      flex-shrink: 1; /* Allow shrinking */
+      flex-shrink: 1;
       min-height: 340px; 
-      max-height: 50vh; /* Limits arena height on small screens */
+      max-height: 50vh;
+    }
+
+    .battle-log {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 12px;
+      height: 90px;
+      overflow-y: auto;
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    #move-panel {
+      padding: 6px 10px;
+      margin-bottom: 12px;
+    }
+
+    .battle-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
     }
 
     .battle-arena {
@@ -854,19 +883,6 @@
       text-shadow: 0 0 20px rgba(255, 217, 61, 0.6);
       animation: pulse 1s ease-in-out infinite;
       padding-bottom: 20px;
-    }
-
-    .battle-log {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      min-height: 60px;
-      max-height: 100px;
-      overflow-y: auto;
-      font-size: 14px;
-      line-height: 1.6;
-      border-left: 3px solid var(--blue);
     }
 
     .battle-log .log-entry {
@@ -2327,33 +2343,7 @@
       gap: 10px;
     }
 
-    .battle-log {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 12px;
-      height: 90px;
-      overflow-y: auto;
-      font-size: 11px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
 
-    #move-panel {
-      padding: 6px 0;
-    }
-
-    .battle-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .action-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-    }
 
     .profile-stat {
       background: rgba(255, 255, 255, 0.05);
