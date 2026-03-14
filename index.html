@@ -1427,11 +1427,13 @@
       .battle-arena {
         height: auto;
         aspect-ratio: 16 / 11;
-        min-height: 300px;
+        min-height: 280px;
+        max-height: 50vh;
         padding: 0;
         margin-bottom: 10px;
         border-radius: 14px;
         background: #0d1117;
+        flex-shrink: 0;
       }
 
       .battle-combatants {
@@ -6477,7 +6479,6 @@
     _preloadBgs();
 
     function drawBattleBackground(locationId, cycleOverride) {
-      // Handle both main battle canvas and PvP canvas
       const canvasId = locationId === 'pvp' ? 'pvp-battle-bg-canvas' : 'battle-bg-canvas';
       const canvas = document.getElementById(canvasId);
       if (!canvas) return;
@@ -6494,9 +6495,11 @@
 
       const cycle = cycleOverride || getDayCycle();
       let src = '';
+      let cacheKey = locationId + '_' + cycle;
 
       if (locationId === 'gym') {
         src = 'assets/GIMNASIO.jpg';
+        cacheKey = 'gym_global'; 
       } else if (locationId === 'pvp') {
         const pvpBgs = {
           morning: 'assets/pvp_dawn.jpg',
@@ -6509,31 +6512,40 @@
       } else {
         let key = _getBgKey(locationId, cycle);
         src = BATTLE_BG_DATA[key] || BATTLE_BG_DATA.ruta_day;
+        cacheKey = key;
       }
 
       function draw(img) {
+        if (!img.complete || img.naturalWidth === 0) return;
         const iw = img.naturalWidth || img.width;
         const ih = img.naturalHeight || img.height;
-        if (!iw || !ih) return;
         const scale = Math.max(W / iw, H / ih);
         const dw = iw * scale, dh = ih * scale;
         const dx = (W - dw) / 2, dy = (H - dh) / 2;
         ctx.drawImage(img, dx, dy, dw, dh);
         
-        // Vignette
         const vgr = ctx.createRadialGradient(W / 2, H / 2, H * 0.15, W / 2, H / 2, H * 0.9);
         vgr.addColorStop(0, 'rgba(0,0,0,0)');
         vgr.addColorStop(1, 'rgba(0,0,0,0.3)');
         ctx.fillStyle = vgr; ctx.fillRect(0, 0, W, H);
       }
 
-      const img = new Image();
-      img.onload = () => draw(img);
-      img.onerror = () => {
-        ctx.fillStyle = '#0d1117';
-        ctx.fillRect(0, 0, W, H);
-      };
-      img.src = src;
+      const cached = _bgCache[cacheKey];
+      if (cached && cached.complete && cached.naturalWidth > 0) {
+        draw(cached);
+      } else {
+        const img = new Image();
+        img.onload = () => {
+          _bgCache[cacheKey] = img;
+          draw(img);
+        };
+        img.onerror = () => {
+          console.error("Failed to load background:", src);
+          ctx.fillStyle = '#0d1117';
+          ctx.fillRect(0, 0, W, H);
+        };
+        img.src = src;
+      }
     }
 
     // ===== FRIENDS SYSTEM =====
@@ -8544,7 +8556,7 @@
       if (!ov) {
         ov = document.createElement('div');
         ov.id = 'pvp-overlay';
-        ov.style.cssText = 'position:fixed;inset:0;z-index:600;background:#0d1117;overflow-y:auto;';
+        ov.style.cssText = 'position:fixed;inset:0;z-index:600;background:#0d1117;display:flex;flex-direction:column;overflow:hidden;';
         document.body.appendChild(ov);
       }
       const me = _pvpState.myTeam[_pvpState.myActive];
