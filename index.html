@@ -1116,11 +1116,14 @@
       width: 96px;
       height: 96px;
       image-rendering: pixelated;
+    }
+
+    .pokeball-anim.throwing {
       animation: pokeballThrow 0.8s cubic-bezier(.36, .07, .19, .97) forwards;
     }
 
     .pokeball-anim.shaking {
-      animation: pokeballShake 0.9s ease-in-out;
+      animation: pokeballShake 0.9s ease-in-out forwards;
     }
 
     .pokeball-anim.caught {
@@ -5708,7 +5711,7 @@
 
       overlay.innerHTML = `
     <div style="position:relative;margin-bottom:16px;">
-      <img class="pokeball-anim" src="${ballSrc}" 
+      <img class="pokeball-anim throwing" src="${ballSrc}" 
            onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'"
            alt="Pokéball" style="image-rendering:pixelated;">
     </div>
@@ -5729,6 +5732,7 @@
       let shakesDone = 0;
 
       function doShake() {
+        ballEl.classList.remove('throwing'); // ensure throw animation doesn't restart
         if (shakesDone >= shakes) {
           // Result
           if (success) {
