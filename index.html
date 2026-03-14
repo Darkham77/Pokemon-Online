@@ -5246,6 +5246,11 @@
     function setBattleSprite(side, pokemonId, useBack) {
       const img = document.getElementById(side + '-sprite-img');
       const emojiEl = document.getElementById(side + '-sprite-emoji');
+      
+      // Clear any previous animations (like anim-faint) that keep the sprite hidden
+      if (img) img.classList.remove('anim-faint', 'anim-damage', 'anim-shake');
+      if (emojiEl) emojiEl.classList.remove('anim-faint', 'anim-damage', 'anim-shake');
+
       const pData = POKEMON_DB[pokemonId];
       const emoji = pData ? pData.emoji : '❓';
       const url = useBack ? getBackSpriteUrl(pokemonId) : getSpriteUrl(pokemonId);
