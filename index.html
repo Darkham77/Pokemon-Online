@@ -4561,10 +4561,10 @@
       <div class="team-pokemon-level">Nv. ${p.level}</div>
       <div class="hp-bar-wrap"><div class="hp-bar ${getHpClass(pct)}" style="width:${pct * 100}%"></div></div>
       <div style="font-size:11px;color:var(--gray);margin-top:4px">${p.hp}/${p.maxHp} HP</div>
-      ${releasing ? '' : `<div style="display:flex;gap:4px;margin-top:8px;">
-        <button onclick="event.stopPropagation(); openTeamItemMenu(${i})" style="flex:1;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--green);background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);border-radius:6px;padding:6px;cursor:pointer;">🎒 OBJETO</button>
-        <button onclick="event.stopPropagation(); openPokemonDetail(${i})" style="flex:1;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--purple);background:rgba(199,125,255,0.15);border:1px solid rgba(199,125,255,0.3);border-radius:6px;padding:6px;cursor:pointer;">👁️ DATOS</button>
-        <button onclick="event.stopPropagation(); sendToBox(${i})" style="flex:1;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--blue);background:rgba(59,139,255,0.15);border:1px solid rgba(59,139,255,0.3);border-radius:6px;padding:6px;cursor:pointer;">📦 CAJA</button>
+      ${releasing ? '' : `<div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;">
+        <button onclick="event.stopPropagation(); openTeamItemMenu(${i})" style="flex:1;min-width:40%;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--green);background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);border-radius:6px;padding:6px;cursor:pointer;">🎒 OBJETO</button>
+        <button onclick="event.stopPropagation(); openPokemonDetail(${i})" style="flex:1;min-width:40%;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--purple);background:rgba(199,125,255,0.15);border:1px solid rgba(199,125,255,0.3);border-radius:6px;padding:6px;cursor:pointer;">👁️ DATOS</button>
+        <button onclick="event.stopPropagation(); sendToBox(${i})" style="flex:1;min-width:100%;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--blue);background:rgba(59,139,255,0.15);border:1px solid rgba(59,139,255,0.3);border-radius:6px;padding:6px;cursor:pointer;">📦 CAJA</button>
       </div>`}
     </div>`;
       }).join('');
