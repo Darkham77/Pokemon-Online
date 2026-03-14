@@ -1634,7 +1634,70 @@
       display: block;
     }
 
-    /* ===== MARKET ===== */
+    /* ===== MARKET TAB BAR ===== */
+    .market-tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+      padding: 4px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .market-tab-btn {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      font-weight: 700;
+      white-space: nowrap;
+      background: transparent;
+      color: var(--gray);
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .market-tab-btn:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+
+    .market-tab-btn.active {
+      background: var(--purple);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(199,125,255,0.4);
+    }
+
+    /* Desktop: todos en una fila */
+    @media (min-width: 601px) {
+      .market-tab-btn {
+        flex: 0 0 auto;
+        font-size: 8px;
+        padding: 8px 18px;
+      }
+    }
+
+    /* Mobile: 3 por fila máximo, texto más chico */
+    @media (max-width: 600px) {
+      .market-tab-bar {
+        gap: 4px;
+        padding: 3px;
+      }
+      .market-tab-btn {
+        font-size: 6px;
+        padding: 7px 6px;
+        flex: 1 1 calc(33.333% - 8px);
+        min-width: calc(33.333% - 8px);
+      }
+    }
+
+
     .market-card {
       background: var(--card);
       border-radius: 14px;
@@ -2569,8 +2632,9 @@
             <span id="inventory-display" style="font-size:12px;color:#ccc;"></span>
           </div>
           <div id="market-trainer-level" style="margin-bottom:16px;font-size:12px;color:var(--gray);"></div>
+          <div id="market-tabs"></div>
           <div id="market-grid"
-            style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;"></div>
+            style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;"></div>
         </div>
       </div>
     </div>
@@ -5657,23 +5721,21 @@
       const typeTagColors = { stone: '#f5a623', held: '#7ed321', usable: '#4a90e2' };
       const typeTagLabels = { stone: 'Piedra', held: 'Equipable', usable: 'Usable' };
 
-      // Category tabs
-      const catBar = `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
-    ${ITEM_CATEGORIES.map(c => `
-      <button onclick="_marketCat='${c}';renderMarket()"
-        style="padding:0 14px;height:30px;line-height:30px;border-radius:20px;border:none;cursor:pointer;
-               font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;
-               background:${_marketCat === c ? 'var(--purple)' : 'rgba(255,255,255,0.08)'};
-               color:${_marketCat === c ? '#fff' : 'var(--gray)'};transition:all .2s;">
-        ${CATEGORY_LABELS[c]}
-      </button>`).join('')}
-  </div>`;
+      // ── Category tabs — separate container, no grid inheritance ──
+      const tabsEl = document.getElementById('market-tabs');
+      tabsEl.innerHTML = `
+        <div class="market-tab-bar">
+          ${ITEM_CATEGORIES.map(c => `
+            <button class="market-tab-btn ${_marketCat === c ? 'active' : ''}"
+              onclick="_marketCat='${c}';renderMarket()">
+              ${CATEGORY_LABELS[c]}
+            </button>`).join('')}
+        </div>`;
 
+      // ── Items grid ──
       const filtered = SHOP_ITEMS.filter(i => _marketCat === 'todos' || i.cat === _marketCat);
-
       const grid = document.getElementById('market-grid');
-      grid.innerHTML = catBar + `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;">` +
-        filtered.map(item => {
+      grid.innerHTML = filtered.map(item => {
           const locked = state.trainerLevel < item.unlockLv;
           const canAfford = state.money >= item.price;
           const tierCls = tierColors[item.tier];
@@ -5695,7 +5757,7 @@
           ${locked ? '🔒 BLOQUEADO' : !canAfford ? 'SIN FONDOS' : 'COMPRAR'}
         </button>
       </div>`;
-        }).join('') + `</div>`;
+        }).join('');
     }
 
     function buyItem(itemId) {
