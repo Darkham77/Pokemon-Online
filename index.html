@@ -623,6 +623,23 @@
       min-height: 90vh;
     }
 
+    #battle-screen.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #battle-screen .battle-arena {
+      flex-shrink: 0;
+    }
+
+    #battle-screen .battle-log {
+      flex-shrink: 0;
+    }
+
+    #battle-screen #move-panel {
+      flex-shrink: 0;
+    }
+
     .battle-arena {
       background: linear-gradient(180deg, #1a2a4a 0%, #0f1a2e 100%);
       border-radius: 20px;
@@ -824,7 +841,9 @@
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 16px;
-      min-height: 70px;
+      min-height: 60px;
+      max-height: 100px;
+      overflow-y: auto;
       font-size: 14px;
       line-height: 1.6;
       border-left: 3px solid var(--blue);
@@ -1407,21 +1426,21 @@
 
       /* Sprites batalla */
       #player-sprite-wrap {
-        height: 110px !important;
+        height: 90px !important;
       }
 
       #enemy-sprite-wrap {
-        height: 110px !important;
+        height: 90px !important;
       }
 
       #player-sprite-img {
-        width: 110px !important;
-        height: 110px !important;
+        width: 90px !important;
+        height: 90px !important;
       }
 
       #enemy-sprite-img {
-        width: 110px !important;
-        height: 110px !important;
+        width: 90px !important;
+        height: 90px !important;
       }
 
       .battle-sprite {
@@ -1432,7 +1451,9 @@
       .battle-log {
         font-size: 12px;
         padding: 10px 12px;
-        min-height: 50px;
+        min-height: 48px;
+        max-height: 80px;
+        overflow-y: auto;
         margin-bottom: 8px;
         border-radius: 10px;
       }
@@ -2821,33 +2842,10 @@
       <canvas id="battle-bg-canvas"
         style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;border-radius:18px;"></canvas>
       <div class="battle-combatants"
-        style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;position:relative;z-index:1;">
-        <!-- PLAYER — left, back sprite, info bottom-left -->
-        <div class="battle-pokemon" id="player-side"
-          style="flex:1;display:flex;flex-direction:column;align-items:flex-start;">
-          <div id="player-sprite-wrap"
-            style="height:220px;display:flex;align-items:flex-end;justify-content:flex-start;margin-bottom:8px;">
-            <img id="player-sprite-img" src="" alt=""
-              style="height:220px;width:220px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
-            <span id="player-sprite-emoji" class="battle-sprite player-sprite"
-              style="font-size:150px;line-height:1;">❓</span>
-          </div>
-          <div class="battle-pokemon-info" style="width:100%;max-width:200px;">
-            <div class="battle-name" id="player-battle-name">???</div>
-            <div class="battle-level" id="player-battle-level">Nv. 1</div>
-            <div class="hp-bar-wrap" style="width:100%">
-              <div class="hp-bar hp-high" id="player-hp-bar" style="width:100%"></div>
-            </div>
-            <div class="battle-hp-text" id="player-hp-text">HP: ?/?</div>
-          </div>
-        </div>
-
-        <div class="vs-text">VS</div>
-
-        <!-- ENEMY — right, front sprite, info top-right -->
-        <div class="battle-pokemon" id="enemy-side"
-          style="flex:1;display:flex;flex-direction:column;align-items:flex-end;">
-          <div class="battle-pokemon-info" style="width:100%;max-width:200px;text-align:right;">
+        style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px 12px;position:relative;z-index:1;min-height:300px;">
+        <!-- TOP-LEFT: Enemy HP info -->
+        <div style="display:flex;align-items:flex-start;justify-content:flex-start;align-self:start;">
+          <div class="battle-pokemon-info" style="width:100%;max-width:220px;">
             <div class="battle-name" id="enemy-name">???</div>
             <div class="battle-level" id="enemy-level">Nv. 1</div>
             <div class="hp-bar-wrap" style="width:100%">
@@ -2855,12 +2853,39 @@
             </div>
             <div class="battle-hp-text" id="enemy-hp-text">HP: ?/?</div>
           </div>
+        </div>
+
+        <!-- TOP-RIGHT: Enemy sprite -->
+        <div style="display:flex;align-items:flex-start;justify-content:flex-end;align-self:start;">
           <div id="enemy-sprite-wrap"
-            style="height:220px;display:flex;align-items:flex-end;justify-content:flex-end;margin-top:8px;">
+            style="height:160px;display:flex;align-items:flex-start;justify-content:flex-end;">
             <img id="enemy-sprite-img" src="" alt=""
-              style="height:220px;width:220px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
+              style="height:160px;width:160px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
             <span id="enemy-sprite-emoji" class="battle-sprite enemy-sprite"
-              style="font-size:150px;line-height:1;">❓</span>
+              style="font-size:110px;line-height:1;">❓</span>
+          </div>
+        </div>
+
+        <!-- BOTTOM-LEFT: Player sprite -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-start;align-self:end;">
+          <div id="player-sprite-wrap"
+            style="height:160px;display:flex;align-items:flex-end;justify-content:flex-start;">
+            <img id="player-sprite-img" src="" alt=""
+              style="height:160px;width:160px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.9));display:none;">
+            <span id="player-sprite-emoji" class="battle-sprite player-sprite"
+              style="font-size:110px;line-height:1;">❓</span>
+          </div>
+        </div>
+
+        <!-- BOTTOM-RIGHT: Player HP info -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;align-self:end;">
+          <div class="battle-pokemon-info" style="width:100%;max-width:220px;text-align:right;">
+            <div class="battle-name" id="player-battle-name">???</div>
+            <div class="battle-level" id="player-battle-level">Nv. 1</div>
+            <div class="hp-bar-wrap" style="width:100%">
+              <div class="hp-bar hp-high" id="player-hp-bar" style="width:100%"></div>
+            </div>
+            <div class="battle-hp-text" id="player-hp-text">HP: ?/?</div>
           </div>
         </div>
       </div>
@@ -4356,6 +4381,14 @@
       if (tab === 'gyms') renderGyms();
       if (tab === 'market') renderMarket();
       if (tab === 'map') renderMaps();
+      // Al abrir la tab de amigos, ocultar el badge (el usuario ya lo está viendo)
+      if (tab === 'friends') {
+        const badge = document.getElementById('friends-nav-badge');
+        if (badge) badge.style.display = 'none';
+      } else {
+        // Al cambiar a otra tab, refrescar badge para ver si hay algo nuevo
+        refreshFriendsBadge();
+      }
     }
 
     // ===== RENDER =====
@@ -4772,9 +4805,9 @@
                   </div>
                 </div>
 
-                <!-- Right: trainer sprite -->
+                <!-- Right: gym image -->
                 <div style="flex-shrink:0;width:96px;text-align:center;">
-                  <img src="${gym.sprite}" alt="${gym.leader}"
+                  <img src="GIMNASIO.png" alt="${gym.name}"
                     style="height:96px;width:auto;image-rendering:pixelated;filter:drop-shadow(0 2px 8px ${typeColor}66);"
                     onerror="this.outerHTML='<div style=\'font-size:52px;line-height:1;\'>${gym.badge}</div>'">
                 </div>
@@ -4978,11 +5011,16 @@
       }
       // Show leader intro overlay before battle
       const introOv = document.createElement('div');
+      introOv.id = 'gym-intro-overlay';
       introOv.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease;';
       introOv.innerHTML = `
         <div style="background:var(--card);border-radius:24px;padding:32px;max-width:380px;width:100%;
-          border:2px solid ${gym.typeColor}55;text-align:center;">
-          <img src="${gym.sprite}" alt="${gym.leader}"
+          border:2px solid ${gym.typeColor}55;text-align:center;position:relative;">
+          <button onclick="document.getElementById('gym-intro-overlay').remove()"
+            style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,0.08);border:none;
+            border-radius:8px;color:var(--gray);font-size:18px;cursor:pointer;width:32px;height:32px;
+            display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+          <img src="GIMNASIO.png" alt="${gym.name}"
             style="height:120px;image-rendering:pixelated;margin-bottom:12px;
             filter:drop-shadow(0 4px 16px ${gym.typeColor}88);"
             onerror="this.outerHTML='<div style=\'font-size:80px;\'>${gym.badge}</div>'">
@@ -6418,8 +6456,10 @@
 
       const badge = document.getElementById('friends-nav-badge');
       const lbl   = document.getElementById('friends-nav-label');
+      // Si el usuario ya está mirando la tab de amigos, no mostrar el badge
+      const friendsTabOpen = document.getElementById('tab-friends')?.style.display !== 'none';
       if (badge) {
-        if (total > 0) {
+        if (total > 0 && !friendsTabOpen) {
           badge.textContent = total > 99 ? '99+' : total;
           badge.style.display = 'block';
         } else {
@@ -8377,7 +8417,12 @@
       ov.innerHTML = `
   <div style="max-width:680px;margin:0 auto;padding:16px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:var(--purple);">⚔️ BATALLA PvP</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <img src="https://play.pokemonshowdown.com/sprites/trainers/red.png" alt="Trainer"
+          style="height:40px;image-rendering:pixelated;filter:drop-shadow(0 2px 8px rgba(199,125,255,0.5));"
+          onerror="this.style.display='none'">
+        <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:var(--purple);">⚔️ BATALLA PvP</div>
+      </div>
       <div id="pvp-status-msg" style="font-size:11px;color:var(--yellow);">⏳ Conectando...</div>
       <button onclick="pvpForfeit()" style="font-family:'Press Start 2P',monospace;font-size:7px;padding:6px 10px;
         border:none;border-radius:8px;cursor:pointer;background:rgba(255,59,59,0.1);color:var(--red);border:1px solid rgba(255,59,59,0.2);">
@@ -8385,36 +8430,40 @@
       </button>
     </div>
 
-    <div class="battle-arena" id="pvp-arena" style="margin-bottom:12px;min-height:300px;">
-      <div class="battle-combatants">
-        <!-- My Pokémon — left, back sprite -->
-        <div class="battle-pokemon" id="pvp-player-side" style="flex:1;display:flex;flex-direction:column;align-items:flex-start;">
-          <div style="height:160px;display:flex;align-items:flex-end;justify-content:flex-start;margin-bottom:8px;">
-            <img id="pvp-player-img" src="" alt="" style="height:160px;width:160px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
-            <span id="pvp-player-emoji" style="font-size:100px;line-height:1;">${me?.emoji || '❓'}</span>
-          </div>
+    <div class="battle-arena" id="pvp-arena" style="margin-bottom:12px;min-height:280px;">
+      <div class="battle-combatants"
+        style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px 12px;position:relative;z-index:1;min-height:260px;">
+        <!-- TOP-LEFT: Enemy HP info -->
+        <div style="display:flex;align-items:flex-start;justify-content:flex-start;align-self:start;">
           <div class="battle-pokemon-info" style="width:100%;max-width:200px;">
-            <div class="battle-name" id="pvp-player-name">${me?.name || '???'}</div>
-            <div class="battle-level" id="pvp-player-level">Nv. ${me?.level || '?'}</div>
-            <div class="hp-bar-wrap"><div class="hp-bar hp-high" id="pvp-player-hp-bar" style="width:100%"></div></div>
-            <div class="battle-hp-text" id="pvp-player-hp-text">${me?.hp || 0}/${me?.maxHp || 0} HP</div>
-          </div>
-        </div>
-
-        <div class="vs-text">VS</div>
-
-        <!-- Enemy Pokémon — right, front sprite -->
-        <div class="battle-pokemon" id="pvp-enemy-side" style="flex:1;display:flex;flex-direction:column;align-items:flex-end;">
-          <div class="battle-pokemon-info" style="width:100%;max-width:200px;text-align:right;">
             <div style="font-size:9px;color:var(--yellow);font-weight:700;margin-bottom:2px;" id="pvp-enemy-trainer">${_pvpState.enemyUsername ? '🎮 ' + _pvpState.enemyUsername : ''}</div>
             <div class="battle-name" id="pvp-enemy-name">${enemy?.name || '???'}</div>
             <div class="battle-level" id="pvp-enemy-level">Nv. ${enemy?.level || '?'}</div>
             <div class="hp-bar-wrap"><div class="hp-bar hp-high" id="pvp-enemy-hp-bar" style="width:100%"></div></div>
             <div class="battle-hp-text" id="pvp-enemy-hp-text">${enemy ? enemy.hp + '/' + enemy.maxHp + ' HP' : '???'}</div>
           </div>
-          <div style="height:160px;display:flex;align-items:flex-end;justify-content:flex-end;margin-top:8px;">
-            <img id="pvp-enemy-img" src="" alt="" style="height:160px;width:160px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
-            <span id="pvp-enemy-emoji" style="font-size:100px;line-height:1;">${enemy?.emoji || '❓'}</span>
+        </div>
+        <!-- TOP-RIGHT: Enemy sprite -->
+        <div style="display:flex;align-items:flex-start;justify-content:flex-end;align-self:start;">
+          <div style="height:140px;display:flex;align-items:flex-start;justify-content:flex-end;">
+            <img id="pvp-enemy-img" src="" alt="" style="height:140px;width:140px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
+            <span id="pvp-enemy-emoji" style="font-size:90px;line-height:1;">${enemy?.emoji || '❓'}</span>
+          </div>
+        </div>
+        <!-- BOTTOM-LEFT: My sprite -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-start;align-self:end;">
+          <div style="height:140px;display:flex;align-items:flex-end;justify-content:flex-start;">
+            <img id="pvp-player-img" src="" alt="" style="height:140px;width:140px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.9));display:none;">
+            <span id="pvp-player-emoji" style="font-size:90px;line-height:1;">${me?.emoji || '❓'}</span>
+          </div>
+        </div>
+        <!-- BOTTOM-RIGHT: My HP info -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;align-self:end;">
+          <div class="battle-pokemon-info" style="width:100%;max-width:200px;text-align:right;">
+            <div class="battle-name" id="pvp-player-name">${me?.name || '???'}</div>
+            <div class="battle-level" id="pvp-player-level">Nv. ${me?.level || '?'}</div>
+            <div class="hp-bar-wrap"><div class="hp-bar hp-high" id="pvp-player-hp-bar" style="width:100%"></div></div>
+            <div class="battle-hp-text" id="pvp-player-hp-text">${me?.hp || 0}/${me?.maxHp || 0} HP</div>
           </div>
         </div>
       </div>
