@@ -1093,38 +1093,6 @@
       min-height: 24px;
     }
 
-    /* ===== POKEDEX ===== */
-    .pokedex-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 12px;
-    }
-
-    .pokedex-entry {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      animation: appear 0.3s ease;
-    }
-
-    .pokedex-emoji {
-      font-size: 44px;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .pokedex-name {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 7px;
-      margin-bottom: 6px;
-    }
-
-    .pokedex-num {
-      font-size: 10px;
-      color: var(--gray);
-    }
 
     /* ===== GYM SCREEN ===== */
     .gym-list {
@@ -1497,18 +1465,6 @@
       }
 
       /* ── Pokédex ── */
-      .pokedex-grid {
-        grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
-        gap: 8px;
-      }
-
-      .pokedex-entry {
-        padding: 10px 6px;
-      }
-
-      .pokedex-emoji {
-        font-size: 34px;
-      }
 
       /* ── Equipo ── */
       .team-grid {
@@ -2517,8 +2473,6 @@
           onclick="showTab('map',this)"><span>🗺️</span><span>Mapa</span></button>
         <button class="nav-btn" data-tab="team"
           onclick="showTab('team',this)"><span>⚡</span><span>Equipo</span></button>
-        <button class="nav-btn" data-tab="pokedex"
-          onclick="showTab('pokedex',this)"><span>📖</span><span>Pokédex</span></button>
         <button class="nav-btn" data-tab="gyms"
           onclick="showTab('gyms',this)"><span>🏆</span><span>Gimnasios</span></button>
         <button class="nav-btn" data-tab="market"
@@ -2572,13 +2526,6 @@
         </div>
       </div>
 
-      <!-- POKEDEX TAB -->
-      <div id="tab-pokedex" class="tab-content" style="display:none">
-        <div class="team-section">
-          <div class="section-title">📖 Pokédex — <span id="pokedex-count">0</span> capturados</div>
-          <div class="pokedex-grid" id="pokedex-grid"></div>
-        </div>
-      </div>
 
       <!-- GYMS TAB -->
       <div id="tab-gyms" class="tab-content" style="display:none">
@@ -2598,11 +2545,6 @@
               style="background:rgba(255,217,61,0.15);border:1px solid var(--yellow);border-radius:12px;padding:8px 16px;">
               <span style="font-size:13px;font-weight:900;color:var(--yellow);">₽<span id="market-money">0</span></span>
             </div>
-          </div>
-          <div
-            style="margin-bottom:16px;background:rgba(199,125,255,0.1);border:1px solid rgba(199,125,255,0.3);border-radius:12px;padding:12px 16px;">
-            <span style="font-size:12px;color:var(--purple);">📦 Tu inventario: </span>
-            <span id="inventory-display" style="font-size:12px;color:#ccc;"></span>
           </div>
           <div id="market-trainer-level" style="margin-bottom:16px;font-size:12px;color:var(--gray);"></div>
           <div id="market-tabs"></div>
@@ -2678,11 +2620,17 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <div class="section-title" style="margin:0;">🎒 Mochila</div>
       </div>
+      <div id="bag-tabs" style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;">
+        <button onclick="renderBag('all')" class="market-tab active" id="bag-tab-all">Todo</button>
+        <button onclick="renderBag('potion')" class="market-tab" id="bag-tab-potion">Pociones</button>
+        <button onclick="renderBag('ball')" class="market-tab" id="bag-tab-ball">Pokéballs</button>
+        <button onclick="renderBag('etc')" class="market-tab" id="bag-tab-etc">Otros</button>
+      </div>
       <div id="bag-empty-warning"
         style="display:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center;font-size:12px;color:var(--gray);">
-        No tenés ningún objeto en tu mochila todavía.
+        No tenés ningún objeto en esta categoría.
       </div>
-      <div id="bag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
+      <div id="bag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;"></div>
     </div>
   </div>
   </div>
@@ -2956,7 +2904,6 @@
       document.getElementById('profile-stats').innerHTML = `
     <div class="profile-stat"><span class="profile-stat-val">${state.trainerLevel}</span><span class="profile-stat-lbl">Nivel</span></div>
     <div class="profile-stat"><span class="profile-stat-val">${state.badges}</span><span class="profile-stat-lbl">Medallas</span></div>
-    <div class="profile-stat"><span class="profile-stat-val">${state.pokedex.length}</span><span class="profile-stat-lbl">Capturados</span></div>
     <div class="profile-stat"><span class="profile-stat-val">${st.wins || 0}</span><span class="profile-stat-lbl">Victorias</span></div>
     <div class="profile-stat"><span class="profile-stat-val">${st.battles || 0}</span><span class="profile-stat-lbl">Batallas</span></div>
     <div class="profile-stat"><span class="profile-stat-val">₽${state.money.toLocaleString()}</span><span class="profile-stat-lbl">Dinero</span></div>
@@ -4041,8 +3988,6 @@
       const p = POKEMON_DB[id];
       const starter = makePokemon(id, 5);
       state.team.push(starter);
-      state.pokedex.push(id);
-
       // Hide title, show game
       document.getElementById('title-screen').style.display = 'none';
       document.getElementById('title-screen').classList.remove('active');
@@ -4078,12 +4023,27 @@
     function makePokemon(id, level) {
       if (level > 100) level = 100;
       const base = POKEMON_DB[id];
-      const scale = 1 + (level - 1) * 0.1;
       const ivs = { hp: Math.floor(Math.random() * 32), atk: Math.floor(Math.random() * 32), def: Math.floor(Math.random() * 32), spa: Math.floor(Math.random() * 32), spd: Math.floor(Math.random() * 32), spe: Math.floor(Math.random() * 32) };
       const nature = NATURES[Math.floor(Math.random() * NATURES.length)];
       const abilityList = ABILITIES[id] || ['Espesura'];
       const ability = abilityList[Math.floor(Math.random() * abilityList.length)];
-      const natureData = NATURE_DATA[nature] || { up: null, down: null };
+      
+      const p = {
+        id, name: base.name, emoji: base.emoji, type: base.type,
+        level, exp: 0, expNeeded: getExpNeeded(level),
+        ivs, nature, ability,
+        moves: getMovesAtLevel(id, level),
+        status: null, sleepTurns: 0, friendship: 70
+      };
+      
+      recalcPokemonStats(p);
+      p.hp = p.maxHp;
+      return p;
+    }
+
+    function recalcPokemonStats(p) {
+      const base = POKEMON_DB[p.id];
+      const natureData = NATURE_DATA[p.nature] || { up: null, down: null };
       
       const getStat = (baseVal, iv, level, statName) => {
         let val = Math.floor((baseVal * 2 + iv) * level / 100 + 5);
@@ -4092,20 +4052,36 @@
         return val;
       };
 
-      const maxHp = Math.floor((base.hp * 2 + ivs.hp) * level / 100 + level + 10);
-      const atk = getStat(base.atk, ivs.atk, level, 'Ataque');
-      const def = getStat(base.def, ivs.def, level, 'Defensa');
-      const spa = getStat(base.atk, ivs.spa, level, 'At. Esp');
-      const spd = getStat(base.def, ivs.spd, level, 'Def. Esp');
-      const spe = getStat(base.spe || 45, ivs.spe, level, 'Velocidad');
-      return {
-        id, name: base.name, emoji: base.emoji, type: base.type,
-        level, hp: maxHp, maxHp, atk, def, spa, spd, spe,
-        ivs, nature, ability,
-        exp: 0, expNeeded: getExpNeeded(level),
-        moves: getMovesAtLevel(id, level),
-        status: null, sleepTurns: 0
-      };
+      p.maxHp = Math.floor((base.hp * 2 + p.ivs.hp) * p.level / 100 + p.level + 10);
+      p.atk = getStat(base.atk, p.ivs.atk, p.level, 'Ataque');
+      p.def = getStat(base.def, p.ivs.def, p.level, 'Defensa');
+      p.spa = getStat(base.atk, p.ivs.spa, p.level, 'At. Esp');
+      p.spd = getStat(base.def, p.ivs.spd, p.level, 'Def. Esp');
+      p.spe = getStat(base.spe || 45, p.ivs.spe, p.level, 'Velocidad');
+    }
+
+    function levelUpPokemon(p) {
+      if (p.level >= 100) return;
+      p.level++;
+      p.expNeeded = getExpNeeded(p.level);
+      const oldMaxHp = p.maxHp;
+      recalcPokemonStats(p);
+      const hpGain = p.maxHp - oldMaxHp;
+      if (hpGain > 0) p.hp += hpGain;
+      p.hp = Math.min(p.hp, p.maxHp);
+
+      // Check evolution
+      if (typeof checkEvolution === 'function') checkEvolution(p);
+      
+      // Learn moves
+      const base = POKEMON_DB[p.id];
+      if (base.learnset) {
+        base.learnset.filter(m => m.lv === p.level).forEach(m => {
+          if (p.moves.length < 4) {
+            p.moves.push({ name: m.name, pp: m.pp, maxPP: m.pp });
+          }
+        });
+      }
     }
 
 
@@ -4466,30 +4442,6 @@
       if (overlay) overlay.style.display = 'none';
     }
 
-    function renderPokedex() {
-      const grid = document.getElementById('pokedex-grid');
-      document.getElementById('pokedex-count').textContent = state.pokedex.length;
-      if (state.pokedex.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><span class="empty-icon">📖</span>¡Todavía no capturaste ningún Pokémon!</div>';
-        return;
-      }
-      grid.innerHTML = state.pokedex.map((id, i) => {
-        const p = POKEMON_DB[id];
-        const num = POKEMON_SPRITE_IDS[id];
-        const spriteUrl = num ? getSpriteUrl(id) : '';
-        const dexNum = String(POKEDEX_NUMBERS[id] || (i + 1)).padStart(3, '0');
-        return `<div class="pokedex-entry" onclick="openPokemonDetail('${id}',0)" style="cursor:pointer">
-      <div style="height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;">
-        <img id="pdx-img-${id}" src="${spriteUrl}" alt="${p.name}"
-          style="max-height:80px;max-width:80px;image-rendering:pixelated;display:${spriteUrl ? 'block' : 'none'};"
-          onerror="this.style.display='none';document.getElementById('pdx-emo-${id}').style.display='block'">
-        <span id="pdx-emo-${id}" style="font-size:52px;display:${spriteUrl ? 'none' : 'block'}">${p.emoji}</span>
-      </div>
-      <div class="pokedex-name">${p.name}</div>
-      <div class="pokedex-num">#${dexNum}</div>
-    </div>`;
-      }).join('');
-    }
 
     // Real Pokédex numbers for Gen1
     const POKEDEX_NUMBERS = {
@@ -5260,9 +5212,6 @@
       }
 
       // Add to pokedex
-      if (!state.pokedex.includes(enemy.id)) {
-        state.pokedex.push(enemy.id);
-      }
 
       setLog(`¡${enemy.name} fue capturado!`, 'log-catch');
 
@@ -5277,29 +5226,8 @@
         let expNeeded = teamMember.expNeeded;
         while (teamMember.exp >= expNeeded && teamMember.level < 100) {
           teamMember.exp -= expNeeded;
-          teamMember.level++;
-          teamMember.expNeeded = getExpNeeded(teamMember.level);
-          expNeeded = teamMember.expNeeded;
-
-          const lv = teamMember.level;
-          const base = POKEMON_DB[teamMember.id];
-          const newMaxHp = Math.floor((base.hp * 2 + (teamMember.ivs?.hp || 15)) * lv / 100 + lv + 10);
-          teamMember.hp = Math.min(teamMember.hp + Math.floor(newMaxHp * 0.1), newMaxHp);
-          teamMember.maxHp = newMaxHp;
-          teamMember.atk = Math.floor((base.atk * 2 + (teamMember.ivs?.atk || 15)) * lv / 100 + 5);
-          teamMember.def = Math.floor((base.def * 2 + (teamMember.ivs?.def || 15)) * lv / 100 + 5);
-          addLog(`¡${teamMember.name} subió al nivel ${lv}!`, 'log-info');
-          if (base.learnset) {
-            base.learnset.filter(m => m.lv === lv).forEach(m => {
-              if (teamMember.moves.length < 4) {
-                teamMember.moves.push({ name: m.name, pp: m.pp, maxPP: m.pp });
-              } else {
-                teamMember.moves.shift();
-                teamMember.moves.push({ name: m.name, pp: m.pp, maxPP: m.pp });
-              }
-              addLog(`¡${teamMember.name} aprendió ${m.name}!`, 'log-catch');
-            });
-          }
+          levelUpPokemon(teamMember);
+          addLog(`¡${teamMember.name} subió al nivel ${teamMember.level}!`, 'log-info');
         }
       }
 
@@ -5334,33 +5262,9 @@
           let expNeeded = teamMember.expNeeded;
           while (teamMember.exp >= expNeeded && teamMember.level < 100) {
             teamMember.exp -= expNeeded;
-            teamMember.level++;
-            teamMember.expNeeded = getExpNeeded(teamMember.level);
+            levelUpPokemon(teamMember);
+            addLog(`¡${teamMember.name} subió al nivel ${teamMember.level}!`, 'log-info');
             expNeeded = teamMember.expNeeded;
-            const lv = teamMember.level;
-            const base = POKEMON_DB[teamMember.id];
-            // Recalc stats
-            const newMaxHp = Math.floor((base.hp * 2 + (teamMember.ivs?.hp || 15)) * lv / 100 + lv + 10);
-            teamMember.hp = Math.min(teamMember.hp + Math.floor(newMaxHp * 0.1), newMaxHp);
-            teamMember.maxHp = newMaxHp;
-            teamMember.atk = Math.floor((base.atk * 2 + (teamMember.ivs?.atk || 15)) * lv / 100 + 5);
-            teamMember.def = Math.floor((base.def * 2 + (teamMember.ivs?.def || 15)) * lv / 100 + 5);
-            addLog(`¡${teamMember.name} subió al nivel ${lv}!`, 'log-info');
-            // Check for new moves
-            if (base.learnset) {
-              const newMoves = base.learnset.filter(m => m.lv === lv);
-              newMoves.forEach(m => {
-                if (teamMember.moves.length < 4) {
-                  teamMember.moves.push({ name: m.name, pp: m.pp, maxPP: m.pp });
-                  addLog(`¡${teamMember.name} aprendió ${m.name}!`, 'log-catch');
-                } else {
-                  // Replace oldest move
-                  teamMember.moves.shift();
-                  teamMember.moves.push({ name: m.name, pp: m.pp, maxPP: m.pp });
-                  addLog(`¡${teamMember.name} aprendió ${m.name}!`, 'log-catch');
-                }
-              });
-            }
           }
         }
 
@@ -5866,7 +5770,6 @@
 
       // Inventory
       const invEntries = Object.entries(state.inventory).filter(([, v]) => v > 0).map(([k, v]) => `${k} ×${v}`).join(' &nbsp;|&nbsp; ');
-      document.getElementById('inventory-display').innerHTML = invEntries || 'Vacío';
 
       const tierColors = { common: 'tier-common', rare: 'tier-rare', epic: 'tier-epic', legend: 'tier-legend' };
       const tierLabels = { common: 'Común', rare: 'Raro', epic: 'Épico', legend: 'Legendario' };
@@ -6595,7 +6498,6 @@
       // Apply to me (receiver)
       if (trade.offer_pokemon) {
         state.team.push(trade.offer_pokemon);
-        if (!state.pokedex.includes(trade.offer_pokemon.id)) state.pokedex.push(trade.offer_pokemon.id);
       }
       Object.entries(trade.offer_items || {}).forEach(([k, v]) => { state.inventory[k] = (state.inventory[k] || 0) + v; });
       state.money += (trade.offer_money || 0);
@@ -6647,6 +6549,11 @@
       'Hiper Poción': p => { if (p.hp === p.maxHp) return null; const h = Math.min(p.maxHp, p.hp + 200); const g = h - p.hp; p.hp = h; return `restauró 200 HP`; },
       'Poción Máxima': p => { if (p.hp === p.maxHp) return null; p.hp = p.maxHp; return `restauró todo el HP`; },
       'Revivir': p => { if (p.hp > 0) return null; p.hp = Math.floor(p.maxHp / 2); return `fue revivido con ${p.hp} HP`; },
+      'Caramelo Raro': p => {
+        if (p.level >= 100) return null;
+        levelUpPokemon(p);
+        return `subió al nivel ${p.level}`;
+      },
       'Revivir Máximo': p => { if (p.hp > 0) return null; p.hp = p.maxHp; return `fue revivido con HP máximo`; },
       'Antídoto': p => { if (p.status !== 'poison') return null; p.status = null; return `fue curado del veneno`; },
       'Cura Quemadura': p => { if (p.status !== 'burn') return null; p.status = null; return `fue curado de las quemaduras`; },
@@ -7406,7 +7313,6 @@
       // Keep existing moves unless empty
       if (!pokemon.moves || pokemon.moves.length === 0) pokemon.moves = newBase.moves;
       // Pokedex
-      if (!state.pokedex.includes(toId)) state.pokedex.push(toId);
       // Sync to team
       const idx = state.team.findIndex(p => p === pokemon);
       if (idx !== -1) state.team[idx] = pokemon;
