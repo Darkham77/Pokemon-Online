@@ -4530,6 +4530,7 @@
       document.getElementById('trainer-intro-btn').onclick = () => {
         introOv.remove();
         // isTrainer = true, enemyTeam is the full team, pass trainer name
+        enemyTeam[0]._revealed = true;
         startBattle(enemyTeam[0], false, null, locId, true, enemyTeam, t.name);
       };
     }
@@ -5411,6 +5412,7 @@
         // The first Pokémon to fight is the first in the array (not necessarily the ace)
         // Usually, the Ace is at the end. Pokemon games often start with the weakest.
         const firstEnemy = enemyTeam[0];
+        firstEnemy._revealed = true;
         
         startBattle(firstEnemy, true, gymId, 'gym', false, enemyTeam);
       };
@@ -5447,6 +5449,7 @@
 
     // ===== BATTLE =====
     function startBattle(enemy, isGym, gymId, locationId, isTrainer, enemyTeam, trainerName) {
+      if (enemy) enemy._revealed = true;
       _battleLock = false;
       const player = state.team.find(p => p.hp > 0);
       // Reset battle-only status flags
@@ -5557,15 +5560,24 @@
       if (teamStatus) {
         if (b.isGym || b.isTrainer || b.isPvP) {
           const team = b.enemyTeam || [];
-          let icons = '';
+          let iconsHtml = '';
           for (let i = 0; i < 6; i++) {
             if (i < team.length) {
-              icons += team[i].hp > 0 ? '🔴' : '⚫';
+              const p = team[i];
+              if (p.hp <= 0) {
+                iconsHtml += '<span style="opacity:0.6;filter:grayscale(1);">⚫</span>';
+              } else if (p._revealed) {
+                const pData = POKEMON_DB[p.id];
+                const emoji = pData ? pData.emoji : '❓';
+                iconsHtml += `<span>${emoji}</span>`;
+              } else {
+                iconsHtml += '<span>🔴</span>';
+              }
             } else {
-              icons += '⚪';
+              iconsHtml += '<span style="opacity:0.25;border:1px solid #fff;border-radius:50%;width:10px;height:10px;display:inline-block;margin-bottom:-1px;"></span>';
             }
           }
-          teamStatus.innerHTML = icons;
+          teamStatus.innerHTML = iconsHtml;
           teamStatus.style.display = 'flex';
         } else {
           teamStatus.style.display = 'none';
@@ -6331,6 +6343,7 @@
             const nextP = b.enemyTeam[nextIdx];
             setLog(`¡${b.enemy.name} fue derrotado! ${b.isGym ? 'El Líder' : 'El entrenador'} envía a ${nextP.name}...`, 'log-player');
             setTimeout(() => {
+              nextP._revealed = true;
               b.enemy = nextP;
               b.enemy.confused = 0; b.enemy.flinched = false;
               b.enemyStages = { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, acc: 0, eva: 0 };
