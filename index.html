@@ -2456,6 +2456,32 @@
       0% { transform: scale(0) rotate(0deg); opacity: 1; }
       100% { transform: scale(1.5) rotate(180deg) translate(var(--tx), var(--ty)); opacity: 0; }
     }
+    /* Daycare / Crianza UI */
+    .daycare-slot-card {
+      background: var(--card); border-radius: 18px; padding: 16px;
+      border: 2px solid rgba(255,255,255,0.07); display: flex; flex-direction: column;
+      align-items: center; gap: 4px; position: relative;
+    }
+    .daycare-slot-label { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--gray); margin-bottom: 4px; }
+    .daycare-slot-sprite { font-size: 32px; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; }
+    .daycare-slot-sprite img { width: 100%; height: 100%; image-rendering: pixelated; }
+    .daycare-slot-name { font-size: 11px; font-weight: 700; text-align: center; }
+    .daycare-slot-info { font-size: 10px; color: var(--gray); text-align: center; }
+    
+    .egg-card {
+      background: var(--card); border-radius: 14px; padding: 12px; text-align: center;
+      border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 6px;
+    }
+    .egg-icon { font-size: 32px; }
+    .egg-species { font-size: 11px; font-weight: 700; text-transform: capitalize; }
+    .egg-timer { font-size: 9px; color: var(--gray); }
+    .egg-progress-bar { background: rgba(255,255,255,0.1); border-radius: 999px; height: 6px; overflow: hidden; margin-top: 4px; }
+    .egg-progress-fill { background: linear-gradient(90deg, #22c55e, #86efac); height: 100%; border-radius: 999px; transition: width 0.5s ease; }
+    
+    @keyframes eggShake {
+      0%, 100% { transform: rotate(-8deg); }
+      50% { transform: rotate(8deg); }
+    }
   </style>
 </head>
 
@@ -2605,6 +2631,14 @@
           onclick="showTab('box',this);renderBox()"><span>📦</span><span>Caja</span></button>
         <button class="nav-btn" data-tab="bag"
           onclick="showTab('bag',this);renderBag()"><span>🎒</span><span>Mochila</span></button>
+        <button class="nav-btn" data-tab="daycare"
+          onclick="showTab('daycare',this);renderDaycareUI()">
+          <span>🥚</span><span>Crianza</span>
+          <span id="daycare-nav-badge" style="display:none;position:absolute;top:4px;right:4px;
+            background:var(--red);color:#fff;font-size:9px;font-weight:900;min-width:16px;height:16px;
+            border-radius:8px;padding:0 4px;line-height:16px;text-align:center;
+            font-family:'Press Start 2P',monospace;z-index:2;"></span>
+        </button>
       </div>
 
       <!-- MAP TAB -->
@@ -2922,6 +2956,75 @@
     </div>
   </div>
 
+  <!-- DAYCARE TAB -->
+  <div id="tab-daycare" class="tab-content" style="display:none;padding-bottom:100px;">
+    <div class="team-section">
+      <div class="section-title">🥚 Guardería Pokémon</div>
+
+      <!-- Compatibility indicator -->
+      <div id="daycare-compat-bar" style="text-align:center;padding:10px 16px;border-radius:999px;
+        font-size:12px;font-weight:700;margin-bottom:16px;background:rgba(255,255,255,0.05);">
+        🔎 Deposita 2 Pokémon para ver compatibilidad
+      </div>
+
+      <!-- Slots -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+        <!-- Slot A -->
+        <div id="daycare-slot-a" class="daycare-slot-card">
+          <div class="daycare-slot-label">Ranura A</div>
+          <div id="slot-a-sprite" class="daycare-slot-sprite">❓</div>
+          <div id="slot-a-name" class="daycare-slot-name">— Vacía —</div>
+          <div id="slot-a-info" class="daycare-slot-info"></div>
+          <button id="slot-a-deposit-btn" onclick="openDepositModal(0)"
+            style="font-family:'Press Start 2P',monospace;font-size:8px;padding:10px 14px;border:none;
+            border-radius:10px;cursor:pointer;background:linear-gradient(135deg,#3b82f6,#2563eb);
+            color:#fff;margin-top:8px;">📥 Depositar</button>
+          <button id="slot-a-withdraw-btn" onclick="withdrawFromDaycare(0)" style="display:none;
+            font-family:'Press Start 2P',monospace;font-size:8px;padding:10px 14px;border:none;
+            border-radius:10px;cursor:pointer;background:rgba(220,38,38,0.2);color:#f87171;
+            margin-top:8px;">↩️ Retirar</button>
+        </div>
+        <!-- Slot B -->
+        <div id="daycare-slot-b" class="daycare-slot-card">
+          <div class="daycare-slot-label">Ranura B</div>
+          <div id="slot-b-sprite" class="daycare-slot-sprite">❓</div>
+          <div id="slot-b-name" class="daycare-slot-name">— Vacía —</div>
+          <div id="slot-b-info" class="daycare-slot-info"></div>
+          <button id="slot-b-deposit-btn" onclick="openDepositModal(1)"
+            style="font-family:'Press Start 2P',monospace;font-size:8px;padding:10px 14px;border:none;
+            border-radius:10px;cursor:pointer;background:linear-gradient(135deg,#3b82f6,#2563eb);
+            color:#fff;margin-top:8px;">📥 Depositar</button>
+          <button id="slot-b-withdraw-btn" onclick="withdrawFromDaycare(1)" style="display:none;
+            font-family:'Press Start 2P',monospace;font-size:8px;padding:10px 14px;border:none;
+            border-radius:10px;cursor:pointer;background:rgba(220,38,38,0.2);color:#f87171;
+            margin-top:8px;">↩️ Retirar</button>
+        </div>
+      </div>
+
+      <!-- Egg Timer (only visible when compatible) -->
+      <div id="daycare-egg-timer" style="display:none;text-align:center;padding:14px;
+        background:rgba(255,255,255,0.05);border-radius:14px;margin-bottom:16px;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:var(--gray);margin-bottom:6px;">
+          PRÓXIMO HUEVO EN
+        </div>
+        <div id="daycare-timer-countdown" style="font-family:'Press Start 2P',monospace;font-size:18px;color:#22c55e;">
+          --:--
+        </div>
+      </div>
+
+      <!-- Egg Storage -->
+      <div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+        <div class="section-title" style="margin:0;font-size:13px;">🥚 Almacén de Huevos</div>
+        <span style="font-size:11px;color:var(--gray);">
+          <span id="daycare-egg-count">0</span>/<span id="daycare-egg-capacity">2</span>
+        </span>
+      </div>
+      <div id="daycare-egg-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">
+        <div style="color:var(--gray);font-size:11px;padding:16px 0;">Sin huevos en almacén.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- BAG TAB -->
   <div id="tab-bag" class="tab-content" style="display:none">
     <div class="team-section" style="min-height:50vh;">
@@ -3134,6 +3237,7 @@
             showScreen('game-screen');
             showTab('map');
             renderTeam();
+            processOfflineBreeding(user.id);
           } else {
             showScreen('title-screen');
           }
@@ -4681,6 +4785,7 @@
       if (tab === 'gyms') renderGyms();
       if (tab === 'market') renderMarket();
       if (tab === 'map') renderMaps();
+      if (tab === 'daycare') renderDaycareUI();
       // Al abrir la tab de amigos, ocultar el badge (el usuario ya lo está viendo)
       if (tab === 'friends') {
         const badge = document.getElementById('friends-nav-badge');
@@ -6244,6 +6349,7 @@
     }
 
     function catchSuccess(enemy) {
+      if (currentUser) reduceHatchTimer(currentUser.id, 'capture');
       const b = state.battle;
       b.over = true;
 
@@ -6594,6 +6700,15 @@
     const CATEGORY_LABELS = { todos: 'Todo', pokeballs: 'Pokéballs', pociones: 'Pociones', held: 'Equipables', stones: 'Piedras', especial: 'Especial' };
 
     const SHOP_ITEMS = [
+      // ── BREEDING ITEMS ──────────────────────────────────────────────────────────
+      { id: 'destiny_knot', cat: 'breeding', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/destiny-knot.png', name: 'Lazo Destino', icon: '🔴', price: 2000, unlockLv: 5, tier: 'rare', desc: 'El Pokémon que lo lleva transmite 5 IVs en lugar de 3 al criar.', effect: null },
+      { id: 'power_bracer', cat: 'breeding', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/power-bracer.png', name: 'Brazal Potencia', icon: '💪', price: 1000, unlockLv: 5, tier: 'uncommon', desc: 'Garantiza heredar el Ataque Físico del padre al criar.', effect: null },
+      { id: 'power_belt', cat: 'breeding', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/power-belt.png', name: 'Fajín Potencia', icon: '🛡️', price: 1000, unlockLv: 5, tier: 'uncommon', desc: 'Garantiza heredar la Defensa del padre al criar.', effect: null },
+      { id: 'power_lens', cat: 'breeding', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/power-lens.png', name: 'Lente Potencia', icon: '🔮', price: 1000, unlockLv: 5, tier: 'uncommon', desc: 'Garantiza heredar el Ataque Especial del padre al criar.', effect: null },
+      { id: 'power_band', cat: 'breeding', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/power-band.png', name: 'Banda Potencia', icon: '🎗️', price: 1000, unlockLv: 5, tier: 'uncommon', desc: 'Garantiza heredar la Defensa Especial del padre al criar.', effect: null },
+      { id: 'power_anklet', cat: 'breeding', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/power-anklet.png', name: 'Tobillera Potencia', icon: '⚡', price: 1000, unlockLv: 5, tier: 'uncommon', desc: 'Garantiza heredar la Velocidad del padre al criar.', effect: null },
+      { id: 'power_weight', cat: 'breeding', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/power-weight.png', name: 'Pesa Recia', icon: '❤️', price: 1000, unlockLv: 5, tier: 'uncommon', desc: 'Garantiza heredar los HP del padre al criar.', effect: null },
+
       // ── POKÉBALLS ──────────────────────────────────────────────────────────────
       {
         id: 'pokeball', cat: 'pokeballs', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png',
@@ -9892,6 +10007,285 @@
       document.getElementById('pvp-overlay')?.remove();
       _pvpState = null;
       _pvpLock = false;
+    }
+
+    // ===== BREEDING ENGINE =====
+    const EGG_GROUPS = {
+      bulbasaur:['monster','grass'], ivysaur:['monster','grass'], venusaur:['monster','grass'],
+      charmander:['monster','dragon'], charmeleon:['monster','dragon'], charizard:['monster','dragon'],
+      squirtle:['monster','water1'], wartortle:['monster','water1'], blastoise:['monster','water1'],
+      pikachu:['fairy','field'], raichu:['fairy','field'], eevee:['field'], vaporeon:['field'], jolteon:['field'], flareon:['field'],
+      meowth:['field'], persian:['field'], snorlax:['monster'], gengar:['amorphous'], gastly:['amorphous'], haunter:['amorphous'],
+      machop:['humanoid'], machoke:['humanoid'], machamp:['humanoid'], geodude:['mineral'], graveler:['mineral'], golem:['mineral'],
+      magikarp:['water2','dragon'], gyarados:['water2','dragon'], lapras:['monster','water1'], ditto:['ditto']
+    };
+    const COMPAT_TEXT = {
+      0: { label: '❌ Incompatibles', color: '#ef4444' }, 1: { label: '😐 Poco interés', color: '#f59e0b' },
+      2: { label: '🙂 Compatibles', color: '#22c55e' }, 3: { label: '❤️ Muy compatibles', color: '#ec4899' },
+    };
+    const EGG_MOVES_DB = {
+      bulbasaur:['leaf_storm','power_whip','ingrain'], charmander:['dragon_rage','flare_blitz','dragon_dance'],
+      squirtle:['aqua_jet','mirror_coat','water_spout'], pikachu:['volt_tackle','fake_out','encore'],
+      eevee:['wish','synchronoise','detect'], meowth:['payday','hypnosis'], machop:['dynamic_punch','bullet_punch'],
+      gastly:['perish_song','disable'], snorlax:['pursuit','curse'], lapras:['freeze_dry','ancient_power']
+    };
+    function getBaseEvolution(id) {
+      const b = { ivysaur:'bulbasaur', venusaur:'bulbasaur', charmeleon:'charmander', charizard:'charmander', wartortle:'squirtle', blastoise:'squirtle', raichu:'pikachu', vaporeon:'eevee', jolteon:'eevee', flareon:'eevee', haunter:'gastly', gengar:'gastly', machoke:'machop', machamp:'machop', graveler:'geodude', golem:'geodude', gyarados:'magikarp' };
+      return b[id] || id;
+    }
+    function checkCompatibility(pA, pB) {
+      const gA = EGG_GROUPS[pA.id] || []; const gB = EGG_GROUPS[pB.id] || [];
+      const LEGENDARIES = ['mewtwo','mew','articuno','zapdos','moltres'];
+      const aDitto = gA.includes('ditto'); const bDitto = gB.includes('ditto');
+      if (aDitto || bDitto) {
+        const other = aDitto ? pB : pA;
+        if (LEGENDARIES.includes(other.id) || EGG_GROUPS[other.id]?.includes('ditto')) return { level: 0, eggSpecies: null };
+        return { level: 2, eggSpecies: getBaseEvolution(other.id) };
+      }
+      if (pA.id === pB.id) return { level: 3, eggSpecies: getBaseEvolution(pA.id) };
+      const shared = gA.filter(g => gB.includes(g) && g !== 'ditto');
+      if (shared.length > 0 && !LEGENDARIES.includes(pA.id) && !LEGENDARIES.includes(pB.id)) return { level: 2, eggSpecies: getBaseEvolution(pA.id) }; // Female species normally, simplified here
+      return { level: 0, eggSpecies: null };
+    }
+    function calculateInheritance(pA, pB, iA, iB) {
+      const STATS = ['hp','atk','def','spa','spd','spe'];
+      const pItems = { 'Power Weight':'hp', 'Power Bracer':'atk', 'Power Belt':'def', 'Power Lens':'spa', 'Power Band':'spd', 'Power Anklet':'spe' };
+      const ivs = {}; STATS.forEach(s => ivs[s] = Math.floor(Math.random()*32));
+      const dk = iA === 'Destiny Knot' || iB === 'Destiny Knot';
+      const count = dk ? 5 : 3;
+      const gA = pItems[iA], gB = pItems[iB];
+      const used = new Set();
+      if(gA) { ivs[gA] = pA.ivs[gA]; used.add(gA); } else if(gB) { ivs[gB] = pB.ivs[gB]; used.add(gB); }
+      const rem = STATS.filter(s => !used.has(s)).sort(()=>Math.random()-0.5).slice(0, count - used.size);
+      rem.forEach(s => ivs[s] = Math.random() < 0.5 ? pA.ivs[s] : pB.ivs[s]);
+      return ivs;
+    }
+    
+    let _daycareTimer = null;
+    let _activeDaycareSlots = [];
+    async function loadDaycareSlots() {
+      if(!currentUser) return [];
+      const { data } = await sb.from('daycare_slots').select('*').eq('player_id', currentUser.id).order('slot_index');
+      _activeDaycareSlots = data || [];
+      // Hydrate with full pokemon objects from state
+      return _activeDaycareSlots.map(s => {
+        const p = state.team.find(x => x.uid === s.pokemon_id) || (state.box && state.box.find(x => x.uid === s.pokemon_id));
+        return { ...s, pokemon: p };
+      });
+    }
+    async function renderDaycareUI() {
+      const slots = await loadDaycareSlots();
+      renderDaycareSlot('a', slots.find(s=>s.slot_index===1));
+      renderDaycareSlot('b', slots.find(s=>s.slot_index===2));
+      const compat = (slots.length===2 && slots[0].pokemon && slots[1].pokemon) ? checkCompatibility(slots[0].pokemon, slots[1].pokemon) : { level: 0 };
+      const ind = document.getElementById('daycare-compat-bar');
+      const info = COMPAT_TEXT[compat.level];
+      ind.textContent = slots.length===2 ? info.label : '🔎 Deposita 2 Pokémon para compatibilidad';
+      ind.style.background = slots.length===2 ? info.color+'22' : 'rgba(255,255,255,0.05)';
+      ind.style.color = slots.length===2 ? info.color : '#fff';
+      
+      const timerUI = document.getElementById('daycare-egg-timer');
+      if (compat.level > 0) { timerUI.style.display = 'block'; manageDaycareTimer(compat.level, slots); }
+      else { timerUI.style.display = 'none'; clearInterval(_daycareTimer); }
+      
+      await renderEggGrid();
+    }
+    function renderDaycareSlot(id, slot) {
+      const has = slot && slot.pokemon;
+      document.getElementById(`slot-${id}-deposit-btn`).style.display = has ? 'none' : 'block';
+      document.getElementById(`slot-${id}-withdraw-btn`).style.display = has ? 'block' : 'none';
+      if(has) {
+        const p = slot.pokemon;
+        const sUrl = getSpriteUrl(p.id, p.isShiny);
+        document.getElementById(`slot-${id}-sprite`).innerHTML = sUrl ? `<img src="${sUrl}">` : p.emoji;
+        document.getElementById(`slot-${id}-name`).innerHTML = `${p.name} <span style="font-size:9px;color:var(--gray)">Nv.${p.level}</span>`;
+        document.getElementById(`slot-${id}-info`).textContent = `IVs: ${p.ivs.hp}/${p.ivs.atk}/${p.ivs.def}/${p.ivs.spa}/${p.ivs.spd}/${p.ivs.spe}`;
+      } else {
+        document.getElementById(`slot-${id}-sprite`).innerHTML = '❓';
+        document.getElementById(`slot-${id}-name`).innerHTML = '— Vacía —';
+        document.getElementById(`slot-${id}-info`).textContent = '';
+      }
+    }
+    
+    // Deposit / Withdraw logic
+    let _depositingSlot = 1;
+    function openDepositModal(slotIdx) { _depositingSlot = slotIdx + 1; document.getElementById('bag-overlay').style.display = 'flex'; _renderDaycarePicker(); }
+    function _renderDaycarePicker() {
+      const bModal = document.getElementById('bag-modal');
+      bModal.innerHTML = `
+        <div style="font-family:'Press Start 2P';font-size:12px;margin-bottom:16px;color:var(--yellow);text-align:center;">Elige un Pokémon</div>
+        <div style="max-height:60vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          ${state.team.map(p => _pickerHtml(p)).join('')}
+          ${(state.box || []).map(p => _pickerHtml(p)).join('')}
+        </div>
+        <button onclick="document.getElementById('bag-overlay').style.display='none'" style="margin-top:16px;width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,0.1);color:#fff;font-family:'Press Start 2P';font-size:10px;border:none;">CANCELAR</button>
+      `;
+    }
+    function _pickerHtml(p) {
+      if(_activeDaycareSlots.some(s => s.pokemon_id === p.uid)) return ''; // already in daycare
+      return `<div onclick="confirmDeposit('${p.uid}')" style="background:rgba(0,0,0,0.4);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;">
+        <span style="font-size:24px;">${p.emoji||'❓'}</span>
+        <div><div style="font-size:11px;font-weight:700;">${p.name}</div><div style="font-size:9px;color:var(--gray);">Nv.${p.level}</div></div>
+      </div>`;
+    }
+    async function confirmDeposit(uid) {
+      document.getElementById('bag-overlay').style.display='none';
+      await sb.from('daycare_slots').insert({ player_id: currentUser.id, pokemon_id: uid, slot_index: _depositingSlot });
+      notify('Pokémon depositado.', '🏡');
+      renderDaycareUI();
+    }
+    async function withdrawFromDaycare(slotIdx) {
+      await sb.from('daycare_slots').delete().eq('player_id', currentUser.id).eq('slot_index', slotIdx + 1);
+      notify('Pokémon retirado.', '🏡');
+      renderDaycareUI();
+    }
+
+    // Incubation & Generation
+    const EGG_SPAWN_INTERVAL_MS = { 1: 60*60*1000, 2: 30*60*1000, 3: 15*60*1000 };
+    let _nextEggTime = 0;
+    function manageDaycareTimer(compatLvl, slots) {
+      clearInterval(_daycareTimer);
+      const intMs = EGG_SPAWN_INTERVAL_MS[compatLvl];
+      _nextEggTime = Date.now() + intMs;
+      _daycareTimer = setInterval(async () => {
+        if(Date.now() >= _nextEggTime) {
+          const cap = await getEggCapacity();
+          const {count} = await sb.from('eggs').select('egg_id', {count:'exact', head:true}).eq('player_id',currentUser.id);
+          if(count < cap) {
+            const pA=slots[0].pokemon, pB=slots[1].pokemon;
+            await generateEggAt(currentUser.id, pA, pB, pA.heldItem, pB.heldItem, new Date());
+            notify('¡Tus Pokémon han puesto un huevo!', '🥚');
+            renderEggGrid();
+          }
+          _nextEggTime = Date.now() + intMs;
+        }
+        updateTimerDisplay();
+      }, 1000);
+    }
+    function updateTimerDisplay() {
+      const left = Math.max(0, Math.floor((_nextEggTime - Date.now())/1000));
+      const m = String(Math.floor(left/60)).padStart(2,'0');
+      const s = String(left%60).padStart(2,'0');
+      document.getElementById('daycare-timer-countdown').textContent = `${m}:${s}`;
+    }
+    
+    async function getEggCapacity() {
+      const {data} = await sb.from('daycare_upgrades').select('egg_capacity').eq('player_id', currentUser.id).single();
+      return data?.egg_capacity || 2;
+    }
+
+    async function generateEggAt(pid, pA, pB, iA, iB, dateObj) {
+      const compat = checkCompatibility(pA,pB);
+      if(compat.level===0) return;
+      const ivs = calculateInheritance(pA,pB,iA,iB);
+      let moves = (EGG_MOVES_DB[compat.eggSpecies] || []).filter(m => (pA.moves||[]).concat(pB.moves||[]).map(x=>x.id||x).includes(m)).slice(0,2);
+      const ready = new Date(dateObj.getTime() + 30*60*1000); // 30 mins
+      await sb.from('eggs').insert({ player_id:pid, species:compat.eggSpecies, parent_a:pA.uid, parent_b:pB.uid, inherited_ivs:ivs, egg_moves:moves, shiny_roll:(Math.random() < 1/512), created_at:dateObj.toISOString(), hatch_ready_time:ready.toISOString(), incubation_speed_bonus:0 });
+    }
+
+    async function reduceHatchTimer(pid, activity) {
+      const RED = { battle: 2*60000, capture: 3*60000, gym: 10*60000 };
+      const ms = RED[activity]; if(!ms) return;
+      const {data} = await sb.from('eggs').select('egg_id, hatch_ready_time').eq('player_id', pid);
+      if(data && data.length) {
+        for(let e of data) {
+          const nt = new Date(new Date(e.hatch_ready_time).getTime() - ms);
+          await sb.from('eggs').update({ hatch_ready_time: nt.toISOString() }).eq('egg_id', e.egg_id);
+        }
+        // If viewing daycare tab, silently refresh
+        if(document.getElementById('tab-daycare').style.display==='block') renderEggGrid();
+        
+        // Notify if newly ready
+        const now = Date.now();
+        const newlyReady = data.filter(e => new Date(e.hatch_ready_time).getTime() > now && (new Date(e.hatch_ready_time).getTime()-ms) <= now);
+        if(newlyReady.length) { notify('¡Un huevo está listo para eclosionar!', '🐣'); document.getElementById('daycare-nav-badge').style.display='block'; }
+      }
+    }
+
+    async function processOfflineBreeding(pid) {
+      const {data:s} = await sb.from('daycare_slots').select('*').eq('player_id', pid).order('slot_index');
+      if(!s || s.length<2) return;
+      const pA=state.team.find(x=>x.uid===s[0].pokemon_id) || (state.box||[]).find(x=>x.uid===s[0].pokemon_id);
+      const pB=state.team.find(x=>x.uid===s[1].pokemon_id) || (state.box||[]).find(x=>x.uid===s[1].pokemon_id);
+      if(!pA||!pB) return;
+      const cp=checkCompatibility(pA,pB); if(cp.level===0) return;
+      const intMs = EGG_SPAWN_INTERVAL_MS[cp.level];
+      const depA = new Date(s[0].deposited_at).getTime(), depB = new Date(s[1].deposited_at).getTime();
+      const earliest = Math.max(depA, depB);
+      const elapsed = Date.now() - earliest;
+      const pot = Math.floor(elapsed / intMs);
+      if(pot <= 0) return;
+      const cap = await getEggCapacity();
+      const {count} = await sb.from('eggs').select('egg_id',{count:'exact',head:true}).eq('player_id',pid);
+      let canGen = Math.min(pot, cap - count);
+      if(canGen>0) {
+        for(let i=0;i<canGen;i++) {
+          await generateEggAt(pid, pA, pB, pA.heldItem, pB.heldItem, new Date(earliest + intMs*(i+1)));
+        }
+        notify(`¡${canGen} huevo(s) generado(s) mientras no estabas!`, '🥚');
+        document.getElementById('daycare-nav-badge').style.display='block';
+      }
+    }
+
+    async function renderEggGrid() {
+      const cap = await getEggCapacity();
+      document.getElementById('daycare-egg-capacity').textContent = cap;
+      const {data: eggs} = await sb.from('eggs').select('*').eq('player_id', currentUser.id).order('created_at');
+      const grid = document.getElementById('daycare-egg-grid');
+      document.getElementById('daycare-egg-count').textContent = eggs?.length || 0;
+      if(!eggs || !eggs.length) { grid.innerHTML = '<div style="color:var(--gray);font-size:11px;padding:16px 0;">Sin huevos en almacén.</div>'; return; }
+      
+      let badgeReady = false;
+      grid.innerHTML = eggs.map(e => {
+        const hAt = new Date(e.hatch_ready_time).getTime();
+        const leftMs = Math.max(0, hAt - Date.now());
+        const leftMin = Math.ceil(leftMs/60000);
+        const pct = Math.min(100, Math.round(100 - (leftMs/(30*60*1000))*100));
+        const pd = POKEMON_DB[e.species];
+        const isReady = leftMs === 0;
+        if(isReady) badgeReady = true;
+        
+        return `<div class="egg-card">
+          <div class="egg-icon" style="${isReady ? 'animation:eggShake 0.6s infinite;' : ''}">🥚</div>
+          <div class="egg-species">${pd ? pd.emoji + ' ' + pd.name : e.species}</div>
+          <div class="egg-timer" style="${isReady ? 'color:#22c55e;font-weight:700;' : ''}">${isReady ? '¡Listo para eclosionar!' : `Eclosiona en ${leftMin} min`}</div>
+          <div class="egg-progress-bar"><div class="egg-progress-fill" style="width:${pct}%"></div></div>
+          ${isReady ? `<button onclick="hatchEgg('${e.egg_id}', '${e.species}', ${e.shiny_roll}, '${escape(JSON.stringify(e.inherited_ivs))}')" style="margin-top:8px;background:#22c55e;color:#fff;border:none;border-radius:8px;padding:8px;font-family:'Press Start 2P';font-size:8px;cursor:pointer;">🐣 Eclosionar</button>` : ''}
+        </div>`;
+      }).join('');
+      
+      document.getElementById('daycare-nav-badge').style.display = badgeReady ? 'block' : 'none';
+    }
+
+    async function hatchEgg(eggId, sp, shiny, ivsJson) {
+      const pData = POKEMON_DB[sp];
+      const newP = makePokemon(sp, 1);
+      try { newP.ivs = JSON.parse(unescape(ivsJson)); } catch(e){}
+      newP.isShiny = shiny;
+      
+      if(state.team.length < 6) state.team.push(newP); else { state.box = state.box||[]; state.box.push(newP); }
+      await sb.from('eggs').delete().eq('egg_id', eggId);
+      
+      // Animation overlay
+      const ov = document.createElement('div');
+      ov.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeIn 0.3s ease;`;
+      ov.innerHTML = `
+        <div id="hatch-egg-visual" style="font-size:120px;animation:eggShake 0.4s infinite;">🥚</div>
+        <div id="hatch-result" style="display:none;align-items:center;flex-direction:column;animation:fadeIn 1s ease;">
+          <img src="${getSpriteUrl(sp, shiny)}" style="width:160px;height:160px;image-rendering:pixelated;${shiny?'filter:hue-rotate(200deg) saturate(2);':''}">
+          <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:#fff;margin-top:24px;text-align:center;">
+            ${shiny?'✨ ':''}¡${pData.name} ha eclosionado!
+          </div>
+        </div>
+      `;
+      document.body.appendChild(ov);
+      
+      setTimeout(() => { document.getElementById('hatch-egg-visual').textContent = '🪄'; }, 600);
+      setTimeout(() => {
+        document.getElementById('hatch-egg-visual').style.display = 'none';
+        document.getElementById('hatch-result').style.display = 'flex';
+      }, 1400);
+      setTimeout(() => { ov.remove(); renderDaycareUI(); scheduleSave(); }, 4000);
     }
 
     // ===== INIT =====

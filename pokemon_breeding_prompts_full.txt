@@ -1,0 +1,275 @@
+POKÉMON ONLINE – ADVANCED IMPLEMENTATION PROMPTS Breeding System + UI
+Integration Guide Project: Web Pokémon MMO Stack: HTML, CSS, JavaScript,
+Supabase
+
+These prompts are intended for use with an AI coding assistant to
+implement a complete breeding system AND integrate it visually into the
+existing UI.
+
+IMPORTANT CONTEXT FOR THE AI
+
+The game is a browser-based Pokémon MMO with these characteristics:
+
+• Mostly runs inside a single index.html (SPA architecture) • Uses
+HTML + CSS + JavaScript • Uses Supabase for persistence, authentication,
+and multiplayer • Existing systems include: - Pokémon capture -
+battles - inventory - evolutions - friends - trading - gyms
+
+Pokémon already contain:
+
+species level moves stats IVs (0–31) types owner_id
+
+The new breeding system must NOT:
+
+• modify the IV range • introduce genetic mutations • allow breeding
+with other players
+
+The system MUST feel like a natural Pokémon mechanic but optimized for a
+browser MMO with idle mechanics.
+
+  ------------------------------------------
+  PROMPT 1 — DATABASE STRUCTURE (SUPABASE)
+  ------------------------------------------
+
+Design the Supabase database structure required for the breeding system.
+
+Create tables for:
+
+1.  daycare_slots Fields: player_id pokemon_id slot_index (1 or 2)
+    deposited_at
+
+2.  eggs Fields: egg_id player_id species parent_a parent_b
+    inherited_ivs egg_moves shiny_roll created_at hatch_ready_time
+
+3.  daycare_upgrades Fields: player_id daycare_level egg_capacity
+    incubation_speed_bonus
+
+Explain how these tables interact with existing Pokémon tables.
+
+  ----------------------------------
+  PROMPT 2 — BREEDING ENGINE LOGIC
+  ----------------------------------
+
+Create the JavaScript logic for the breeding system.
+
+The system must:
+
+1.  Detect compatibility using egg groups
+2.  Determine egg generation time based on compatibility
+3.  Spawn eggs automatically over time (idle mechanic)
+4.  Respect egg capacity limits
+5.  Generate egg data including:
+
+species inherited IVs egg moves shiny roll hatch timer
+
+Use async functions compatible with Supabase queries.
+
+Provide modular functions such as:
+
+checkCompatibility() generateEgg() calculateInheritance() rollShiny()
+
+  ---------------------------------
+  PROMPT 3 — OFFLINE TIMER SYSTEM
+  ---------------------------------
+
+Implement an offline timer system so eggs generate while players are
+offline.
+
+The system must:
+
+• store timestamps in Supabase • calculate elapsed time when the player
+reconnects • generate missing eggs up to capacity
+
+Example logic:
+
+if player left 2 hours ago and egg time = 20 minutes
+
+generate up to capacity eggs automatically.
+
+Provide the algorithm and JS functions.
+
+  ----------------------------------
+  PROMPT 4 — EGG INCUBATION ENGINE
+  ----------------------------------
+
+Create the egg incubation system.
+
+Each egg has:
+
+hatch_ready_time
+
+Base hatch time:
+
+30 minutes
+
+Actions reduce time:
+
+battle → -2 minutes capture → -3 minutes mission → -5 minutes gym → -10
+minutes
+
+Implement functions:
+
+reduceHatchTimer() checkEggHatch() triggerHatchAnimation()
+
+  ----------------------------------
+  PROMPT 5 — BREEDING ITEMS SYSTEM
+  ----------------------------------
+
+Implement breeding items that affect IV inheritance.
+
+Items:
+
+Destiny Knot Power Bracer Power Belt Power Lens Power Band Power Anklet
+
+Rules:
+
+Default breeding: 3 IVs inherited
+
+With Destiny Knot: 5 IVs inherited
+
+Power items guarantee a specific stat inheritance.
+
+Provide the inheritance algorithm.
+
+  ---------------------------------
+  PROMPT 6 — EGG MOVE INHERITANCE
+  ---------------------------------
+
+Create the egg move inheritance system.
+
+Rules:
+
+If parent knows a move listed as an egg move for the species, the
+offspring can inherit it.
+
+Design:
+
+egg_moves table inheritance logic
+
+  ----------------------------------
+  PROMPT 7 — VISUAL UI INTEGRATION
+  ----------------------------------
+
+Explain the BEST way to visually integrate the breeding system into the
+existing Pokémon game menus.
+
+Important principles:
+
+• Do not overload the main UI • Keep the Pokémon-style interface • Make
+breeding easy to understand • Avoid deep menu navigation
+
+Recommended layout:
+
+Main menu:
+
+Map Pokémon Bag Shop Friends Breeding (new)
+
+Selecting “Breeding” opens the Daycare interface.
+
+  ----------------------------------
+  PROMPT 8 — DAYCARE SCREEN DESIGN
+  ----------------------------------
+
+Design the Daycare screen layout.
+
+Structure:
+
+  ---------
+  DAYCARE
+  ---------
+
+Slot A (Pokémon sprite) Level Nature Egg group
+
+Slot B (Pokémon sprite) Level Nature Egg group
+
+Compatibility indicator
+
+❤️ Very compatible 🙂 Compatible 😐 Low interest ❌ Not compatible
+
+Next egg timer
+
+Buttons:
+
+Deposit Pokémon Remove Pokémon Collect Egg
+
+Use a card-based layout similar to Pokémon battle screens.
+
+Provide:
+
+HTML structure CSS layout JS UI interactions
+
+  -------------------------------
+  PROMPT 9 — EGG STORAGE SCREEN
+  -------------------------------
+
+Design the egg storage interface.
+
+Layout:
+
+  -------------
+  EGG STORAGE
+  -------------
+
+Egg card example:
+
+🥚 Charmander Egg
+
+Hatching in: 18 minutes
+
+Progress bar
+
+Buttons:
+
+Start Incubation View Details
+
+Egg cards should appear in a grid.
+
+Provide:
+
+HTML CSS JS logic
+
+  -----------------------------
+  PROMPT 10 — HATCH ANIMATION
+  -----------------------------
+
+Design a simple hatch animation.
+
+Steps:
+
+1.  Egg appears
+2.  Egg shakes
+3.  Egg cracks
+4.  Pokémon sprite appears
+
+Animation should be lightweight and use CSS/JS.
+
+  --------------------------------
+  PROMPT 11 — UI NAVIGATION FLOW
+  --------------------------------
+
+Explain the full player flow.
+
+Example:
+
+Player opens menu → selects Breeding → deposits two Pokémon → egg timer
+starts → player plays the game normally → eggs generate automatically →
+player collects eggs → eggs hatch over time
+
+Focus on making the system intuitive and visually clear.
+
+  ------------------------------------------
+  PROMPT 12 — COMPLETE MODULE ORGANIZATION
+  ------------------------------------------
+
+Organize the breeding system into clean JavaScript modules.
+
+Suggested structure:
+
+breeding/ breedingEngine.js daycareUI.js eggSystem.js inheritance.js
+breedingItems.js
+
+Explain how these modules interact with the main game loop.
+
+  -------------
+  END OF FILE
+  -------------
