@@ -5264,10 +5264,16 @@
 
         // Helper: render a small Pokémon sprite with emoji fallback
         const spriteImg = (id) => {
+          const isCaught = state.pokedex && state.pokedex.includes(id);
           const num = POKEMON_SPRITE_IDS[id];
           const pData = POKEMON_DB[id];
-          const name = pData?.name || id;
-          const emoji = pData?.emoji || '❓';
+          const name = isCaught ? (pData?.name || id) : 'Pokémon que desconozco';
+          const emoji = isCaught ? (pData?.emoji || '❓') : '🔴';
+          
+          if (!isCaught) {
+            return `<span title="${name}" style="font-size:18px;line-height:1;cursor:help;filter:contrast(0.5);opacity:0.7;">🔴</span>`;
+          }
+          
           if (!num) return `<span title="${name}" style="font-size:18px;line-height:1;">${emoji}</span>`;
           return `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${num}.png"
             title="${name}" width="32" height="32"
