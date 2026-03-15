@@ -4487,7 +4487,8 @@
       setInterval(() => {
         if (!state.trainerChance) state.trainerChance = 5;
         state.trainerChance += 5;
-        console.log(`Trainer Chance increased to ${state.trainerChance}%`);
+        console.log(`[PITY] Trainer Chance increased to ${state.trainerChance}%`);
+        if (state.trainerChance > 50) console.warn("Trainer Chance is very high, are encounters working?");
       }, 120000); // 2 minutes
     }
 
@@ -5313,6 +5314,7 @@
 
       // Random Trainer encounter check
       if (Math.random() * 100 < (state.trainerChance || 5)) {
+        _isExploring = false; // Reset exploring flag before returning
         generateTrainerBattle(locId);
         return;
       }
