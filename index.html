@@ -5202,6 +5202,9 @@
 
       const level = Math.floor(Math.random() * (loc.lv[1] - loc.lv[0] + 1)) + loc.lv[0];
       const enemy = makePokemon(selectedId, level);
+      if (state.trainer && state.trainer.toLowerCase() === 'darkham') {
+        enemy.isShiny = true;
+      }
       startBattle(enemy, false, null, locId);
     }
 
@@ -5446,6 +5449,10 @@
       const D = Math.max(1, Math.floor(defStat * defMult));
 
       const base = Math.floor(((2 * attacker.level / 5 + 2) * power * A / D) / 50) + 2;
+
+      const eff = getTypeEffectiveness(md.type, defender.type);
+      const stab = (md.type === attacker.type) ? 1.5 : 1;
+      const abilityMult = 1;
 
       // Held Items multipliers
       let itemMult = 1;
