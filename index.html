@@ -6324,12 +6324,12 @@
       b.over = true;
 
       if (won) {
-        // Multi-Pokémon Trainer Logic: If the trainer still has pokemon, don't end yet.
-        if (b.isTrainer && b.enemyTeam) {
+        // Multi-Pokémon Trainer/Gym Logic: If the opponent still has pokemon, don't end yet.
+        if ((b.isTrainer || b.isGym) && b.enemyTeam) {
           const nextIdx = b.enemyTeam.findIndex(p => p.hp > 0);
           if (nextIdx !== -1) {
             const nextP = b.enemyTeam[nextIdx];
-            setLog(`¡${b.enemy.name} fue derrotado! El entrenador envía a ${nextP.name}...`, 'log-player');
+            setLog(`¡${b.enemy.name} fue derrotado! ${b.isGym ? 'El Líder' : 'El entrenador'} envía a ${nextP.name}...`, 'log-player');
             setTimeout(() => {
               b.enemy = nextP;
               b.enemy.confused = 0; b.enemy.flinched = false;
@@ -6345,9 +6345,9 @@
 
         setLog(`¡${b.enemy.name} fue derrotado!`, 'log-player');
 
-        // Level up player - Double EXP for trainers
+        // Level up player - Double EXP for trainers and gyms
         const winners = state.team.filter(p => (p.name === b.player.name || p.heldItem === 'Compartir EXP') && p.hp > 0);
-        const expMultiplier = b.isTrainer ? 8 : 4; // Trainers give double (8 instead of 4)
+        const expMultiplier = (b.isTrainer || b.isGym) ? 8 : 4; 
         const baseExp = Math.floor(b.enemy.level * expMultiplier);
         
         winners.forEach(p => {
@@ -6373,16 +6373,16 @@
         state.money += moneyWon;
         addLog(`¡Ganaste <span style="color:#22c55e;font-weight:bold;">₽${moneyWon.toLocaleString()}</span>!`, 'log-info');
 
-        if (b.isTrainer) {
+        if (b.isTrainer || b.isGym) {
           const coins = Math.floor(b.enemy.level * 2);
           state.battleCoins = (state.battleCoins || 0) + coins;
           addLog(`¡Obtuviste <span style="color:var(--yellow);font-weight:bold;">🪙 ${coins} Battle Coins</span>!`, 'log-catch');
           
           if (!state.stats) state.stats = {};
-          state.stats.trainersDefeated = (state.stats.trainersDefeated || 0) + 1;
+          if (b.isTrainer) state.stats.trainersDefeated = (state.stats.trainersDefeated || 0) + 1;
 
-          // Egg system
-          if (Math.random() < 0.20) {
+          // Egg system (only for random trainers, not gyms)
+          if (b.isTrainer && Math.random() < 0.20) {
             const eggPool = ['pichu', 'magby', 'elekid', 'cleffa', 'igglybuff', 'togepi', 'eevee'];
             const pId = eggPool[Math.floor(Math.random() * eggPool.length)];
             addEgg(pId);
