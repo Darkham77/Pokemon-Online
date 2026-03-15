@@ -5202,9 +5202,6 @@
 
       const level = Math.floor(Math.random() * (loc.lv[1] - loc.lv[0] + 1)) + loc.lv[0];
       const enemy = makePokemon(selectedId, level);
-      if (state.trainer && state.trainer.toLowerCase() === 'darkham') {
-        enemy.isShiny = true;
-      }
       startBattle(enemy, false, null, locId);
     }
 
