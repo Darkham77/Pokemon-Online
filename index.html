@@ -10137,13 +10137,25 @@
     }
     async function confirmDeposit(uid) {
       document.getElementById('bag-overlay').style.display='none';
-      await sb.from('daycare_slots').insert({ player_id: currentUser.id, pokemon_id: uid, slot_index: _depositingSlot });
-      notify('Pokémon depositado.', '🏡');
+      const { error } = await sb.from('daycare_slots').insert({ player_id: currentUser.id, pokemon_id: uid, slot_index: _depositingSlot });
+      if (error) {
+        console.error("Daycare Deposit Error:", error);
+        notify('Error en Guardería: ' + error.message, '❌');
+      } else {
+        notify('Pokémon depositado.', '🏡');
+        saveGame(true); // Ensure uid assignment and positions match DB
+      }
       renderDaycareUI();
     }
     async function withdrawFromDaycare(slotIdx) {
-      await sb.from('daycare_slots').delete().eq('player_id', currentUser.id).eq('slot_index', slotIdx + 1);
-      notify('Pokémon retirado.', '🏡');
+      const { error } = await sb.from('daycare_slots').delete().eq('player_id', currentUser.id).eq('slot_index', slotIdx + 1);
+      if (error) {
+        console.error("Daycare Withdraw Error:", error);
+        notify('Error al retirar: ' + error.message, '❌');
+      } else {
+        notify('Pokémon retirado.', '🏡');
+        saveGame(true);
+      }
       renderDaycareUI();
     }
 
