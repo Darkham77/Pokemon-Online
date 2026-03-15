@@ -5290,6 +5290,8 @@
       // Reset battle-only status flags
       player.confused = 0; player.flinched = false;
       enemy.confused = 0; enemy.flinched = false;
+      // Remember last wild location for the "Continue Exploring?" prompt
+      if (!isGym && locationId) state.lastWildLocId = locationId;
       state.battle = {
         enemy, player, isGym, gymId,
         playerTeamIndex: state.team.indexOf(player),
@@ -6082,7 +6084,47 @@
       setTimeout(() => {
         showScreen('game-screen');
         showTab('map');
+        if (!b.isGym && state.lastWildLocId) showExploreAgainPrompt(state.lastWildLocId);
       }, 2500);
+    }
+
+    function showExploreAgainPrompt(locId) {
+      // Remove any existing prompt
+      document.getElementById('explore-again-overlay')?.remove();
+      const loc = FIRE_RED_MAPS.find(l => l.id === locId);
+      if (!loc) return;
+
+      const ov = document.createElement('div');
+      ov.id = 'explore-again-overlay';
+      ov.style.cssText = 'position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;pointer-events:none;';
+      ov.innerHTML = `
+        <div style="background:var(--card);border:2px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px 28px;text-align:center;pointer-events:all;box-shadow:0 8px 40px rgba(0,0,0,0.6);animation:fadeIn .3s ease;max-width:320px;width:90%;">
+          <div style="font-size:28px;margin-bottom:8px;">🗺️</div>
+          <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--text);margin-bottom:6px;">¿SEGUÍS EXPLORANDO?</div>
+          <div style="font-size:11px;color:var(--gray);margin-bottom:20px;">${loc.icon} ${loc.name}</div>
+          <button id="explore-yes-btn"
+            style="display:block;width:100%;padding:16px;margin-bottom:10px;border:none;border-radius:14px;cursor:pointer;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:16px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 16px rgba(34,197,94,0.4);transition:transform .15s,box-shadow .15s;"
+            onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 6px 22px rgba(34,197,94,0.55)'"
+            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(34,197,94,0.4)'">
+            ¡SÍ! 🌿
+          </button>
+          <button id="explore-no-btn"
+            style="display:inline-block;padding:6px 16px;border:none;border-radius:8px;cursor:pointer;background:rgba(220,38,38,0.18);color:#f87171;font-size:10px;transition:background .15s;"
+            onmouseover="this.style.background='rgba(220,38,38,0.32)'"
+            onmouseout="this.style.background='rgba(220,38,38,0.18)'">
+            Cancelar
+          </button>
+        </div>`;
+
+      document.body.appendChild(ov);
+
+      document.getElementById('explore-yes-btn').addEventListener('click', () => {
+        ov.remove();
+        goLocation(locId);
+      });
+      document.getElementById('explore-no-btn').addEventListener('click', () => {
+        ov.remove();
+      });
     }
 
     function endBattle(won) {
@@ -6142,10 +6184,18 @@
         const _evoMember = state.team.find(p => p.name === b.player.name);
         if (_evoMember) {
           checkLevelUpEvolution(_evoMember, () => {
-            setTimeout(() => { showScreen('game-screen'); showTab('map'); }, 1200);
+            setTimeout(() => {
+              showScreen('game-screen');
+              showTab('map');
+              if (!b.isGym && state.lastWildLocId) showExploreAgainPrompt(state.lastWildLocId);
+            }, 1200);
           });
         } else {
-          setTimeout(() => { showScreen('game-screen'); showTab('map'); }, 2500);
+          setTimeout(() => {
+            showScreen('game-screen');
+            showTab('map');
+            if (!b.isGym && state.lastWildLocId) showExploreAgainPrompt(state.lastWildLocId);
+          }, 2500);
         }
       } else {
         setLog(`¡${b.player.name} fue derrotado!`, 'log-enemy');
