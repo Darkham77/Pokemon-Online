@@ -3871,7 +3871,7 @@
     const FIRE_RED_MAPS = [
       {
         id: 'route1', name: 'Ruta 1', icon: '🌾', badges: 0, desc: 'Pueblo Paleta - Ciudad Verde.',
-        wild: { morning: ['pidgey', 'rattata'], day: ['pidgey', 'rattata'], dusk: ['rattata', 'pidgey'], night: ['rattata', 'oddish'] },
+        wild: { morning: ['pidgey', 'rattata'], day: ['pidgey', 'rattata'], dusk: ['rattata', 'pidgey'], night: ['rattata', 'pidgey'] },
         rates: { morning: [50, 50], day: [50, 50], dusk: [70, 30], night: [90, 10] }, lv: [2, 5]
       },
       {
@@ -3881,8 +3881,8 @@
       },
       {
         id: 'forest', name: 'Bosque Viridian', icon: '🌲', badges: 0, desc: 'Hogar de bichos y el raro Pikachu.',
-        wild: { morning: ['caterpie', 'metapod', 'weedle', 'kakuna', 'pikachu'], day: ['caterpie', 'metapod', 'weedle', 'kakuna', 'pikachu'], dusk: ['weedle', 'kakuna', 'venonat'], night: ['zubat', 'venonat', 'oddish'] },
-        rates: { morning: [35, 10, 35, 10, 10], day: [35, 10, 35, 10, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [3, 6]
+        wild: { morning: ['caterpie', 'metapod', 'weedle', 'kakuna', 'pikachu', 'nidoran_f', 'nidoran_m'], day: ['caterpie', 'metapod', 'weedle', 'kakuna', 'pikachu', 'nidoran_f', 'nidoran_m'], dusk: ['weedle', 'kakuna', 'pikachu', 'metapod'], night: ['zubat', 'pikachu', 'weedle', 'kakuna'] },
+        rates: { morning: [30, 10, 30, 10, 10, 5, 5], day: [30, 10, 30, 10, 10, 5, 5], dusk: [40, 30, 20, 10], night: [50, 20, 20, 10] }, lv: [3, 6]
       },
       {
         id: 'route22', name: 'Ruta 22', icon: '🌾', badges: 0, desc: 'Camino a la Liga Pokémon.',
@@ -3891,8 +3891,8 @@
       },
       {
         id: 'route3', name: 'Ruta 3', icon: '⛰️', badges: 1, desc: 'Hacia el Mt. Moon.',
-        wild: { morning: ['pidgey', 'spearow', 'jigglypuff', 'sandshrew', 'mankey'], day: ['pidgey', 'spearow', 'jigglypuff', 'sandshrew', 'mankey'], dusk: ['zubat', 'rattata', 'sandshrew'], night: ['zubat', 'rattata', 'sandshrew'] },
-        rates: { morning: [30, 30, 10, 20, 10], day: [30, 30, 10, 20, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [6, 12]
+        wild: { morning: ['pidgey', 'spearow', 'jigglypuff', 'nidoran_m', 'nidoran_f', 'mankey'], day: ['pidgey', 'spearow', 'jigglypuff', 'nidoran_m', 'nidoran_f', 'mankey'], dusk: ['zubat', 'rattata', 'jigglypuff'], night: ['zubat', 'rattata', 'jigglypuff'] },
+        rates: { morning: [30, 25, 15, 15, 10, 5], day: [30, 25, 15, 15, 10, 5], dusk: [50, 30, 20], night: [50, 30, 20] }, lv: [6, 12]
       },
       {
         id: 'mt_moon', name: 'Mt. Moon', icon: '🌋', badges: 1, desc: 'Cueva de fósiles y Clefairy.',
@@ -3901,8 +3901,8 @@
       },
       {
         id: 'route4', name: 'Ruta 4', icon: '🍃', badges: 1, desc: 'Salida de la cueva.',
-        wild: { morning: ['rattata', 'spearow', 'ekans', 'sandshrew'], day: ['rattata', 'spearow', 'ekans', 'sandshrew'], dusk: ['rattata', 'ekans'], night: ['rattata', 'sandshrew'] },
-        rates: { morning: [30, 30, 20, 20], day: [30, 30, 20, 20], dusk: [60, 40], night: [60, 40] }, lv: [10, 14]
+        wild: { morning: ['rattata', 'spearow', 'ekans', 'sandshrew', 'mankey'], day: ['rattata', 'spearow', 'ekans', 'sandshrew', 'mankey'], dusk: ['rattata', 'ekans', 'mankey'], night: ['rattata', 'sandshrew', 'ekans'] },
+        rates: { morning: [25, 25, 20, 20, 10], day: [25, 25, 20, 20, 10], dusk: [50, 30, 20], night: [50, 30, 20] }, lv: [10, 14]
       },
       {
         id: 'route24', name: 'Ruta 24', icon: '🌉', badges: 2, desc: 'Puente Pepita.',
@@ -3916,13 +3916,13 @@
       },
       {
         id: 'route5', name: 'Ruta 5', icon: '🌾', badges: 2, desc: 'Hacia Ciudad Azafrán.',
-        wild: { morning: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'abra'], day: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'abra'], dusk: ['meowth', 'abra'], night: ['meowth', 'abra'] },
-        rates: { morning: [30, 25, 15, 15, 15], day: [30, 25, 15, 15, 15], dusk: [60, 40], night: [70, 30] }, lv: [13, 16]
+        wild: { morning: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'abra', 'tangela', 'mr_mime'], day: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'abra', 'tangela', 'mr_mime'], dusk: ['meowth', 'abra', 'tangela'], night: ['meowth', 'abra', 'mr_mime'] },
+        rates: { morning: [25, 20, 15, 15, 15, 8, 2], day: [25, 20, 15, 15, 15, 8, 2], dusk: [50, 35, 15], night: [55, 35, 10] }, lv: [13, 16]
       },
       {
         id: 'route6', name: 'Ruta 6', icon: '🌾', badges: 2, desc: 'Conecta Celeste con Carmín.',
-        wild: { morning: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'psyduck', 'mankey'], day: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'psyduck', 'mankey'], dusk: ['meowth', 'psyduck'], night: ['meowth', 'psyduck'] },
-        rates: { morning: [20, 20, 15, 15, 15, 15], day: [20, 20, 15, 15, 15, 15], dusk: [50, 50], night: [60, 40] }, lv: [13, 16]
+        wild: { morning: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'psyduck', 'mankey', 'tangela'], day: ['pidgey', 'meowth', 'oddish', 'bellsprout', 'psyduck', 'mankey', 'tangela'], dusk: ['meowth', 'psyduck', 'tangela'], night: ['meowth', 'psyduck'] },
+        rates: { morning: [20, 18, 13, 13, 13, 13, 10], day: [20, 18, 13, 13, 13, 13, 10], dusk: [45, 40, 15], night: [60, 40] }, lv: [13, 16]
       },
       {
         id: 'route11', name: 'Ruta 11', icon: '🌾', badges: 3, desc: 'Al este de Carmín.',
@@ -3956,8 +3956,8 @@
       },
       {
         id: 'route8', name: 'Ruta 8', icon: '🌾', badges: 4, desc: 'Conecta Lavanda con Azafrán.',
-        wild: { morning: ['pidgey', 'meowth', 'ekans', 'sandshrew', 'growlithe', 'vulpix', 'abra'], day: ['pidgey', 'meowth', 'ekans', 'sandshrew', 'growlithe', 'vulpix', 'abra'], dusk: ['meowth', 'abra', 'kadabra'], night: ['meowth', 'abra', 'kadabra'] },
-        rates: { morning: [20, 20, 15, 15, 10, 10, 10], day: [20, 20, 15, 15, 10, 10, 10], dusk: [40, 40, 20], night: [50, 30, 20] }, lv: [18, 22]
+        wild: { morning: ['pidgey', 'meowth', 'ekans', 'sandshrew', 'growlithe', 'vulpix', 'abra', 'tangela', 'mr_mime', 'lickitung'], day: ['pidgey', 'meowth', 'ekans', 'sandshrew', 'growlithe', 'vulpix', 'abra', 'tangela', 'mr_mime', 'lickitung'], dusk: ['meowth', 'abra', 'kadabra', 'tangela'], night: ['meowth', 'abra', 'kadabra', 'lickitung'] },
+        rates: { morning: [18, 15, 13, 13, 10, 10, 10, 8, 2, 1], day: [18, 15, 13, 13, 10, 10, 10, 8, 2, 1], dusk: [38, 35, 20, 7], night: [40, 35, 20, 5] }, lv: [18, 22]
       },
       {
         id: 'pokemon_tower', name: 'Torre Pokémon', icon: '👻', badges: 4, desc: 'Descanso de los Pokémon.',
@@ -3966,18 +3966,18 @@
       },
       {
         id: 'route12', name: 'Ruta 12', icon: '🎣', badges: 4, desc: 'Vía marítima.',
-        wild: { morning: ['pidgey', 'oddish', 'bellsprout', 'venonat', 'weepinbell', 'gloom', 'snorlax'], day: ['pidgey', 'oddish', 'bellsprout', 'venonat', 'weepinbell', 'gloom', 'snorlax'], dusk: ['venonat', 'zubat'], night: ['venonat', 'zubat', 'golbat'] },
-        rates: { morning: [20, 20, 20, 15, 10, 10, 5], day: [20, 20, 20, 15, 10, 10, 5], dusk: [60, 40], night: [50, 40, 10] }, lv: [22, 26]
+        wild: { morning: ['pidgey', 'oddish', 'bellsprout', 'venonat', 'weepinbell', 'gloom', 'snorlax', 'farfetchd'], day: ['pidgey', 'oddish', 'bellsprout', 'venonat', 'weepinbell', 'gloom', 'snorlax', 'farfetchd'], dusk: ['venonat', 'zubat', 'farfetchd'], night: ['venonat', 'zubat', 'golbat'] },
+        rates: { morning: [18, 18, 18, 13, 10, 10, 5, 8], day: [18, 18, 18, 13, 10, 10, 5, 8], dusk: [55, 35, 10], night: [50, 40, 10] }, lv: [22, 26]
       },
       {
         id: 'route13', name: 'Ruta 13', icon: '🌾', badges: 5, desc: 'Laberinto de vallas.',
-        wild: { morning: ['pidgey', 'pidgeotto', 'oddish', 'bellsprout', 'venonat', 'ditto'], day: ['pidgey', 'pidgeotto', 'oddish', 'bellsprout', 'venonat', 'ditto'], dusk: ['venonat', 'ditto'], night: ['venonat', 'ditto'] },
-        rates: { morning: [20, 10, 20, 20, 20, 10], day: [20, 10, 20, 20, 20, 10], dusk: [60, 40], night: [70, 30] }, lv: [24, 28]
+        wild: { morning: ['pidgey', 'pidgeotto', 'oddish', 'bellsprout', 'venonat', 'ditto', 'farfetchd'], day: ['pidgey', 'pidgeotto', 'oddish', 'bellsprout', 'venonat', 'ditto', 'farfetchd'], dusk: ['venonat', 'ditto', 'farfetchd'], night: ['venonat', 'ditto'] },
+        rates: { morning: [18, 8, 18, 18, 18, 10, 10], day: [18, 8, 18, 18, 18, 10, 10], dusk: [50, 35, 15], night: [60, 40] }, lv: [24, 28]
       },
       {
         id: 'safari_zone', name: 'Zona Safari', icon: '🦒', badges: 5, desc: 'Pokémon raros de todo el mundo.',
-        wild: { morning: ['nidoran_f', 'nidoran_m', 'parasect', 'venomoth', 'scyther', 'pinsir', 'chansey', 'tauros', 'kangaskhan', 'exeggcute', 'rhyhorn'], day: ['nidoran_f', 'nidoran_m', 'parasect', 'venomoth', 'scyther', 'pinsir', 'chansey', 'tauros', 'kangaskhan', 'exeggcute', 'rhyhorn'], dusk: ['venomoth', 'parasect'], night: ['venomoth', 'parasect'] },
-        rates: { morning: [10, 10, 10, 10, 5, 5, 5, 5, 5, 20, 15], day: [10, 10, 10, 10, 5, 5, 5, 5, 5, 20, 15], dusk: [50, 50], night: [60, 40] }, lv: [25, 35]
+        wild: { morning: ['nidoran_f', 'nidoran_m', 'parasect', 'venomoth', 'scyther', 'pinsir', 'chansey', 'tauros', 'kangaskhan', 'exeggcute', 'rhyhorn', 'slowpoke', 'lickitung', 'poliwag'], day: ['nidoran_f', 'nidoran_m', 'parasect', 'venomoth', 'scyther', 'pinsir', 'chansey', 'tauros', 'kangaskhan', 'exeggcute', 'rhyhorn', 'slowpoke', 'lickitung', 'poliwag'], dusk: ['venomoth', 'parasect', 'slowpoke'], night: ['venomoth', 'parasect', 'slowpoke', 'chansey'] },
+        rates: { morning: [8, 8, 8, 8, 5, 5, 5, 5, 5, 15, 10, 8, 5, 5], day: [8, 8, 8, 8, 5, 5, 5, 5, 5, 15, 10, 8, 5, 5], dusk: [45, 40, 15], night: [30, 30, 20, 20] }, lv: [25, 35]
       },
       {
         id: 'seafoam_islands', name: 'Islas Espuma', icon: '❄️', badges: 6, desc: 'Cueva de hielo y Articuno.',
@@ -5786,7 +5786,88 @@
     }
 
 
-    const GEN1_CATCH_RATES = { "bulbasaur": 45, "charmander": 45, "squirtle": 45, "caterpie": 255, "weedle": 255, "pidgey": 255, "rattata": 255, "pikachu": 190, "jigglypuff": 170, "geodude": 255, "magikarp": 255, "eevee": 45, "zubat": 255, "psyduck": 190 };
+    const GEN1_CATCH_RATES = {
+      // Starters & fossils
+      "bulbasaur": 45, "ivysaur": 45, "venusaur": 45,
+      "charmander": 45, "charmeleon": 45, "charizard": 45,
+      "squirtle": 45, "wartortle": 45, "blastoise": 45,
+      // Bugs
+      "caterpie": 255, "metapod": 120, "butterfree": 45,
+      "weedle": 255, "kakuna": 120, "beedrill": 45,
+      // Birds
+      "pidgey": 255, "pidgeotto": 120, "pidgeot": 45,
+      "spearow": 255, "fearow": 90, "doduo": 190, "dodrio": 75,
+      "farfetchd": 45,
+      // Rodents & common
+      "rattata": 255, "raticate": 90,
+      "meowth": 190, "persian": 90,
+      // Electric
+      "pikachu": 190, "raichu": 75, "magnemite": 190, "magneton": 60, "voltorb": 190, "electrode": 60, "electabuzz": 45,
+      // Normal
+      "jigglypuff": 170, "wigglytuff": 50, "clefairy": 150, "clefable": 25, "chansey": 30,
+      "lickitung": 45, "ditto": 35, "snorlax": 25, "kangaskhan": 45, "tauros": 45,
+      "farfetch'd": 45, "porygon": 35,
+      // Ground/Rock
+      "geodude": 255, "graveler": 120, "golem": 45,
+      "sandshrew": 255, "sandslash": 90,
+      "diglett": 255, "dugtrio": 50,
+      "rhyhorn": 120, "rhydon": 60,
+      "onix": 45,
+      // Water
+      "psyduck": 190, "golduck": 75,
+      "poliwag": 255, "poliwhirl": 120, "poliwrath": 45,
+      "tentacool": 255, "tentacruel": 60,
+      "slowpoke": 190, "slowbro": 75,
+      "shellder": 190, "cloyster": 60,
+      "krabby": 225, "kingler": 60,
+      "goldeen": 225, "seaking": 60,
+      "staryu": 225, "starmie": 60,
+      "seel": 190, "dewgong": 75,
+      "horsea": 225, "seadra": 75,
+      "magikarp": 255, "gyarados": 45, "lapras": 45,
+      "vaporeon": 45, "omanyte": 45, "omastar": 45, "kabuto": 45, "kabutops": 45,
+      // Poison
+      "ekans": 255, "arbok": 90,
+      "zubat": 255, "golbat": 90,
+      "nidoran_f": 235, "nidorina": 120, "nidoqueen": 45,
+      "nidoran_m": 235, "nidorino": 120, "nidoking": 45,
+      "oddish": 255, "gloom": 120, "vileplume": 45,
+      "bellsprout": 255, "weepinbell": 120, "victreebel": 45,
+      "koffing": 190, "weezing": 60,
+      "grimer": 190, "muk": 75,
+      "venonat": 190, "venomoth": 75,
+      // Grass/Bug/Ground
+      "paras": 190, "parasect": 75,
+      "exeggcute": 90, "exeggutor": 45,
+      "tangela": 45, "bulb": 45,
+      // Psychic
+      "abra": 200, "kadabra": 100, "alakazam": 50,
+      "jynx": 45, "drowzee": 190, "hypno": 75,
+      "mr_mime": 45,
+      // Fighting
+      "mankey": 190, "primeape": 75,
+      "machop": 180, "machoke": 90, "machamp": 45,
+      "hitmonlee": 45, "hitmonchan": 45,
+      // Fire
+      "growlithe": 190, "arcanine": 75,
+      "vulpix": 190, "ninetales": 75,
+      "ponyta": 190, "rapidash": 60,
+      "magmar": 45,
+      // Ghost
+      "gastly": 190, "haunter": 90, "gengar": 45,
+      // Ice
+      "articuno": 3,
+      // Steel/Normal Birds
+      "aerodactyl": 45,
+      // Dragon
+      "dratini": 45, "dragonair": 35, "dragonite": 9,
+      // Eeveelutions & Eevee
+      "eevee": 45, "vaporeon": 45, "jolteon": 45, "flareon": 45,
+      // Legendaries
+      "zapdos": 3, "moltres": 3, "mewtwo": 3, "mew": 3,
+      // Safari
+      "scyther": 45, "pinsir": 45, "cubone": 190, "marowak": 75,
+    };
 
     function tryCatch() {
       const b = state.battle;
