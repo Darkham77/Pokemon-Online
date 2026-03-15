@@ -2576,9 +2576,10 @@
   <rect x='1' y='18' width='38' height='4' fill='%23111'/>
   <circle cx='20' cy='20' r='6' fill='%23111'/>
   <circle cx='20' cy='20' r='4' fill='%23f5f5f5'/>
-  <circle cx='18' cy='18' r='1.2' fill='%23ffffff' opacity='0.7'/>
-</svg>" width="24" height="24" style="vertical-align:middle;margin-right:4px;"><span id="ball-count">10</span></span>
-          <button onclick="toggleProfile()" id="hud-profile-btn" title="Perfil y opciones">👤</button>
+                <circle cx='18' cy='18' r='1.2' fill='%23ffffff' opacity='0.7'/>
+              </svg>" width="24" height="24" style="vertical-align:middle;margin-right:4px;"><span id="ball-count">10</span></span>
+            <span id="hud-egg-container" style="display:none;margin-right:12px;font-size:14px;cursor:pointer;" onclick="toggleProfile()" title="Huevos en incubación">🥚 <span id="egg-count">0</span></span>
+            <button onclick="toggleProfile()" id="hud-profile-btn" title="Perfil y opciones">👤</button>
         </div>
       </div>
 
@@ -3102,6 +3103,7 @@
       state.team = []; state.badges = 0; state.money = 3000; state.balls = 10;
       state.pokedex = []; state.defeatedGyms = []; state.trainerLevel = 1;
       state.trainerExp = 0; state.inventory = { 'Poción': 3, 'Pokéball': 10 };
+      state.eggs = []; state.battleCoins = 0; // Reset new systems 
       toggleProfile();
       showScreen('auth-screen');
     }
@@ -5210,6 +5212,19 @@
         const expPct = Math.min(100, (state.trainerExp / rank.expNeeded) * 100);
         const bar = document.getElementById('trainer-exp-bar');
         if (bar) bar.style.width = expPct + '%';
+      }
+
+      // Update Egg Counter in HUD
+      const eggCont = document.getElementById('hud-egg-container');
+      const eggText = document.getElementById('egg-count');
+      if (eggCont && eggText) {
+        const count = state.eggs ? state.eggs.length : 0;
+        if (count > 0) {
+          eggCont.style.display = 'inline-block';
+          eggText.textContent = count;
+        } else {
+          eggCont.style.display = 'none';
+        }
       }
     }
 
