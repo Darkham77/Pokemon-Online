@@ -3227,6 +3227,11 @@
           if (Array.isArray(state.badges)) state.badges = state.badges.length;
           else state.badges = parseInt(state.badges) || 0;
 
+          // Ensure older saves get a UID for breeding system
+          const getUidStr = () => crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2,9) + Date.now().toString(36);
+          if (state.team) state.team.forEach(p => { if (!p.uid) p.uid = getUidStr(); });
+          if (state.box) state.box.forEach(p => { if (!p.uid) p.uid = getUidStr(); });
+
           state.trainer = username;
           updateHud();
           document.getElementById('hud-name').textContent = username.toUpperCase();
@@ -4705,7 +4710,9 @@
       
       const isShiny = Math.random() < (1 / SHINY_RATE);
 
+      const getUidStr = () => crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2,9) + Date.now().toString(36);
       const p = {
+        uid: getUidStr(),
         id, name: base.name, emoji: base.emoji, type: base.type,
         level, exp: 0, expNeeded: getExpNeeded(level),
         ivs, nature, ability, isShiny,
