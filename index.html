@@ -2578,7 +2578,7 @@
   <circle cx='20' cy='20' r='4' fill='%23f5f5f5'/>
                 <circle cx='18' cy='18' r='1.2' fill='%23ffffff' opacity='0.7'/>
               </svg>" width="24" height="24" style="vertical-align:middle;margin-right:4px;"><span id="ball-count">10</span></span>
-            <span id="hud-egg-container" style="display:none;margin-right:12px;font-size:14px;cursor:pointer;" onclick="toggleProfile()" title="Huevos en incubación">🥚 <span id="egg-count">0</span></span>
+            <span id="hud-egg-container" style="display:inline-block;margin-right:12px;font-size:13px;cursor:pointer;background:rgba(255,217,61,0.15);padding:4px 10px;border-radius:15px;border:1px solid rgba(255,217,61,0.3);transition:all 0.2s;box-shadow: 0 0 5px rgba(255,217,61,0.1);" onclick="toggleProfile()" title="Huevos en incubación">🥚 <span id="egg-count">0</span></span>
             <button onclick="toggleProfile()" id="hud-profile-btn" title="Perfil y opciones">👤</button>
         </div>
       </div>
@@ -3230,24 +3230,27 @@
       // Render Eggs
       const eggContainer = document.getElementById('profile-eggs-section');
       if (eggContainer) {
+        eggContainer.style.display = 'block'; // Always visible
         if (state.eggs && state.eggs.length > 0) {
-        eggContainer.style.display = 'block';
-        eggContainer.innerHTML = '<h3 style="font-family:\'Press Start 2P\',monospace; font-size:10px; color:var(--yellow); margin-top:15px; margin-bottom:10px;">🥚 Huevos Pokémon</h3>' + state.eggs.map(egg => {
-          const total = egg.totalSteps || 100;
-          const progress = Math.min(100, Math.max(0, ((total - egg.steps) / total) * 100));
-          return `
-          <div class="egg-item" style="background:rgba(255,217,61,0.1); border-radius:12px; padding:10px; margin-top:8px; border:1px solid var(--yellow)44;">
-            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text);">
-              <span>${egg.name}</span>
-              <span style="color:var(--yellow);">${egg.steps} pasos</span>
+          eggContainer.innerHTML = '<h3 style="font-family:\'Press Start 2P\',monospace; font-size:10px; color:var(--yellow); margin-top:15px; margin-bottom:10px;">🥚 Huevos Pokémon</h3>' + state.eggs.map(egg => {
+            const total = egg.totalSteps || 100;
+            const progress = Math.min(100, Math.max(0, ((total - egg.steps) / total) * 100));
+            return `
+            <div class="egg-item" style="background:rgba(255,217,61,0.1); border-radius:12px; padding:10px; margin-top:8px; border:1px solid var(--yellow)44;">
+              <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text);">
+                <span>${egg.name}</span>
+                <span style="color:var(--yellow);">${egg.steps} pasos</span>
+              </div>
+              <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; margin-top:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
+                <div style="width:${progress}%; height:100%; background:linear-gradient(90deg, var(--yellow), #fcd34d); box-shadow: 0 0 8px var(--yellow)66;"></div>
+              </div>
             </div>
-            <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; margin-top:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
-              <div style="width:${progress}%; height:100%; background:linear-gradient(90deg, var(--yellow), #fcd34d); box-shadow: 0 0 8px var(--yellow)66;"></div>
-            </div>
-          </div>
-        `}).join('');
+          `}).join('');
         } else {
-          eggContainer.style.display = 'none';
+          eggContainer.innerHTML = `
+            <h3 style="font-family:'Press Start 2P',monospace; font-size:10px; color:var(--yellow); margin-top:15px; margin-bottom:5px;">🥚 Huevos Pokémon</h3>
+            <div style="font-size:10px; color:var(--gray); font-style:italic;">No tienes huevos en incubación.</div>
+          `;
         }
       }
     }
@@ -5210,12 +5213,8 @@
       const eggText = document.getElementById('egg-count');
       if (eggCont && eggText) {
         const count = state.eggs ? state.eggs.length : 0;
-        if (count > 0) {
-          eggCont.style.display = 'inline-block';
-          eggText.textContent = count;
-        } else {
-          eggCont.style.display = 'none';
-        }
+        eggText.textContent = count;
+        // Always visible as per request, just updating count
       }
     }
 
