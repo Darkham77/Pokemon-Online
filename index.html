@@ -3232,6 +3232,7 @@
           if (state.team) state.team.forEach(p => { if (!p.uid) p.uid = getUidStr(); });
           if (state.box) state.box.forEach(p => { if (!p.uid) p.uid = getUidStr(); });
 
+          state.trainerChance = 5; // Reset pity on every login to avoid stuck high chances
           state.trainer = username;
           updateHud();
           document.getElementById('hud-name').textContent = username.toUpperCase();
@@ -3272,7 +3273,6 @@
         money: state.money,
         battleCoins: state.battleCoins || 0,
         eggs: state.eggs || [],
-        trainerChance: state.trainerChance || 5,
         trainerLevel: state.trainerLevel,
         trainerExp: state.trainerExp,
         trainerExpNeeded: state.trainerExpNeeded,
@@ -5431,9 +5431,9 @@
         return;
       }
 
-      // Random Trainer encounter check
-      if (Math.random() * 100 < (state.trainerChance || 5)) {
-        _isExploring = false; // Reset exploring flag before returning
+      // Random Trainer encounter check - Capped at 40% to ensure wild mons always show
+      const tChance = Math.min(state.trainerChance || 5, 40);
+      if (Math.random() * 100 < tChance) {
         generateTrainerBattle(locId);
         return;
       }
