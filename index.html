@@ -3136,7 +3136,7 @@
           } else {
             showScreen('title-screen');
           }
-          notify(`¡Bienvenido de vuelta, ${username}!`, '👋');
+          notify(`¡Bienvenido de vuelta, ${username}! ${state.eggs && state.eggs.length > 0 ? '(🥚 '+state.eggs.length+' huevos)' : ''}`, '👋');
         } else {
           state.trainer = username;
           document.getElementById('hud-name').textContent = username.toUpperCase();
@@ -3228,8 +3228,9 @@
       }
 
       // Render Eggs
-      const eggContainer = document.getElementById('profile-eggs-section') || createEggSection();
-      if (state.eggs && state.eggs.length > 0) {
+      const eggContainer = document.getElementById('profile-eggs-section');
+      if (eggContainer) {
+        if (state.eggs && state.eggs.length > 0) {
         eggContainer.style.display = 'block';
         eggContainer.innerHTML = '<h3 style="font-family:\'Press Start 2P\',monospace; font-size:10px; color:var(--yellow); margin-top:15px; margin-bottom:10px;">🥚 Huevos Pokémon</h3>' + state.eggs.map(egg => {
           const total = egg.totalSteps || 100;
@@ -3245,22 +3246,13 @@
             </div>
           </div>
         `}).join('');
-      } else {
-        eggContainer.style.display = 'none';
+        } else {
+          eggContainer.style.display = 'none';
+        }
       }
     }
 
-    function createEggSection() {
-      const statsGrid = document.getElementById('profile-stats');
-      if (!statsGrid) return null;
-      const section = document.createElement('div');
-      section.id = 'profile-eggs-section';
-      section.style.marginTop = '20px';
-      section.style.borderTop = '1px solid rgba(255,255,255,0.1)';
-      section.style.paddingTop = '10px';
-      statsGrid.parentNode.insertBefore(section, statsGrid.nextSibling);
-      return section;
-    }
+
 
     function hatchEggs() {
       if (!state.eggs || state.eggs.length === 0) return;
@@ -6459,9 +6451,11 @@
         name: 'Huevo Pokémon'
       };
       state.eggs.push(egg);
-      notify('¡Obtuviste un Huevo Pokémon!', '🥚');
-      addLog('¡<span style="color:var(--yellow);font-weight:bold;">Recibiste un Huevo Pokémon!</span> Se abrirá con el tiempo.', 'log-catch');
+      console.log("[EGG] Egg added to state:", egg);
+      notify('¡Obtuviste un Huevo Pokémon! Revisá tu Perfil 👤', '🥚');
+      addLog('¡<span style="color:var(--yellow);font-weight:bold;">Recibiste un Huevo Pokémon!</span> Se abrirá explorando.', 'log-catch');
       updateProfilePanel(); updateHud();
+      scheduleSave();
     }
 
     // ===== NOTIFICATION =====
@@ -9901,6 +9895,8 @@
       font-family:'Press Start 2P',monospace;font-size:9px;">
       🚪 CERRAR SESIÓN
     </button>
+    <!-- Permanent Egg Section -->
+    <div id="profile-eggs-section" style="display:none;margin-top:20px;border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;"></div>
   </div>
 
   <!-- TRADE MODAL -->
