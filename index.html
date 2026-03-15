@@ -4335,6 +4335,7 @@
         'Psicoataque': { power: 90, acc: 100, type: 'psychic', cat: 'special', pp: 10, effect: 'stat_down_enemy_spd_10' },
         'Hipnosis': { power: 0, acc: 60, type: 'psychic', cat: 'status', pp: 20, effect: 'sleep' },
         'Meditación': { power: 0, acc: 100, type: 'psychic', cat: 'status', pp: 40, effect: 'stat_up_self_atk' },
+        'Teletransporte': { power: 0, acc: 100, type: 'psychic', cat: 'status', pp: 20, effect: 'teleport' },
         // ── Rock / Ground / Fighting ─────────────────────────────
         'Lanzarrocas': { power: 50, acc: 90, type: 'rock', cat: 'physical', pp: 15 },
         'Avalancha': { power: 75, acc: 90, type: 'rock', cat: 'physical', pp: 10, effect: 'flinch_30' },
@@ -5839,6 +5840,19 @@
           addLogFn(`¡${src.name} se recuperó completamente y se quedó dormido!`, 'log-info'); break;
         case 'flinch_30': case 'flinch':
           tgt.flinched = true; break;
+        case 'teleport':
+          if (state.battle && !state.battle.isTrainer && !state.battle.isGym) {
+            addLogFn(`¡${src.name} se teletransportó lejos de la batalla!`, 'log-info');
+            state.battle.over = true;
+            setTimeout(() => {
+              showScreen('game-screen');
+              showTab('map');
+              if (state.lastWildLocId) showExploreAgainPrompt(state.lastWildLocId);
+            }, 1000);
+          } else {
+            addLogFn('¡Pero falló!', 'log-enemy');
+          }
+          break;
       }
     }
 
