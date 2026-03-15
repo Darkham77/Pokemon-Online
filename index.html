@@ -4471,16 +4471,16 @@
 
     // ===== GAME STATE =====
     const TRAINER_TYPES = {
-      'caza_bichos': { name: 'Caza Bichos', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/bugcatcher.png', quote: '¡Mis Pokémon bicho son los más fuertes!', pool: ['caterpie', 'metapod', 'weedle', 'kakuna', 'paras', 'venonat'] },
-      'ornitologo': { name: 'Ornitólogo', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/birdkeeper.png', quote: '¡Mis pájaros volarán alto sobre los tuyos!', pool: ['pidgey', 'spearow', 'doduo'] },
-      'cientifico': { name: 'Científico', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/scientist.png', quote: '¡La ciencia pokémon es absoluta!', pool: ['magnemite', 'voltorb', 'ditto', 'grimer'] },
-      'luchador': { name: 'Luchador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/blackbelt.png', quote: '¡Sentí el poder de mis puños!', pool: ['mankey', 'machop'] },
-      'pescador': { name: 'Pescador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/fisherman.png', quote: '¡Pesqué algo más que un zapato!', pool: ['magikarp', 'goldeen', 'poliwag'] },
-      'nadador': { name: 'Nadador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/swimmer.png', quote: '¡El agua está genial hoy!', pool: ['psyduck', 'tentacool', 'staryu', 'horsea'] },
-      'domador': { name: 'Domador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/tamer.png', quote: '¡Mis bestias te devorarán!', pool: ['growlithe', 'vulpix', 'ponyta', 'ekans'] },
-      'medium': { name: 'Médium', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/psychic.png', quote: '...puedo ver tu derrota...', pool: ['abra', 'drowzee'] },
-      'motorista': { name: 'Motorista', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/biker.png', quote: '¡Hacéte a un lado, novato!', pool: ['koffing', 'grimer', 'rattata'] },
-      'montanero': { name: 'Montañero', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/hiker.png', quote: '¡Mis Pokémon son duros como rocas!', pool: ['geodude', 'sandshrew', 'rhyhorn'] }
+      'caza_bichos': { name: 'Caza Bichos', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/bugcatcher-gen1.png', quote: '¡Mis Pokémon bicho son los más fuertes!', pool: ['caterpie', 'metapod', 'weedle', 'kakuna', 'paras', 'venonat'] },
+      'ornitologo': { name: 'Ornitólogo', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/birdkeeper-gen1.png', quote: '¡Mis pájaros volarán alto sobre los tuyos!', pool: ['pidgey', 'spearow', 'doduo'] },
+      'cientifico': { name: 'Científico', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/scientist-gen1.png', quote: '¡La ciencia pokémon es absoluta!', pool: ['magnemite', 'voltorb', 'ditto', 'grimer'] },
+      'luchador': { name: 'Luchador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/blackbelt-gen1.png', quote: '¡Sentí el poder de mis puños!', pool: ['mankey', 'machop'] },
+      'pescador': { name: 'Pescador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/fisherman-gen1.png', quote: '¡Pesqué algo más que un zapato!', pool: ['magikarp', 'goldeen', 'poliwag'] },
+      'nadador': { name: 'Nadador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/swimmer-gen1.png', quote: '¡El agua está genial hoy!', pool: ['psyduck', 'tentacool', 'staryu', 'horsea'] },
+      'domador': { name: 'Domador', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/tamer-gen1rb.png', quote: '¡Mis bestias te devorarán!', pool: ['growlithe', 'vulpix', 'ponyta', 'ekans'] },
+      'medium': { name: 'Médium', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/psychic-gen1.png', quote: '...puedo ver tu derrota...', pool: ['abra', 'drowzee'] },
+      'motorista': { name: 'Motorista', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/biker-gen1.png', quote: '¡Hacéte a un lado, novato!', pool: ['koffing', 'grimer', 'rattata'] },
+      'montanero': { name: 'Montañero', sprite: 'https://play.pokemonshowdown.com/sprites/trainers/hiker-gen1.png', quote: '¡Mis Pokémon son duros como rocas!', pool: ['geodude', 'sandshrew', 'rhyhorn'] }
     };
 
     function initTrainerPityTimer() {
@@ -5546,6 +5546,7 @@
     function addLog(msg, cls = '') {
       const log = document.getElementById('battle-log');
       log.innerHTML += `<div class="log-entry ${cls}">${msg}</div>`;
+      log.scrollTop = log.scrollHeight;
     }
 
     function setBtns(enabled) {
@@ -6326,7 +6327,7 @@
             while (p.exp >= needed && p.level < 100) {
               p.exp -= needed;
               levelUpPokemon(p);
-              addLog(`¡${p.name} subió al nivel ${p.level}!`, 'log-info');
+              addLog(`¡${p.name} subió al <span style="color:#3b82f6;font-weight:bold;">nivel ${p.level}</span>!`, 'log-info');
               needed = p.expNeeded;
             }
           }
@@ -6336,12 +6337,12 @@
         let moneyWon = b.isGym ? b.enemy.level * 80 : b.enemy.level * 20;
         if (b.isTrainer) moneyWon *= 2; // Trainers pay more
         state.money += moneyWon;
-        addLog(`¡Ganaste ₽${moneyWon}!`, 'log-info');
+        addLog(`¡Ganaste <span style="color:#22c55e;font-weight:bold;">₽${moneyWon.toLocaleString()}</span>!`, 'log-info');
 
         if (b.isTrainer) {
           const coins = Math.floor(b.enemy.level * 2);
           state.battleCoins = (state.battleCoins || 0) + coins;
-          addLog(`¡Obtuviste ${coins} Battle Coins!`, 'log-catch');
+          addLog(`¡Obtuviste <span style="color:var(--yellow);font-weight:bold;">🪙 ${coins} Battle Coins</span>!`, 'log-catch');
           
           if (!state.stats) state.stats = {};
           state.stats.trainersDefeated = (state.stats.trainersDefeated || 0) + 1;
@@ -6390,7 +6391,7 @@
             showScreen('game-screen');
             showTab('map');
             if (!b.isGym && (state.lastWildLocId || b.locationId)) showExploreAgainPrompt(state.lastWildLocId || b.locationId);
-          }, 2500);
+          }, 6000);
         }
       } else {
         setLog(`¡${b.player.name} fue derrotado!`, 'log-enemy');
@@ -6443,7 +6444,7 @@
       };
       state.eggs.push(egg);
       notify('¡Obtuviste un Huevo Pokémon!', '🥚');
-      addLog('¡Recibiste un Huevo Pokémon! Se abrirá con el tiempo.', 'log-catch');
+      addLog('¡<span style="color:var(--yellow);font-weight:bold;">Recibiste un Huevo Pokémon!</span> Se abrirá con el tiempo.', 'log-catch');
     }
 
     // ===== NOTIFICATION =====
