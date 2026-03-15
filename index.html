@@ -5846,11 +5846,11 @@
       const baseRate = GEN1_CATCH_RATES[b.enemy.id] || 100;
       let ballMult = 1;
 
-      if (ballName === 'Master Ball') { ballMult = 999; }
+      if (ballName === 'Master Ball') { ballMult = 255; }
       else if (ballName === 'Ultra Ball') { ballMult = 2; }
       else if (ballName === 'Súper Ball' || ballName === 'Ball Especial') { ballMult = 1.5; }
       else if (ballName === 'Red Ball') { 
-        ballMult = (b.enemy.type === 'Agua' || b.enemy.type === 'Bicho') ? 3 : 1; 
+        ballMult = (b.enemy.type === 'water' || b.enemy.type === 'bug') ? 3.5 : 1; 
       }
       else if (ballName === 'Ocaso Ball') { ballMult = 2; }
       else if (ballName === 'Turno Ball') { ballMult = Math.min(4, 1 + (b.turn || 1)*0.3); }
@@ -5858,14 +5858,29 @@
       const selectedItem = SHOP_ITEMS.find(i => i.name === ballName);
       state.activeBallSrc = selectedItem ? selectedItem.sprite : 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png';
 
-      const rawVal = Math.floor((b.enemy.maxHp * 255) / (4 * Math.max(1, b.enemy.hp))) * baseRate / 255;
-      const catchValue = Math.min(255, Math.floor(rawVal * ballMult));
-      const caught = Math.floor(Math.random() * 256) < catchValue;
+      const statusBonus = (b.enemy.status === 'sleep' || b.enemy.status === 'freeze') ? 2 : (b.enemy.status ? 1.5 : 1);
+      
+      // Official Formula Factors
+      const a = (((3 * b.enemy.maxHp - 2 * b.enemy.hp) * baseRate * ballMult) / (3 * b.enemy.maxHp)) * statusBonus;
+      
+      let shakes = 0;
+      if (a >= 255 || ballName === 'Master Ball') {
+        shakes = 4; // Catch
+      } else {
+        const b_factor = Math.floor(65535 / Math.pow(255 / a, 0.25));
+        for (let i = 0; i < 4; i++) {
+          if (Math.floor(Math.random() * 65536) < b_factor) {
+            shakes++;
+          } else {
+            break;
+          }
+        }
+      }
 
-      showCatchAnim(caught, b.enemy);
+      showCatchAnim(shakes === 4, b.enemy, shakes);
     }
 
-    function showCatchAnim(success, enemy) {
+    function showCatchAnim(success, enemy, shakes) {
       const overlay = document.createElement('div');
       overlay.className = 'catch-animation';
       const ballSrc = state.activeBallSrc || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png';
@@ -5889,12 +5904,12 @@
       // Phase 2: shake 1-3 times
       // Phase 3: result
 
-      const shakes = success ? 3 : Math.floor(Math.random() * 3); // 0-2 shakes before escape
+      const totalShakes = shakes >= 4 ? 3 : shakes; // UI shakes are 0-3
       let shakesDone = 0;
 
       function doShake() {
         ballEl.classList.remove('throwing'); // ensure throw animation doesn't restart
-        if (shakesDone >= shakes) {
+        if (shakesDone >= totalShakes) {
           // Result
           if (success) {
             ballEl.classList.remove('shaking');
@@ -5941,8 +5956,9 @@
       const b = state.battle;
       b.over = true;
 
-      const caught = makePokemon(enemy.id, enemy.level);
-      caught.hp = Math.max(1, Math.floor(caught.maxHp * (enemy.hp / enemy.maxHp)));
+      const caught = JSON.parse(JSON.stringify(enemy));
+      // Ensure current health is preserved or slightly adjusted
+      caught.hp = Math.max(1, enemy.hp);
       if (!state.box) state.box = [];
       if (state.team.length < 6) {
         state.team.push(caught);
