@@ -2956,6 +2956,7 @@
             <div class="battle-pokemon-info">
               <div class="battle-name" id="enemy-name">???</div>
               <div class="battle-level" id="enemy-level">Nv. 1</div>
+              <div id="enemy-team-status" style="margin-top:4px;display:flex;gap:3px;font-size:8px;"></div>
               <div class="hp-bar-wrap">
                 <div class="hp-bar hp-high" id="enemy-hp-bar" style="width:100%"></div>
               </div>
@@ -5264,16 +5265,10 @@
 
         // Helper: render a small Pokémon sprite with emoji fallback
         const spriteImg = (id) => {
-          const isCaught = state.pokedex && state.pokedex.includes(id);
           const num = POKEMON_SPRITE_IDS[id];
           const pData = POKEMON_DB[id];
-          const name = isCaught ? (pData?.name || id) : 'Pokémon que desconozco';
-          const emoji = isCaught ? (pData?.emoji || '❓') : '🔴';
-          
-          if (!isCaught) {
-            return `<span title="${name}" style="font-size:18px;line-height:1;cursor:help;filter:contrast(0.5);opacity:0.7;">🔴</span>`;
-          }
-          
+          const name = pData?.name || id;
+          const emoji = pData?.emoji || '❓';
           if (!num) return `<span title="${name}" style="font-size:18px;line-height:1;">${emoji}</span>`;
           return `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${num}.png"
             title="${name}" width="32" height="32"
@@ -5548,6 +5543,19 @@
       const playerPct = b.player.hp / b.player.maxHp;
       document.getElementById('player-hp-bar').style.width = (playerPct * 100) + '%';
       document.getElementById('player-hp-bar').className = `hp-bar ${getHpClass(playerPct)}`;
+
+      // Render Enemy Team Status (for Trainers/Gyms/PvP)
+      const teamStatus = document.getElementById('enemy-team-status');
+      if (teamStatus) {
+        if (b.enemyTeam && b.enemyTeam.length > 0) {
+          teamStatus.innerHTML = b.enemyTeam.map(p => {
+            return p.hp > 0 ? '🔴' : '⚫';
+          }).join('');
+          teamStatus.style.display = 'flex';
+        } else {
+          teamStatus.style.display = 'none';
+        }
+      }
     }
 
     function setLog(msg, cls = 'log-info') {
