@@ -2433,6 +2433,29 @@
     #hud-profile-btn:hover {
       background: rgba(199, 125, 255, 0.35);
     }
+
+    /* SHINY SPARKLES */
+    .shiny-sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+    .sparkle {
+      position: absolute;
+      color: #FFD93D;
+      font-size: 20px;
+      text-shadow: 0 0 10px #FFD93D, 0 0 20px #fff;
+      animation: sparkle-anim .8s ease-out forwards;
+      opacity: 0;
+    }
+    @keyframes sparkle-anim {
+      0% { transform: scale(0) rotate(0deg); opacity: 1; }
+      100% { transform: scale(1.5) rotate(180deg) translate(var(--tx), var(--ty)); opacity: 0; }
+    }
   </style>
 </head>
 
@@ -4325,16 +4348,19 @@
 
     // Cache de sprites ya cargados
     const spriteCache = {};
+    const SHINY_RATE = 2000;
 
-    function getSpriteUrl(id) {
+    function getSpriteUrl(id, isShiny = false) {
       const num = POKEMON_SPRITE_IDS[id];
       if (!num) return null;
+      if (isShiny) return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${num}.png`;
       return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${num}.png`;
     }
 
-    function getBackSpriteUrl(id) {
+    function getBackSpriteUrl(id, isShiny = false) {
       const num = POKEMON_SPRITE_IDS[id];
       if (!num) return null;
+      if (isShiny) return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/${num}.png`;
       return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${num}.png`;
     }
 
@@ -4436,11 +4462,13 @@
       const nature = NATURES[Math.floor(Math.random() * NATURES.length)];
       const abilityList = ABILITIES[id] || ['Espesura'];
       const ability = abilityList[Math.floor(Math.random() * abilityList.length)];
+      
+      const isShiny = Math.random() < (1 / SHINY_RATE);
 
       const p = {
         id, name: base.name, emoji: base.emoji, type: base.type,
         level, exp: 0, expNeeded: getExpNeeded(level),
-        ivs, nature, ability,
+        ivs, nature, ability, isShiny,
         moves: getMovesAtLevel(id, level),
         status: null, sleepTurns: 0, friendship: 70
       };
@@ -4568,7 +4596,7 @@
         <img id="team-sprite-${i}" src="" alt="${p.name}" style="width:72px;height:72px;image-rendering:pixelated;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));display:none;pointer-events:none;">
         <span id="team-emoji-${i}" style="font-size:48px;pointer-events:none;">${p.emoji}</span>
       </div>
-      <div class="team-pokemon-name">${p.name}</div>
+      <div class="team-pokemon-name">${p.name}${p.isShiny ? ' ✨' : ''}</div>
       <div class="team-pokemon-level">Nv. ${p.level}</div>
       <div class="hp-bar-wrap"><div class="hp-bar ${getHpClass(pct)}" style="width:${pct * 100}%"></div></div>
       <div style="font-size:11px;color:var(--gray);margin-top:4px">${p.hp}/${p.maxHp} HP</div>
@@ -4583,7 +4611,7 @@
         setTimeout(() => {
           const img = document.getElementById('team-sprite-' + i);
           const emo = document.getElementById('team-emoji-' + i);
-          if (img && emo) loadSprite(img, emo, getSpriteUrl(p.id), p.emoji);
+          if (img && emo) loadSprite(img, emo, getSpriteUrl(p.id, p.isShiny), p.emoji);
         }, 30 * i);
       });
     }
@@ -4801,11 +4829,11 @@
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
       <div style="display:flex;align-items:center;gap:16px;">
         <div style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border-radius:12px;">
-          <img id="detail-sprite-img" src="" alt="${p.name}" style="width:72px;height:72px;image-rendering:pixelated;display:none;">
+          <img id="detail-sprite-img" src="${getSpriteUrl(p.id, p.isShiny)}" alt="${p.name}" style="width:72px;height:72px;image-rendering:pixelated;display:none;">
           <span id="detail-sprite-emoji" style="font-size:52px;">${p.emoji}</span>
         </div>
         <div>
-          <div style="font-family:'Press Start 2P',monospace;font-size:12px;color:${typeColor};margin-bottom:6px;">${p.name}</div>
+          <div style="font-family:'Press Start 2P',monospace;font-size:12px;color:${typeColor};margin-bottom:6px;">${p.name}${p.isShiny ? ' ✨' : ''}</div>
           <div style="font-size:12px;color:#888;">Nivel ${p.level} · ${p.type.charAt(0).toUpperCase() + p.type.slice(1)}</div>
           <div style="font-size:11px;color:#555;margin-top:4px;">#${String(POKEMON_SPRITE_IDS[p.id] || '???').padStart(3, '0')}</div>
         </div>
@@ -5295,8 +5323,36 @@
 
       const pData = POKEMON_DB[pokemonId];
       const emoji = pData ? pData.emoji : '❓';
-      const url = useBack ? getBackSpriteUrl(pokemonId) : getSpriteUrl(pokemonId);
+      // Side is 'player' or 'enemy'. Pokemon object is in state.battle[side]
+      const p = state.battle[side];
+      const url = useBack ? getBackSpriteUrl(pokemonId, p?.isShiny) : getSpriteUrl(pokemonId, p?.isShiny);
       if (img) loadSprite(img, emojiEl, url, emoji);
+
+      // Trigger sparkles for shiny
+      if (p && p.isShiny) {
+        triggerShinySparkles(side);
+      }
+    }
+
+    function triggerShinySparkles(side) {
+      const container = document.querySelector(`.battle-pokemon-container.${side}`);
+      if (!container) return;
+      
+      const sparklesWrap = document.createElement('div');
+      sparklesWrap.className = 'shiny-sparkles';
+      for (let i = 0; i < 8; i++) {
+        const s = document.createElement('span');
+        s.className = 'sparkle';
+        s.textContent = '✨';
+        const angle = (i / 8) * Math.PI * 2;
+        const dist = 40 + Math.random() * 40;
+        s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        s.style.animationDelay = (Math.random() * 0.3) + 's';
+        sparklesWrap.appendChild(s);
+      }
+      container.appendChild(sparklesWrap);
+      setTimeout(() => sparklesWrap.remove(), 1500);
     }
 
     function updateBattleUI() {
@@ -5305,7 +5361,8 @@
 
       const _pSt = statusIcon(b.player?.status);
       const _eSt = statusIcon(b.enemy?.status);
-      document.getElementById('enemy-name').textContent = b.enemy.name + (_eSt ? ' ' + _eSt : '');
+      const enemyName = b.enemy.name + (b.enemy.isShiny ? ' ✨' : '') + (_eSt ? ' ' + _eSt : '');
+      document.getElementById('enemy-name').textContent = enemyName;
       document.getElementById('enemy-level').textContent = `Nv. ${b.enemy.level}`;
       setBattleSprite('enemy', b.enemy.id, false);
       document.getElementById('enemy-hp-text').textContent = `HP: ${b.enemy.hp}/${b.enemy.maxHp}`;
@@ -5313,7 +5370,8 @@
       document.getElementById('enemy-hp-bar').style.width = (enemyPct * 100) + '%';
       document.getElementById('enemy-hp-bar').className = `hp-bar ${getHpClass(enemyPct)}`;
 
-      document.getElementById('player-battle-name').textContent = b.player.name + (_pSt ? ' ' + _pSt : '');
+      const playerName = b.player.name + (b.player.isShiny ? ' ✨' : '') + (_pSt ? ' ' + _pSt : '');
+      document.getElementById('player-battle-name').textContent = playerName;
       document.getElementById('player-battle-level').textContent = `Nv. ${b.player.level}`;
       setBattleSprite('player', b.player.id, true);
       document.getElementById('player-hp-text').textContent = `HP: ${b.player.hp}/${b.player.maxHp}`;
@@ -7962,6 +8020,7 @@
 
       grid.innerHTML = indexedFiltered.map(({ p, i }) => {
         const sid = getSpriteId(p.id);
+        const url = getSpriteUrl(p.id, p.isShiny);
         const hpPct = Math.round(p.hp / p.maxHp * 100);
         const hpCol = hpPct > 50 ? 'var(--green)' : hpPct > 20 ? 'var(--yellow)' : 'var(--red)';
         const tierInfo = getPokemonTier(p);
@@ -7984,11 +8043,11 @@
       <div style="position:absolute;top:5px;right:5px;background:${tierInfo.bg};color:${tierInfo.color};
         font-family:'Press Start 2P',monospace;font-size:6px;padding:2px 5px;border-radius:6px;
         border:1px solid ${tierInfo.color}44;line-height:1.4;">${tierInfo.tier}</div>
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${sid}.png"
+      <img src="${url}"
         width="56" height="56" style="image-rendering:pixelated;"
         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span style="display:none;font-size:32px;line-height:1;">${p.emoji}</span>
-      <div style="font-size:9px;font-weight:700;margin-top:4px;">${p.name}</div>
+      <div style="font-size:9px;font-weight:700;margin-top:4px;">${p.name}${p.isShiny ? ' ✨' : ''}</div>
       <div style="font-size:9px;color:var(--gray);">Nv.${p.level}</div>
       <div style="font-size:8px;color:${tierInfo.color};margin-top:1px;">IVs: ${ivTotal}/186</div>
       <div style="background:rgba(255,255,255,0.1);border-radius:3px;height:4px;margin-top:4px;overflow:hidden;">
