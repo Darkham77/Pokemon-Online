@@ -10137,6 +10137,9 @@
     }
     async function confirmDeposit(uid) {
       document.getElementById('bag-overlay').style.display='none';
+      // Clean up any phantom/corrupted rows before depositing to prevent unique constraint errors
+      await sb.from('daycare_slots').delete().eq('player_id', currentUser.id).eq('slot_index', _depositingSlot);
+      
       const { error } = await sb.from('daycare_slots').insert({ player_id: currentUser.id, pokemon_id: uid, slot_index: _depositingSlot });
       if (error) {
         console.error("Daycare Deposit Error:", error);
