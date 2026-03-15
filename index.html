@@ -8076,7 +8076,7 @@
           <div style="font-size:13px;font-weight:700;">${name}</div>
           <div style="font-size:10px;color:var(--gray);">x${qty}</div>
         </div>
-        <button onclick="useBagItem('${name}')" style="font-family:'Press Start 2P',monospace;font-size:8px;
+        <button onclick="showBattleItemTarget('${name}')" style="font-family:'Press Start 2P',monospace;font-size:8px;
           padding:8px 12px;border:none;border-radius:8px;cursor:pointer;
           background:rgba(107,203,119,0.2);color:var(--green);border:1px solid rgba(107,203,119,0.3);">
           USAR
@@ -8088,24 +8088,65 @@
       showBattleOverlay(html);
     }
 
-    function useBagItem(itemName) {
+    function showBattleItemTarget(itemName) {
+      const b = state.battle;
+      let html = `<div style="font-family:'Press Start 2P',monospace;font-size:9px;color:var(--yellow);margin-bottom:14px;">
+        💊 USAR ${itemName.toUpperCase()}
+      </div>`;
+
+      html += state.team.map((p, idx) => {
+        const hpPct = Math.round(p.hp / p.maxHp * 100);
+        const hpCol = hpPct > 50 ? 'var(--green)' : hpPct > 20 ? 'var(--yellow)' : 'var(--red)';
+        const isCurrent = idx === b.playerTeamIndex;
+        
+        return `<div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.05);
+          border-radius:12px;padding:10px;margin-bottom:8px;${isCurrent ? 'border:1px solid var(--yellow);' : ''}">
+          <img src="${getSpriteUrl(p.id)}" width="40" height="40" style="image-rendering:pixelated;">
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:12px;">${p.name} ${isCurrent ? '<span style="color:var(--yellow);font-size:8px;">(EN BATTLE)</span>' : ''}</div>
+            <div style="background:rgba(255,255,255,0.1);border-radius:4px;height:4px;margin-top:4px;overflow:hidden;">
+              <div style="width:${hpPct}%;height:100%;background:${hpCol};"></div>
+            </div>
+            <div style="font-size:9px;color:${hpCol};margin-top:2px;">${p.hp}/${p.maxHp} HP ${p.status ? `<span style="margin-left:5px;">${statusIcon(p.status)}</span>` : ''}</div>
+          </div>
+          <button onclick="useBagItem('${itemName}', ${idx})" style="font-family:'Press Start 2P',monospace;font-size:7px;
+            padding:6px 10px;border:none;border-radius:8px;cursor:pointer;
+            background:rgba(107,203,119,0.2);color:var(--green);border:1px solid rgba(107,203,119,0.3);">
+            ELEGIR
+          </button>
+        </div>`;
+      }).join('');
+
+      html += `<button onclick="showBattleBag()" style="margin-top:8px;width:100%;padding:10px;border:none;border-radius:10px;
+        background:rgba(255,255,255,0.06);color:var(--gray);cursor:pointer;font-size:12px;">Volver</button>`;
+
+      showBattleOverlay(html, false);
+    }
+
+    function useBagItem(itemName, teamIndex) {
       const b = state.battle;
       const fn = HEALING_ITEMS[itemName];
       if (!fn || !state.inventory[itemName]) return;
 
-      const result = fn(b.player);
+      const target = state.team[teamIndex];
+      if (!target) return;
+
+      const result = fn(target);
       if (result === null) { notify('No se puede usar en este momento.', '⚠️'); return; }
 
       state.inventory[itemName]--;
       if (!state.inventory[itemName]) delete state.inventory[itemName];
 
-      // Sync to team
-      const member = state.team.find(p => p.name === b.player.name);
-      if (member) { member.hp = b.player.hp; if (b.player.moves) member.moves = b.player.moves; }
+      // If target is the active pokemon, sync battle object
+      if (teamIndex === b.playerTeamIndex) {
+        b.player.hp = target.hp;
+        b.player.status = target.status;
+        if (target.moves) b.player.moves = JSON.parse(JSON.stringify(target.moves));
+        updateBattleUI();
+      }
 
       closeBattleOverlay();
-      setLog(`Usaste ${itemName}. ${b.player.name} ${result}!`, 'log-catch');
-      updateBattleUI();
+      setLog(`Usaste ${itemName}. ¡${target.name} ${result}!`, 'log-catch');
 
       // Item use costs a turn — enemy attacks
       _battleLock = true;
