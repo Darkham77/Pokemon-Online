@@ -2956,10 +2956,10 @@
             <div class="battle-pokemon-info">
               <div class="battle-name" id="enemy-name">???</div>
               <div class="battle-level" id="enemy-level">Nv. 1</div>
-              <div id="enemy-team-status" style="margin-top:4px;display:flex;gap:3px;font-size:8px;"></div>
               <div class="hp-bar-wrap">
                 <div class="hp-bar hp-high" id="enemy-hp-bar" style="width:100%"></div>
               </div>
+              <div id="enemy-team-status" style="margin-top:2px;display:flex;gap:3px;font-size:10px;"></div>
               <div class="battle-hp-text" id="enemy-hp-text">HP: ?/?</div>
             </div>
           </div>
@@ -5395,16 +5395,24 @@
 
       document.getElementById('gym-intro-btn').onclick = () => {
         introOv.remove();
-        // Ace = last Pokémon in the array (the strongest)
-        const aceIdx = gym.pokemon.length - 1;
-        const aceId = gym.pokemon[aceIdx];
-        const aceLevel = gym.levels[aceIdx];
-        const ace = makePokemon(aceId, aceLevel);
-        // Label it with the leader name
-        ace._gymLeader = gym.leader;
-        ace._gymBadge = gym.badge;
-        ace.name = `${ace.name} (${gym.leader})`;
-        startBattle(ace, true, gymId, 'gym');
+        
+        // Generate full team
+        const enemyTeam = gym.pokemon.map((id, i) => {
+          const p = makePokemon(id, gym.levels[i]);
+          if (i === gym.pokemon.length - 1) {
+            // Ace gets additional info
+            p._gymLeader = gym.leader;
+            p._gymBadge = gym.badge;
+            p.name = `${p.name} (${gym.leader})`;
+          }
+          return p;
+        });
+
+        // The first Pokémon to fight is the first in the array (not necessarily the ace)
+        // Usually, the Ace is at the end. Pokemon games often start with the weakest.
+        const firstEnemy = enemyTeam[0];
+        
+        startBattle(firstEnemy, true, gymId, 'gym', false, enemyTeam);
       };
     }
 
@@ -5547,10 +5555,17 @@
       // Render Enemy Team Status (for Trainers/Gyms/PvP)
       const teamStatus = document.getElementById('enemy-team-status');
       if (teamStatus) {
-        if (b.enemyTeam && b.enemyTeam.length > 0) {
-          teamStatus.innerHTML = b.enemyTeam.map(p => {
-            return p.hp > 0 ? '🔴' : '⚫';
-          }).join('');
+        if (b.isGym || b.isTrainer || b.isPvP) {
+          const team = b.enemyTeam || [];
+          let icons = '';
+          for (let i = 0; i < 6; i++) {
+            if (i < team.length) {
+              icons += team[i].hp > 0 ? '🔴' : '⚫';
+            } else {
+              icons += '⚪';
+            }
+          }
+          teamStatus.innerHTML = icons;
           teamStatus.style.display = 'flex';
         } else {
           teamStatus.style.display = 'none';
