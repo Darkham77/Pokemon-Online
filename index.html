@@ -6234,6 +6234,7 @@
       setTimeout(() => {
         showScreen('game-screen');
         showTab('map');
+        if (state.lastWildLocId) showExploreAgainPrompt(state.lastWildLocId);
       }, 1000);
     }
 
